@@ -273,8 +273,6 @@ if (run_time_study) {
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #' low dimensional semi-synthtic data setting with signal-to-noise ratio 1.22
-### start uncommenting here if you want to run the complete simulation inculding
-### BSS:
 
 run_BSS <- TRUE
 synthetic_time <- FALSE
@@ -330,6 +328,10 @@ BETA <- c("spread", "first")
 #' Select dimension of problem ("low" means p=100 & n=1000; "medium" means p=500
 #' & n=500; "high" means p=1000 & n=100). For this example we use only "low"
 #' data sets of the medium high dimenstional problems are rather big
+#' Next, you ill be asked if you want to download the raw results for medium and
+#' hig dimensional settings. Alternatively you can download the results manually
+#' from
+#' https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
 
 source("exec/ask-download.R")
 
