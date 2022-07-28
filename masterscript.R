@@ -115,7 +115,7 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
   
   s <- 10                    # number of true direct predictors
   SNR <- c(0.42, 1.22, 3.52) # signal-to-noise ratios
-  Sim_n <- 2                 # number of simulation runs per SNR value # TODO change back to 100
+  Sim_n <- 100                 # number of simulation runs per SNR value # TODO change back to 100
   nLambda <- 1000            # number of Lambdas for Elastic net/LASSO
   max.k <- 15                # maximal subset size for FSS (and BSS if run_example = FALSE)
   # Alpha values for Elastic net; Alpha = 1 is the Lasso
@@ -341,9 +341,7 @@ if (create_medium_high_dimensional_plots) {
 
 #' Different SNR values can be chosen for the Performance of BSS based on
 #' different subset sizes k:
-#' c(0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6)
-#' The following values are the default values of the Shiny App:
-SNR_BSS_k <- c(0.25, 0.71, 1.22) #@Moritz why this subset of values?
+SNR_BSS_k <- c(0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6)
 
 #' start script for plotting best possible F1-scores and BSS results based on 
 #' subset size k for synthetic data
