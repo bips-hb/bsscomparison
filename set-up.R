@@ -14,8 +14,8 @@
 #' indeed set before
 
 # check whether working directory is the folder of the masterscript.R
-if (basename(getwd()) != "BJcode") {  # TODO
-  stop(sprintf("Your current working directory %s is wrong. You should start the script while being in the 'BJCode' folder.", getwd()))
+if (basename(getwd()) != "bsscomparison") {  
+  stop(sprintf("Your current working directory %s is wrong. You should start the script while being in the 'bsscomparison' folder.", getwd()))
 }
 cat("Working directory is correct", green("\u2713\n"))
 
