@@ -1,0 +1,5 @@
+data/ 
+  
+Contains the raw TCGA dataset for the semi-synthethic simulation 
+study. For more information on the dataset, see the paper and 
+https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/

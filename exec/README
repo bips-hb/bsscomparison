@@ -1,0 +1,36 @@
+exec/ 
+
+Directory that contains most of the scripts 
+for generating, analyzing and plotting the 
+results. It contains the following files: 
+
+* function-block-builder.R - function for generating 
+  block-structured matrices 
+            
+* generate-plots-BSS-time-limits.R - generates the plots
+  for the effect of changing the time limits on the 
+  performance of the BSS 
+  
+* generate-plots-semisynthetic.R - generates the plots 
+  for the semisynthetic simulation study 
+  
+* generate-plots-synthetic.R - generates the plots 
+  for the synthetic simulation study 
+  
+* install.R - checks whether the required packages are installed.
+  If not, than the user is asked whether he/she agrees to download
+  the required packages
+  
+* semisynthetic-example.R - runs the analysis for the semisyntethic
+  simulation study. An example in which BSS is left out. 
+  
+* semisynthetic-example.R - runs the analysis for the semisyntethic
+  simulation study. BSS is included. 
+  
+* time-limits-BSS-semisynthetic.R - runs the analysis for the effect
+  that changing the time limits has on BSS. The semisynthetic simulation 
+  is used. 
+  
+* time-limits-BSS-synthetic.R - runs the analysis for the effect
+  that changing the time limits has on BSS. The synthetic simulation 
+  is used. 
