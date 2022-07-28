@@ -140,7 +140,7 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
   if (run_example) { 
     cat("\nRunning comparison between data simulated now and data used in the paper using dplyr::all_equal\n")
     # get the results from the paper
-    semisynthetic_full <- readRDS("./results/raw_results_SemiSyntheticSimulation_100_594.RDS")
+    semisynthetic_full <- readRDS("results/raw_results_SemiSyntheticSimulation_100_594.RDS")
   
     # filtered for SNR levels of the previous example simulation; BSS results are removed
     semisynthetic_full <- semisynthetic_full %>% 

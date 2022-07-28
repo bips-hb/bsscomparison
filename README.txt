@@ -5,60 +5,63 @@ Authors: Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2022)
 Code was written bei Hanke, M. and Dijkstra, L.
 In case of questions or comments please contact hanke@leibniz-bips.de
 
+IMPORTANT: 
+
+    In order to run the code, you need to source the masterscript: 
+    
+    > source("masterscript.R")
+
 The code was written R, run on a Linux High Performance Cluster and used 
 Gurobi Optimizer version 8.1 (linux64)
 
 > sessionInfo()
-R version 4.0.2 (2020-06-22)
-Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: CentOS Linux 7 (Core)
+R version 4.2.0 (2022-04-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur 11.6
 
 Matrix products: default
-BLAS:   /home/local/R/4.0.2/lib64/R/lib/libRblas.so
-LAPACK: /home/local/R/4.0.2/lib64/R/lib/libRlapack.so
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
-Random number generation:
- RNG:     Mersenne-Twister 
- Normal:  Inversion 
- Sample:  Rounding 
- 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] parallel  stats     graphics  grDevices utils     datasets  methods  
-[8] base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] fitsham_0.1.0     simsham_0.1.0     forcats_0.5.1     stringr_1.4.0    
- [5] dplyr_1.0.7       purrr_0.3.4       readr_2.1.1       tidyr_1.1.4      
- [9] tidyverse_1.3.1   tibble_3.1.6      bestsubset_1.0.10 ggplot2_3.3.5    
-[13] glmnet_4.0-2      Matrix_1.4-0      Rmpi_0.6-9.2      snow_0.4-4       
+ [1] reshape2_1.4.4    caret_6.0-92      lattice_0.20-45   progress_1.2.2   
+ [5] fitsham_0.1.0     simsham_0.1.0     bestsubset_1.0.10 batchtools_0.9.15
+ [9] devtools_2.4.3    usethis_2.1.6     forcats_0.5.1     stringr_1.4.0    
+[13] dplyr_1.0.9       purrr_0.3.4       readr_2.1.2       tidyr_1.2.0      
+[17] tidyverse_1.3.1   tibble_3.1.7      glmnet_4.1-4      Matrix_1.4-1     
+[21] ggpubr_0.4.0      ggplot2_3.3.6     crayon_1.5.1     
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.2        pkgload_1.2.4     jsonlite_1.7.3    splines_4.0.2    
- [5] foreach_1.5.2     modelr_0.1.8      assertthat_0.2.1  cellranger_1.1.0 
- [9] remotes_2.4.2     sessioninfo_1.2.2 pillar_1.6.4      backports_1.4.1  
-[13] lattice_0.20-45   glue_1.6.0        rvest_1.0.2       colorspace_2.0-2 
-[17] pkgconfig_2.0.3   devtools_2.4.3    broom_0.7.10      haven_2.4.3      
-[21] scales_1.1.1      processx_3.5.2    tzdb_0.2.0        generics_0.1.1   
-[25] usethis_2.1.5     ellipsis_0.3.2    cachem_1.0.6      withr_2.4.3      
-[29] cli_3.1.0         survival_3.2-13   magrittr_2.0.1    crayon_1.4.2     
-[33] readxl_1.3.1      memoise_2.0.1     ps_1.6.0          fs_1.5.2         
-[37] fansi_0.5.0       xml2_1.3.3        pkgbuild_1.3.1    tools_4.0.2      
-[41] prettyunits_1.1.1 hms_1.1.1         lifecycle_1.0.1   munsell_0.5.0    
-[45] reprex_2.0.1      callr_3.7.0       compiler_4.0.2    rlang_0.4.12     
-[49] grid_4.0.2        iterators_1.0.14  rstudioapi_0.13   testthat_3.1.1   
-[53] gtable_0.3.0      codetools_0.2-18  curl_4.3.2        DBI_1.1.2        
-[57] R6_2.5.1          lubridate_1.8.0   fastmap_1.1.0     utf8_1.2.2       
-[61] rprojroot_2.0.2   shape_1.4.6       desc_1.4.0        stringi_1.7.6    
-[65] Rcpp_1.0.8.3      vctrs_0.3.8       dbplyr_2.1.1      tidyselect_1.1.1 
-
+ [1] colorspace_2.0-3     ggsignif_0.6.3       ellipsis_0.3.2       class_7.3-20        
+ [5] rprojroot_2.0.3      fs_1.5.2             rstudioapi_0.13      listenv_0.8.0       
+ [9] remotes_2.4.2        prodlim_2019.11.13   fansi_1.0.3          lubridate_1.8.0     
+[13] xml2_1.3.3           codetools_0.2-18     splines_4.2.0        cachem_1.0.6        
+[17] pkgload_1.2.4        jsonlite_1.8.0       pROC_1.18.0          broom_0.8.0         
+[21] dbplyr_2.2.1         compiler_4.2.0       httr_1.4.3           backports_1.4.1     
+[25] assertthat_0.2.1     fastmap_1.1.0        cli_3.3.0            prettyunits_1.1.1   
+[29] tools_4.2.0          gtable_0.3.0         glue_1.6.2           rappdirs_0.3.3      
+[33] Rcpp_1.0.8.3         carData_3.0-5        cellranger_1.1.0     vctrs_0.4.1         
+[37] nlme_3.1-158         iterators_1.0.14     timeDate_3043.102    gower_1.0.0         
+[41] globals_0.15.0       ps_1.7.1             brio_1.1.3           testthat_3.1.4      
+[45] rvest_1.0.2          lifecycle_1.0.1      rstatix_0.7.0        future_1.26.1       
+[49] MASS_7.3-57          scales_1.2.0         ipred_0.9-13         hms_1.1.1           
+[53] parallel_4.2.0       memoise_2.0.1        rpart_4.1.16         stringi_1.7.6       
+[57] desc_1.4.1           foreach_1.5.2        checkmate_2.1.0      hardhat_1.1.0       
+[61] pkgbuild_1.3.1       lava_1.6.10          shape_1.4.6          rlang_1.0.2         
+[65] pkgconfig_2.0.3      recipes_0.2.0        processx_3.6.1       tidyselect_1.1.2    
+[69] parallelly_1.32.0    plyr_1.8.7           magrittr_2.0.3       R6_2.5.1            
+[73] generics_0.1.2       base64url_1.4        DBI_1.1.3            pillar_1.7.0        
+[77] haven_2.5.0          withr_2.5.0          survival_3.3-1       abind_1.4-5         
+[81] nnet_7.3-17          future.apply_1.9.0   modelr_0.1.8         car_3.1-0           
+[85] utf8_1.2.2           tzdb_0.3.0           grid_4.2.0           readxl_1.4.0        
+[89] data.table_1.14.2    callr_3.7.0          ModelMetrics_1.2.2.2 reprex_2.0.1        
+[93] digest_0.6.29        brew_1.0-7           stats4_4.2.0         munsell_0.5.0       
+[97] sessioninfo_1.2.2  
 A TCGA dataset is needed ofr the semi-synthetic data generation and 
 is stored in the subfolder ./data. It is also available on-line at 
 https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
