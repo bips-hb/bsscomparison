@@ -374,5 +374,5 @@ source("exec/generate-plots-BSS-time-limits.R")
 
 cat(sprintf("DONE generating plots..."))
 
-note("End of masterscript")
+cat(sprintf("\n \nEnd of masterscript.R"))
 
