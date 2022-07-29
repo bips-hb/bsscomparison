@@ -25,9 +25,20 @@ did_finish <- function(status) {
   }
 }
 
-summary <- res %>% rowwise() %>% 
-  mutate(F1 = get_max(result$F1), 
-         finished = did_finish(result$finished)) 
+summary <- NULL
+for(i in 1:nrow(res)){
+  
+  result_i <- res[[i,14]]
+  result_i$F1[is.nan(result_i$F1)] <- 0
+  max_F1_i <- get_max(result_i$F1)
+  row_max_F1_i <- min(which((result_i$F1)==max_F1_i))
+  finished_i = did_finish(result_i$finished[row_max_F1_i])
+  
+  summary <- 
+    bind_rows(summary,
+              tibble(res[i,-14],
+                     F1 = max_F1_i,
+                     finished = finished_i))
+}
 
-summary <- summary %>% select(-result)
 readr::write_tsv(summary, "results/best-f1-scores.tsv")
