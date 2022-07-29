@@ -26,7 +26,7 @@ cat("Working directory is correct", green("\u2713\n"))
 packages <- c("ggpubr", "glmnet", "tibble", "tidyverse", 
               "devtools", "batchtools", "bestsubset", "readr",  
               "simsham", "fitsham", "progress", "caret", "Matrix",
-              "reshape2") 
+              "reshape2", "latex2exp") 
 
 # in case one does not want to run the example, the gurobi
 # package is needed
