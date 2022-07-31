@@ -15,7 +15,7 @@
 #' each with 12 core Intel Xeon processors, close to 50 days (!). 
 #' 
 #' In order to still make it possible to run the code without a Gurobi license, 
-#' we stored the intermediate results. We provide an example simulation script 
+#' we stored the intermediate/raw results. We provide an example simulation script 
 #' for the semi-synthetic dataset, in which the BSS is left out.
 #' 
 #' General structure of the directory
@@ -24,9 +24,13 @@
 #' - all scripts for generating the results are in the subfolder "exec/"
 #' - all plots are saved in the subfolder "plots/"
 #' - The TCGA dataset is saved in the subfolder "data"
-#' - Results of the low-dimensional settings are in the subfolder "results/" 
+#' - Raw results of the low-dimensional settings are in the subfolder "results/"
+#' - Raw results for different time limits are in the subfolder "results/"  
 #' - all other raw results can be downloaded by running 
-#'   source("download-intermediate-results-medium-high.R") 
+#'   source("download-intermediate-results-medium-high.R") or manually from
+#'   https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+#'   (The raw results are .rds files and need to be put into "results/" before
+#'   analyzing/plotting)
 #' 
 #' Table of contents of masterscript.R
 #' -----------------------------------
@@ -36,8 +40,6 @@
 #' I. Simulation study for semi-synthetic data 
 #'    1. An reproducible example without BSS for low-dimensional setting
 #'    2. Complete simulation including application of BSS 
-#'       a. Low-dimensional:  p = 100  and n = 594
-#'       b. High-dimensional: p = 1000 and n = 100
 #' 
 #' II. Simulation study for synthetic data including application of BSS and its 
 #'     competitors
@@ -77,19 +79,14 @@ for (variable in variables) {
 #'                 I. SEMI-SYNTHETIC SIMULATION STUDY 
 #' #############################################################################
 #' 
-#' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#'     I-1. An reproducible example without BSS for low-dimensional setting
-#' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' 
 #' The following code simulates semi-synthetic data with previous parameter
 #' settings for a low-dimensional scenario and applies Lasso, Forward Stepwise 
-#' Selection and Enet but omits BSS due to the Gurobi/MIO dependency. Using 
-#' alternative methods/packages are not feasible even in our low-dimensional
-#' setting. 
-#' This simulation takes ~30 minutes on a MacBook Pro (Intel i5) and replicates 
-#' the reported results for all methods. At the end of this section we compare
-#' the results of this example with the original results.
-#' To apply all methods including BSS via MIO/Guropi see  end of this chapter.
+#' Selection and Enet. The user is ask if BSS should be applied, too, which 
+#' needs Gurobi 8.1 or higher. Using alternative methods/packages is not 
+#' feasible even in our low-dimensional setting. 
+#' The simulation without BSS takes ~30 minutes on a MacBook Pro (Intel i5) and 
+#' replicates the reported results for all methods despite BSS. At the end of 
+#' this chapter we compare the results of this example with the original results.
 
 source("exec/ask-semisynthetic-study.R")
 
@@ -115,7 +112,7 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
   
   s <- 10                    # number of true direct predictors
   SNR <- c(0.42, 1.22, 3.52) # signal-to-noise ratios
-  Sim_n <- 100                 # number of simulation runs per SNR value # TODO change back to 100
+  Sim_n <- 100               # number of simulation runs per SNR value 
   nLambda <- 1000            # number of Lambdas for Elastic net/LASSO
   max.k <- 15                # maximal subset size for FSS (and BSS if run_example = FALSE)
   # Alpha values for Elastic net; Alpha = 1 is the Lasso
@@ -166,34 +163,6 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
   cat(sprintf("DONE running semi-synthetic simulations...\n\n"))
 }
 
-#' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#'          I-2. Complete simulation including application of BSS 
-#' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if (run_semisynthetic_simulations_low_dimensional && run_semisynthetic_simulations_high_dimensional) { 
-  
-  # change the parameters to reflect high-dimensionality
-  N <- 100    # number of observations
-  subdata_size <- 1000   # number of variables (p) used from TCGA data
-  
-  output_parameter_settings(title = "Parameters for semi-synthetic simulation:", 
-                            N = N, s = s, SNR = SNR, Sim_n = Sim_n, nLambda = nLambda, 
-                            max.k = max.k, Alpha = Alpha, subdata_size = subdata_size)
-  
-  if (run_in_parallel) { 
-    # number of workers 
-    mc <- 105 # Optional: number of cores can be determined automatically
-    # make a cluster - default is "MPI"
-    cl <- makeCluster(mc, type="MPI")
-  }
-  
-  # run the simulation 
-  source("exec/semisynthetic-full.R")
-}
-
-cat(sprintf("DONE running semi-synthetic simulations\n"))
-
-#stop_quietly()
 
 #' #############################################################################
 #'      II. Simulation study for synthetic data including application of 
