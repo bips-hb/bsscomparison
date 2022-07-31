@@ -9,7 +9,7 @@ while (!answered) {
   
   # ask whether to run the semisynthetic simulations
   synthetic <- menu(title = "Run the synthetic simulation study...", 
-                        choices = c("run example (1 repetition) without BSS (recommended)", 
+                        choices = c("run example (1 repetition) without BSS (3-4 hours on a single machine)", 
                                     "run example (1 repetition) with BSS (requires Gurobi)", 
                                     "run full study without BSS", 
                                     "run full study with BSS", 
