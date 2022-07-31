@@ -11,57 +11,78 @@ IMPORTANT:
     
     > source("masterscript.R")
 
+A TCGA dataset is needed for the semi-synthetic data generation and 
+is stored in the subfolder ./data. It is also available online at 
+https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
+
+
 The code was written R, run on a Linux High Performance Cluster and used 
-Gurobi Optimizer version 8.1 (linux64)
+Gurobi Optimizer version 8.1 (linux64) which is mandatory to run the 
+simulation study including best subset selection. However, we implemented 
+also examples to re-run the code without best subset selection (the 
+masterscript.R will ask what kind of simulation to re-run).
+
+
+The following R output shows the session Info on our cluster: 
 
 > sessionInfo()
-R version 4.2.0 (2022-04-22)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur 11.6
+R version 4.0.2 (2020-06-22)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
 
 Matrix products: default
-LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+BLAS:   /home/local/R/4.0.2/lib64/R/lib/libRblas.so
+LAPACK: /home/local/R/4.0.2/lib64/R/lib/libRlapack.so
 
+Random number generation:
+ RNG:     Mersenne-Twister 
+ Normal:  Inversion 
+ Sample:  Rounding 
+ 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=de_DE.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=de_DE.UTF-8        LC_COLLATE=de_DE.UTF-8    
+ [5] LC_MONETARY=de_DE.UTF-8    LC_MESSAGES=de_DE.UTF-8   
+ [7] LC_PAPER=de_DE.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=de_DE.UTF-8 LC_IDENTIFICATION=C       
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] reshape2_1.4.4    caret_6.0-92      lattice_0.20-45   progress_1.2.2   
- [5] fitsham_0.1.0     simsham_0.1.0     bestsubset_1.0.10 batchtools_0.9.15
- [9] devtools_2.4.3    usethis_2.1.6     forcats_0.5.1     stringr_1.4.0    
-[13] dplyr_1.0.9       purrr_0.3.4       readr_2.1.2       tidyr_1.2.0      
-[17] tidyverse_1.3.1   tibble_3.1.7      glmnet_4.1-4      Matrix_1.4-1     
-[21] ggpubr_0.4.0      ggplot2_3.3.6     crayon_1.5.1     
+ [1] caret_6.0-92      lattice_0.20-45   simsham_0.1.0     batchtools_0.9.15
+ [5] mvtnorm_1.1-3     forcats_0.5.1     stringr_1.4.0     dplyr_1.0.9      
+ [9] purrr_0.3.4       readr_2.1.2       tidyr_1.2.0       tidyverse_1.3.1  
+[13] tibble_3.1.7      bestsubset_1.0.10 ggplot2_3.3.6     glmnet_4.0-2     
+[17] Matrix_1.4-1      Rmpi_0.6-9.2      snow_0.4-4       
 
 loaded via a namespace (and not attached):
- [1] colorspace_2.0-3     ggsignif_0.6.3       ellipsis_0.3.2       class_7.3-20        
- [5] rprojroot_2.0.3      fs_1.5.2             rstudioapi_0.13      listenv_0.8.0       
- [9] remotes_2.4.2        prodlim_2019.11.13   fansi_1.0.3          lubridate_1.8.0     
-[13] xml2_1.3.3           codetools_0.2-18     splines_4.2.0        cachem_1.0.6        
-[17] pkgload_1.2.4        jsonlite_1.8.0       pROC_1.18.0          broom_0.8.0         
-[21] dbplyr_2.2.1         compiler_4.2.0       httr_1.4.3           backports_1.4.1     
-[25] assertthat_0.2.1     fastmap_1.1.0        cli_3.3.0            prettyunits_1.1.1   
-[29] tools_4.2.0          gtable_0.3.0         glue_1.6.2           rappdirs_0.3.3      
-[33] Rcpp_1.0.8.3         carData_3.0-5        cellranger_1.1.0     vctrs_0.4.1         
-[37] nlme_3.1-158         iterators_1.0.14     timeDate_3043.102    gower_1.0.0         
-[41] globals_0.15.0       ps_1.7.1             brio_1.1.3           testthat_3.1.4      
-[45] rvest_1.0.2          lifecycle_1.0.1      rstatix_0.7.0        future_1.26.1       
-[49] MASS_7.3-57          scales_1.2.0         ipred_0.9-13         hms_1.1.1           
-[53] parallel_4.2.0       memoise_2.0.1        rpart_4.1.16         stringi_1.7.6       
-[57] desc_1.4.1           foreach_1.5.2        checkmate_2.1.0      hardhat_1.1.0       
-[61] pkgbuild_1.3.1       lava_1.6.10          shape_1.4.6          rlang_1.0.2         
-[65] pkgconfig_2.0.3      recipes_0.2.0        processx_3.6.1       tidyselect_1.1.2    
-[69] parallelly_1.32.0    plyr_1.8.7           magrittr_2.0.3       R6_2.5.1            
-[73] generics_0.1.2       base64url_1.4        DBI_1.1.3            pillar_1.7.0        
-[77] haven_2.5.0          withr_2.5.0          survival_3.3-1       abind_1.4-5         
-[81] nnet_7.3-17          future.apply_1.9.0   modelr_0.1.8         car_3.1-0           
-[85] utf8_1.2.2           tzdb_0.3.0           grid_4.2.0           readxl_1.4.0        
-[89] data.table_1.14.2    callr_3.7.0          ModelMetrics_1.2.2.2 reprex_2.0.1        
-[93] digest_0.6.29        brew_1.0-7           stats4_4.2.0         munsell_0.5.0       
-[97] sessioninfo_1.2.2  
-A TCGA dataset is needed ofr the semi-synthetic data generation and 
-is stored in the subfolder ./data. It is also available on-line at 
-https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
+ [1] nlme_3.1-158         fs_1.5.2             lubridate_1.8.0     
+ [4] progress_1.2.2       httr_1.4.3           tools_4.0.2         
+ [7] backports_1.4.1      utf8_1.2.2           R6_2.5.1            
+[10] rpart_4.1.16         DBI_1.1.3            colorspace_2.0-3    
+[13] nnet_7.3-17          withr_2.5.0          tidyselect_1.1.2    
+[16] prettyunits_1.1.1    compiler_4.0.2       cli_3.3.0           
+[19] rvest_1.0.2          xml2_1.3.3           scales_1.2.0        
+[22] checkmate_2.1.0      rappdirs_0.3.3       digest_0.6.29       
+[25] pkgconfig_2.0.3      parallelly_1.32.0    dbplyr_2.2.1        
+[28] rlang_1.0.3          readxl_1.4.0         rstudioapi_0.13     
+[31] shape_1.4.6          generics_0.1.2       jsonlite_1.8.0      
+[34] ModelMetrics_1.2.2.2 magrittr_2.0.3       Rcpp_1.0.8.3        
+[37] munsell_0.5.0        fansi_1.0.3          lifecycle_1.0.1     
+[40] pROC_1.18.0          stringi_1.7.6        MASS_7.3-57         
+[43] plyr_1.8.7           recipes_0.2.0        grid_4.0.2          
+[46] listenv_0.8.0        crayon_1.5.1         haven_2.5.0         
+[49] splines_4.0.2        hms_1.1.1            pillar_1.7.0        
+[52] base64url_1.4        stats4_4.0.2         reshape2_1.4.4      
+[55] future.apply_1.9.0   codetools_0.2-18     reprex_2.0.1        
+[58] glue_1.6.2           data.table_1.14.2    modelr_0.1.8        
+[61] vctrs_0.4.1          tzdb_0.3.0           foreach_1.5.2       
+[64] cellranger_1.1.0     gtable_0.3.0         future_1.26.1       
+[67] assertthat_0.2.1     gower_1.0.0          prodlim_2019.11.13  
+[70] broom_0.8.0          class_7.3-20         survival_3.3-1      
+[73] timeDate_3043.102    iterators_1.0.14     hardhat_1.1.0       
+[76] lava_1.6.10          globals_0.15.1       ellipsis_0.3.2      
+[79] brew_1.0-7           ipred_0.9-13
