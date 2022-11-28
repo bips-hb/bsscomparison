@@ -1,3 +1,4 @@
+#' The Simulation Wrapper for Batchtools
 simulator_wrapper <-
   function(data, job, n, p, s, dimensionality, corr_type, rho, beta_type, snr, ...) {
 

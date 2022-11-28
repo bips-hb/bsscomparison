@@ -1,5 +1,10 @@
+#' Here, we apply the methods only to a few datasets, 
+#' i.e., high/low dimensional with a block structure 
+#' where the true covariates are either all in the same block 
+#' or in different blocks
+
 # in case one wants to run only a few simulations
-parameter_setting_for_testing <- FALSE
+parameter_setting_for_testing <- TRUE
 
 if (parameter_setting_for_testing) { 
   
@@ -30,7 +35,6 @@ if (parameter_setting_for_testing) {
     dimensionality = c("low", "high")
   )
   
-  
   # signal to noise
   SNR <- c(.05, .09, .14, .25, .42, .71, 1.22, 2.07, 3.52, 6.00)
   
@@ -44,19 +48,6 @@ if (parameter_setting_for_testing) {
   )
   
 }
-
-# all parameters for the independent case
-# temp_param <- dplyr::as_tibble(
-#   expand.grid(
-#     corr_type = c("independent"),
-#     rho = c(0),
-#     beta_type = c("first"),
-#     snr = SNR
-#   )
-# )
-
-# combine the two
-#sim_param <- dplyr::bind_rows(sim_param, temp_param)
 
 # combine it with the dimension parameters 
 sim_param <- merge(dimension_param, sim_param)

@@ -2,16 +2,31 @@ library(batchtools)
 library(dplyr)
 library(readr)
 library(simsham)
-library(bestsubset)
 library(glmnet)
 library(caret)
+
+# when TRUE, runs forward stepwise (FSS) as well
+use_bestsubset_package <- FALSE
+
+if (use_bestsubset_package) { 
+  library(bestsubset)
+}
+
+# Run an example for debugging
+run_example <- TRUE
+
+### Setting up the repository 
+start_from_scratch <- TRUE # if true, removes all repository and creates a new one
 
 options(batchtools.verbose = TRUE)
 options(stringsAsFactors = FALSE)
 
 ### packages and files to load
-packages = c("dplyr", "readr", "simsham", "bestsubset", "glmnet", "caret")
+packages = c("dplyr", "readr", "simsham", "glmnet", "caret")
 source = c("problems.R", "process-results.R", "algorithms.R", "parameter-settings.R")
+if (use_bestsubset_package) { 
+  packages <- c(packages, "bestsubset") 
+}
 
 ### number of replications for each parameter setting
 if (run_example) { 
@@ -20,10 +35,7 @@ if (run_example) {
   repls <- 100
 }
 
-### Setting up the repository 
-start_from_scratch <- TRUE # if true, removes all repository and creates a new one
-
-reg_name <- "bscomparison"
+reg_name <- "informationcriterion"
 reg_dir <- sprintf("%s/registries/%s", getwd(), reg_name)
 
 if (start_from_scratch) { 
@@ -38,12 +50,10 @@ if (start_from_scratch) {
 addProblem(name = "sim_data", fun = simulator_wrapper, seed = 1) 
 
 ### add algorithms 
-addAlgorithm(name = "fs", fun = fs_wrapper) 
-addAlgorithm(name = "enet", fun = enet_wrapper) 
-if (run_BSS) { 
-  addAlgorithm(name = "bs", fun = bs_wrapper) 
+if (use_bestsubset_package) { 
+  addAlgorithm(name = "fs", fun = fs_wrapper) 
 }
-
+addAlgorithm(name = "enet", fun = enet_wrapper) 
 
 ### add the experiments
 
@@ -51,17 +61,12 @@ if (run_BSS) {
 prob_design <- list(sim_data = sim_param)
 
 # parameters for the methods
-if (run_BSS) { 
-  algo_design <- list(
-    bs = expand.grid(k = 15),
-    fs = expand.grid(k = 15), 
-    enet = expand.grid(alpha = seq(.1, 1, by = .1))
-  )
-} else { 
-  algo_design <- list(
-    fs = expand.grid(k = 15), 
-    enet = expand.grid(alpha = seq(.1, 1, by = .1))
-  ) 
+algo_design <- list(
+  enet = expand.grid(alpha = seq(.1, 1, by = .1))
+)
+
+if (use_bestsubset_package) { 
+  algo_design$fs <- expand.grid(k = 15)  
 }
 
 addExperiments(prob_design, algo_design, repls = repls)

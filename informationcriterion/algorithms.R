@@ -13,32 +13,13 @@ fs_wrapper <- function(data, job, instance, ...) {
   res
 }
 
-bs_wrapper <- function(data, job, instance, ...) { 
-  # extract the parameters from job 
-  pp <- job$prob.pars 
-  ap <- job$algo.pars  
-  
-  range <- 1:ap$k
-  fit <- bestsubset::bs(instance$X, instance$y, k = range, intercept = FALSE, 
-                        time.limit = 5*60)
-  # return list. each entry is for a different k, e.g., 0:20 
-  # each entry contains the variables that were select for that 
-  # k 
-  output <- apply(fit$beta, 2, function(x) which(x != 0))
-  
-  res <- process_results(output, pp$p, method = "bs", alpha = NULL, pp$beta_type, pp$s)
-  res$job.id <- job$job.id
-  res$finished[1:length(fit$status)] <- fit$status
-  res
-}
-
 enet_wrapper <- function(data, job, instance, ...) { 
   # extract the parameters from job 
   pp <- job$prob.pars 
   ap <- job$algo.pars  
   
   fit <- glmnet::glmnet(instance$X, instance$y, alpha = ap$alpha)
- 
+  
   # determine the active sets for all lambdas
   active_sets <- fit$beta != 0
   

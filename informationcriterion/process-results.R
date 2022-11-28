@@ -44,13 +44,6 @@ process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'fi
       compute_performance_measures(selected_predictors, j)
     })
   }
-  if (method == 'bs' || method == "enet_bs_hybrid") { 
-    k <- length(res)
-    sapply(1:k, function(j) { 
-      selected_predictors <- res[[j]] # all predictors up to j
-      compute_performance_measures(selected_predictors, j)
-    })
-  }
   
   if (method == 'enet') { 
     performance$alpha <- alpha 
