@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+*.DS_Store*
+*.Rproj
+results/*
+!results/.gitignore
+bestF1scores*
+best_f1*
