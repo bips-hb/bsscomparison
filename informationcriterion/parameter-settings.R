@@ -9,7 +9,7 @@ parameter_setting_for_testing <- TRUE
 if (parameter_setting_for_testing) { 
   
   dimension_param <- dplyr::tibble(
-    n = c(10000),
+    n = c(100),
     p = c(20),
     s = c(10),
     dimensionality = c("low")
