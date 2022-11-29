@@ -1,4 +1,4 @@
-process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'first', s = 10) { 
+process_results <- function(res, p, method = 'fs', alpha = NULL, relax = FALSE, beta_type = 'first', s = 10) { 
   
   if (method == 'enet' & is.null(alpha)) { 
     stop("alpha should be given when method is enet") 
@@ -25,7 +25,10 @@ process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'fi
     TP = NA, 
     TN = NA,
     FP = NA,
-    FN = NA
+    FN = NA, 
+    BIC  = res$ic$BIC,
+    AIC  = res$ic$AIC,
+    AICc = res$ic$AICc
   )
   
   compute_performance_measures <- function(selected_predictors, index) { 
@@ -47,6 +50,7 @@ process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'fi
   
   if (method == 'enet') { 
     performance$alpha <- alpha 
+    performance$relax <- relax
     
     sapply(1:p, function(j) { 
       selected_predictors <- res$id[1:j] # all predictors up to j
@@ -57,6 +61,8 @@ process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'fi
   performance %>% dplyr::mutate(
     recall = TP / (TP + FN),
     precision = TP / (TP + FP), 
-    F1 = 2*(precision*recall)/(precision + recall)
+    F1 = 2*(precision*recall)/(precision + recall), 
+    F2 = (1 + 2^2)*(precision*recall)/(2^2*precision + recall), 
+    MCC = (TP*TN - FP*FN) / sqrt((TP + FP)*(TP + FN)*(TN + FP)*(TN + FN))
   )
 }

@@ -4,8 +4,18 @@ fs_wrapper <- function(data, job, instance, ...) {
   ap <- job$algo.pars  
   
   res <- bestsubset::fs(instance$X, instance$y, maxsteps = ap$k, intercept = FALSE)
+  
+  # determine the models when selected on the basis of the AIC, BIC and AICc
+  models_ic <- compute_information_criteria(res, instance$X, instance$y)
+  
+  ic <- data.frame(p = 1:pp$p, rank = 1:pp$p) %>% 
+    mutate(BIC  = models_ic$BIC[rank], 
+           AIC  = models_ic$AIC[rank],
+           AICc = models_ic$AICc[rank]) %>% arrange(rank)
+  
   output <- list(
-    id = res$action
+    id = res$action, 
+    ic = ic
   )
   
   res <- process_results(output, pp$p, method = "fs", alpha = NULL, pp$beta_type, pp$s)
@@ -18,7 +28,10 @@ enet_wrapper <- function(data, job, instance, ...) {
   pp <- job$prob.pars 
   ap <- job$algo.pars  
   
-  fit <- glmnet::glmnet(instance$X, instance$y, alpha = ap$alpha)
+  fit <- glmnet::glmnet(instance$X, instance$y, alpha = ap$alpha, relax = ap$relax)
+  
+  # determine the models when selected on the basis of the AIC, BIC and AICc
+  models_ic <- compute_information_criteria(fit, instance$X, instance$y)
   
   # determine the active sets for all lambdas
   active_sets <- fit$beta != 0
@@ -31,6 +44,11 @@ enet_wrapper <- function(data, job, instance, ...) {
   # found for that particular variable, we set it to NA, so that we
   # can later change it to 0
   rank[rank == 0] <- NA
+  
+  ic <- data.frame(p = 1:pp$p, rank = rank) %>% 
+    mutate(BIC  = models_ic$BIC[rank], 
+           AIC  = models_ic$AIC[rank],
+           AICc = models_ic$AICc[rank]) %>% arrange(rank)
   
   # the highest lambdas for which the variables appear for the first time
   lambda <- fit$lambda[rank]
@@ -46,10 +64,11 @@ enet_wrapper <- function(data, job, instance, ...) {
     id = id, 
     rank = rank,
     lambda = lambda, 
-    alpha = ap$alpha
+    alpha = ap$alpha, 
+    ic = ic
   )
   
-  res <- process_results(output, pp$p, method = "enet", alpha = ap$alpha, pp$beta_type, pp$s)
+  res <- process_results(output, pp$p, method = "enet", alpha = ap$alpha, pp$relax, pp$beta_type, pp$s)
   res$job.id <- job$job.id
   res
 }

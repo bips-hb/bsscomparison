@@ -6,7 +6,7 @@ library(glmnet)
 library(caret)
 
 # when TRUE, runs forward stepwise (FSS) as well
-use_bestsubset_package <- FALSE
+use_bestsubset_package <- TRUE
 
 if (use_bestsubset_package) { 
   library(bestsubset)
@@ -23,7 +23,7 @@ options(stringsAsFactors = FALSE)
 
 ### packages and files to load
 packages = c("dplyr", "readr", "simsham", "glmnet", "caret")
-source = c("problems.R", "process-results.R", "algorithms.R", "parameter-settings.R")
+source = c("problems.R", "process-results.R", "exec/compute-information-criteria.R", "algorithms.R", "parameter-settings.R")
 if (use_bestsubset_package) { 
   packages <- c(packages, "bestsubset") 
 }
@@ -62,7 +62,8 @@ prob_design <- list(sim_data = sim_param)
 
 # parameters for the methods
 algo_design <- list(
-  enet = expand.grid(alpha = seq(.1, 1, by = .1))
+  enet = expand.grid(alpha = seq(.1, 1, by = .1), 
+                     relax = c(TRUE, FALSE))
 )
 
 if (use_bestsubset_package) { 
