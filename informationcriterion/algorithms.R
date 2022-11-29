@@ -28,7 +28,10 @@ enet_wrapper <- function(data, job, instance, ...) {
   pp <- job$prob.pars 
   ap <- job$algo.pars  
   
-  fit <- glmnet::glmnet(instance$X, instance$y, alpha = ap$alpha, relax = ap$relax)
+  a <- job$algo.pars$alpha
+  r <- as.logical(job$algo.pars$rescaled)
+  
+  fit <- glmnet::glmnet(instance$X, instance$y, alpha = a, relax = r)
   
   # determine the models when selected on the basis of the AIC, BIC and AICc
   models_ic <- compute_information_criteria(fit, instance$X, instance$y)

@@ -37,7 +37,8 @@ plot_results <- function(results, n = 1000, p = 100, s = 10, dimensionality = "l
                          corr_type = "independent", rho = 0, beta_type = "first", 
                          snr = 0.05, 
                          title = "", 
-                         ylim = c(0, 1)) { 
+                         ylim = c(0, 1), 
+                         score = c("F1", "AIC", "BIC", "AICc")) { 
   
   
   
@@ -58,12 +59,12 @@ plot_results <- function(results, n = 1000, p = 100, s = 10, dimensionality = "l
   ) 
   
   p <- ggplot(results) +
-    geom_boxplot(aes(x = algorithm_label, y = F1), fill = "grey") +
-    scale_x_discrete(limits = c("hybrid", "e-net", "lasso", "forward stepwise", "best subset")) + 
-    scale_y_continuous(limits = ylim, expand = c(0, 0)) +
+    geom_boxplot(aes(x = algorithm_label, y = score), fill = "grey") +
+    scale_x_discrete(limits = c("e-net", "lasso", "forward stepwise")) + 
+    #scale_y_continuous(limits = ylim, expand = c(0, 0)) +
     coord_flip() +
     xlab("") +
-    ylab(TeX("Best $F_1$ score")) +
+    ylab(sprintf("Best %s score", score[1])) +
     ggtitle(title) +
     theme_bw() +
     theme(legend.position = "none", 

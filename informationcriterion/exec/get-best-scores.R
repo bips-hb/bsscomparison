@@ -23,7 +23,7 @@ summary <- res %>% rowwise() %>%
   mutate(score = get_extreme(result$F1, type = "max")) 
 
 summary <- summary %>% select(-result)
-readr::write_tsv(summary, "results/best-f1.tsv")
+readr::write_tsv(summary, "results/best-F1.tsv")
 
 # get the best BIC-score 
 summary <- res %>% rowwise() %>% 
@@ -40,7 +40,7 @@ summary <- res %>% rowwise() %>%
 summary <- summary %>% select(-result)
 readr::write_tsv(summary, "results/best-AIC.tsv")
 
-# get the best AIC-score 
+# get the best AICc-score 
 summary <- res %>% rowwise() %>% 
   mutate(score = get_extreme(result$AICc, type = "min")) 
 

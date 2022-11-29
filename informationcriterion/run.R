@@ -30,7 +30,7 @@ if (use_bestsubset_package) {
 
 ### number of replications for each parameter setting
 if (run_example) { 
-  repls <- 1 
+  repls <- 3 
 } else { 
   repls <- 100
 }
@@ -63,7 +63,7 @@ prob_design <- list(sim_data = sim_param)
 # parameters for the methods
 algo_design <- list(
   enet = expand.grid(alpha = seq(.1, 1, by = .1), 
-                     relax = c(TRUE, FALSE))
+                     rescaled = c(0))
 )
 
 if (use_bestsubset_package) { 
@@ -98,7 +98,7 @@ tab = ijoin(pars, res)
 readr::write_rds(tab, "results/raw-results.rds", compress = "gz")
 
 # post-process the results
-source("exec/get-best-f1-scores.R")
+source("exec/get-best-scores.R")
 
 # create the plots
 source("create-plots.R")
