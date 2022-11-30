@@ -4,15 +4,15 @@
 #' or in different blocks
 
 # in case one wants to run only a few simulations
-parameter_setting_for_testing <- FALSE
+parameter_setting_for_testing <- TRUE
 
 if (parameter_setting_for_testing) { 
   
   dimension_param <- dplyr::tibble(
-    n = c(1000),
+    n = c(100, 1000),
     p = c(100),
     s = c(10),
-    dimensionality = c("low")
+    dimensionality = c("low", "medium")
   )
   
   SNR <- c(.05)

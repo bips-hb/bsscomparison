@@ -13,7 +13,7 @@ if (use_bestsubset_package) {
 }
 
 # Run an example for debugging
-run_example <- FALSE
+run_example <- TRUE
 
 ### Setting up the repository 
 start_from_scratch <- TRUE # if true, removes all repository and creates a new one
