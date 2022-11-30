@@ -4,13 +4,13 @@
 #' or in different blocks
 
 # in case one wants to run only a few simulations
-parameter_setting_for_testing <- TRUE
+parameter_setting_for_testing <- FALSE
 
 if (parameter_setting_for_testing) { 
   
   dimension_param <- dplyr::tibble(
-    n = c(100),
-    p = c(20),
+    n = c(1000),
+    p = c(100),
     s = c(10),
     dimensionality = c("low")
   )
