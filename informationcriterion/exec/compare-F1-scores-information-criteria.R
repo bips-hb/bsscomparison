@@ -1,6 +1,7 @@
 library(dplyr)
 library(readr)
 library(tidyr)
+library(ggplot2)
 
 res <- readr::read_rds("results/raw-results.rds")
 
