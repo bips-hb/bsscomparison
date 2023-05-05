@@ -63,7 +63,7 @@ CORR_TYPE <- "block"
 SNR <- c(0.05, 0.25, 0.42, 1.22, 2.07, 6)
 
 # set the correlation between variables
-RHO <- 0.7
+RHO <- c(0.35, 0.7)
 
 # set the position of the non-zeros ("adjacent" or "spread")
 BETA_POSITION <- "adjacent"
