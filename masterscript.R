@@ -54,6 +54,10 @@
 #'     
 #' V. Generate plots for synthetic and a semi-synthetic data for different time
 #'     limits when applying the Gurobi solver
+#'     
+#' VI.: Simulation for Selection Criteria
+#' 
+#' VII.: Plots for Selection Criteria
 #'
 #' #############################################################################
 #'                              0. SET-UP
@@ -345,3 +349,62 @@ cat(sprintf("DONE generating plots..."))
 
 cat(sprintf("\n \nEnd of masterscript.R"))
 
+
+
+#' #############################################################################
+#' #############################################################################
+#'                      VI.: Simulation for Selection Criteria
+#' #############################################################################
+#' #############################################################################
+
+#' This part will run the simulation for different selection criteria (BIC, 
+#' mBIC, HQC and stability selection). 
+#' It is important to have Gurobi installed to run BSS. If you want to run the
+#' simulation without BSS you have to comment the BSS parts out in the following
+#' tow scripts
+#' 
+#' Further, you have to set the setting in these files. The default is 
+#'    - Block structered correlation
+#'    - correlation = 0.7
+#'    - consecutive (adjacent) non-zero coefficients
+#'    - high-dimensional problem (n=100, p=1000, s=10)
+#' 
+#' run stability selection
+source("exec/stabilitySelectionSimulation.R")
+#' run BIC, mBIC2 and HQC
+source("exec/selectionCriteriaSimulation.R")
+#' plots are saved in subfolder ./plots
+
+
+#' #############################################################################
+#' #############################################################################
+#'                     VII.: Plots for Selection Criteria
+#' #############################################################################
+#' #############################################################################
+
+#' Scripts for gerating the plots of the selection criteria based on the 
+#' simulation results of the previous section
+#' 
+source("exec/generate-plots-BSS-time-limits.R")
+
+cat(sprintf("DONE generating plots..."))
+
+cat(sprintf("\n \nEnd of masterscript.R"))
+
+
+source("exec/ask-synthetic-study.R")
+
+if (run_synthetic_study) { 
+  # store the current working directory 
+  current_wd <- getwd() 
+  
+  cat(sprintf("temporarily shifts working directory to folder 'bscomparison/'...\n"))
+  setwd(paste(current_wd, "/bscomparison", sep = ""))
+  
+  cat(sprintf("Starts synthetic simulation study...\n"))
+  source("run.R") 
+  cat(sprintf("DONE synthetic simulation study...\n"))
+  cat(sprintf("Shifts back to original working directory\n"))
+  setwd(current_wd)
+  cat("Result of the synthetic simulation study can be found in the folder 'bscomparison/'\n")
+}
