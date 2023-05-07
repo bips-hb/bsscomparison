@@ -391,4 +391,6 @@ source("exec/selectionCriteriaSimulation.R")
 #'    - consecutive (adjacent) non-zero coefficients
 #'    - high-dimensional problem (n=100, p=1000, s=10)
 #' 
+#' Cahnge in the scripot for different settings
+#' 
 source("exec/generate-plots-selectionCriteria.R")
