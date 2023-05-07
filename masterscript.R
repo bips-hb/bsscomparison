@@ -365,7 +365,7 @@ cat(sprintf("\n \nEnd of masterscript.R"))
 #' 
 #' Further, you have to set the setting in these files. The default is 
 #'    - Block structered correlation
-#'    - correlation = 0.7
+#'    - correlation = c(0.35, 0.7)
 #'    - consecutive (adjacent) non-zero coefficients
 #'    - high-dimensional problem (n=100, p=1000, s=10)
 #' 
@@ -382,29 +382,13 @@ source("exec/selectionCriteriaSimulation.R")
 #' #############################################################################
 #' #############################################################################
 
-#' Scripts for gerating the plots of the selection criteria based on the 
+#' Script for generating the plots of the selection criteria based on the 
 #' simulation results of the previous section
 #' 
-source("exec/generate-plots-BSS-time-limits.R")
-
-cat(sprintf("DONE generating plots..."))
-
-cat(sprintf("\n \nEnd of masterscript.R"))
-
-
-source("exec/ask-synthetic-study.R")
-
-if (run_synthetic_study) { 
-  # store the current working directory 
-  current_wd <- getwd() 
-  
-  cat(sprintf("temporarily shifts working directory to folder 'bscomparison/'...\n"))
-  setwd(paste(current_wd, "/bscomparison", sep = ""))
-  
-  cat(sprintf("Starts synthetic simulation study...\n"))
-  source("run.R") 
-  cat(sprintf("DONE synthetic simulation study...\n"))
-  cat(sprintf("Shifts back to original working directory\n"))
-  setwd(current_wd)
-  cat("Result of the synthetic simulation study can be found in the folder 'bscomparison/'\n")
-}
+#' Default is
+#'    - Block structered correlation
+#'    - correlation = 0.7
+#'    - consecutive (adjacent) non-zero coefficients
+#'    - high-dimensional problem (n=100, p=1000, s=10)
+#' 
+source("exec/generate-plots-selectionCriteria.R")
