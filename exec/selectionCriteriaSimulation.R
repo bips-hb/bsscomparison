@@ -116,7 +116,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
       Loop_Snr <- lapply(SNR, function(snr){
         Loop_Sim_n <- parLapply(cl, 1:Sim_n, function(sim_n){
 
-          
+          # define dimension 
           if(N==1000){
             Dim <- "low"
             n <- 1000
@@ -127,14 +127,14 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             p <- 1000
           }
           
-          
+          # define corr structure
           if(corr_type == "toeplitz"){
             Sigma <- Rho^toeplitz(0:(P-1))
           }else if(corr_type == "block"){
             Sigma <- block_builder(P, Rho, s)
           }
           
-          
+          # define non-zero positions
           beta <- rep(0, P)
           if(beta_position == "spread"){
             beta[seq(1,P, P/s)] <- 1
@@ -142,15 +142,18 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             beta[1:s] <- 1
           }
           
+          # get indices of non-zeros
           non_zero_indices <- which(beta != 0)
           
+          # variance of error term
           sigma <- sqrt( (t(beta) %*% Sigma %*% beta) / snr )
           
-          
+          # error
           seed <- round(sim_n+snr*1000000)
           try(set.seed(seed))
           e <- rnorm(n) %*% sigma 
           
+          # simulate covariates
           seed <- round(sim_n+Rho*1000)
           X <- mvtnorm::rmvnorm(n = n, mean = rep(0, ncol(Sigma)), sigma = Sigma)
           Y <- X %*% beta + e 
@@ -162,7 +165,9 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           BSS <- bs(x=X, y=Y, intercept=FALSE,
                     time.limit=gurobiTime,
                     k=1:max.k, verbose=F)
-
+          
+          # loop over subsetsizes for results like true positives (TP), false
+          # positves (FP), F1 etc
           BSS_results <-
             lapply(1:max.k, function(x){
               RSS <- sum((Y - X %*% BSS$beta[,x])^2)
@@ -209,7 +214,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           # begin FSS
           FSS <- fs(x=X, y=Y, maxsteps= max.k, intercept=FALSE, verbose=F)
           
-          
+          # loop over subsetsizes for results like true positives (TP), false
+          # positves (FP), F1 etc
           FSS_results <- 
             lapply(1:max.k, function(x){
               RSS <- sum((Y - X %*% FSS$beta[,x+1])^2)
@@ -254,6 +260,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           ### begin Enet
           
+          # loop over all alphas
           Enet_results <- lapply(Alpha, function(alpha){
         
             fit_enet <- glmnet(X, Y, alpha = alpha, nlambda = 1000)
@@ -267,7 +274,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
               sum(non_zero_diffs < 0)
             }), 0)
             
-            
+            # loop over lambdas for results like true positives (TP), false
+            # positves (FP), F1 etc
             enet_alpha <- lapply(2:ncol(fit_enet$beta), function(x){
               
               Enet_betas_indices <- which(abs(fit_enet$beta[,x]) > 0.000001)
@@ -368,6 +376,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
         
         results <- Loop_Sim_n
         
+        # rename methods
         results$method[results$method == "Enet 1"] <- 
           "Lasso"
         
@@ -386,7 +395,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                                      "FSS",
                                      "BSS"))
         
-        
+        # calculate BIC, mBIC2 and HQC
         results_BIC <- results %>% filter(k <= 50) %>%
           group_by(snr, rho, method, alpha, sim.n) %>%
           mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_unbiased/n)))) %>%
@@ -442,6 +451,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
     }else if(N==100){
       Dim <- "high"
     }
+    
+    # save results
     
     saveRDS(Loop_Rho,
             paste(pfs, "Results_Selection_Criteria_",

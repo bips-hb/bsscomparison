@@ -2,9 +2,10 @@
 
 library(tidyverse)
 
-corr_struc <- "toeplitz"
+# setting setting to plot:
+corr_struc <- "block"
 Dim <- "high"
-beta_position <- "spread"
+beta_position <- "adjacent"
 rho <- 0.7
 
 sc_data <- 
@@ -34,6 +35,8 @@ results <- bind_rows(
 results$beta_position[results$beta_position == "spread"] <- "equally spaced"
 results$beta_position[results$beta_position == "adjacent"] <- "consecutive"
 
+# Generarte pltos for F1-score, Recall and Precision for BIC, mBIC2, HQC and
+# Stability Selection
 ggplot(results %>% filter(rho == rho),
        aes(x=as.factor(snr), y=F1, fill=method)) +
   geom_boxplot(outlier.size = 0.5) +

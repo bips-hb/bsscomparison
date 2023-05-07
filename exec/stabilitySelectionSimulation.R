@@ -130,13 +130,14 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
         Loop_Sim_n <- parLapply(cl, 1:Sim_n, function(sim_n){
           
           
+          # define corr structure
           if(corr_type == "toeplitz"){
             Sigma <- Rho^toeplitz(0:(P-1))
           }else if(corr_type == "block"){
             Sigma <- block_builder(P, Rho, s)
           }
           
-          
+          # define non-zero positions
           beta <- rep(0, P)
           if(beta_position == "spread"){
             beta[seq(1,P, P/s)] <- 1
@@ -145,30 +146,36 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           }
           
           
+          # get indices of non-zeros
           non_zero_indices <- which(beta != 0)
           
+          # variance of error term
           sigma <- sqrt( (t(beta) %*% Sigma %*% beta) / snr )
           
-          
-          
-          n <- N 
+          # error
           seed <- round(sim_n+snr*1000000)
           try(set.seed(seed))
           e <- rnorm(n) %*% sigma 
           
+          # simulate covariates
           seed <- round(sim_n+Rho*1000)
           X <- mvtnorm::rmvnorm(n = n, mean = rep(0, ncol(Sigma)), sigma = Sigma)
           Y <- X %*% beta + e 
           Y <- scale(Y, scale = FALSE)
           
+          # define max subset size of best subset selection based on
+          # per-family error rate and stability thresohold (cutoff)
+          # see paper ofMeinshausen & Bühlmann (2010)
           q <- ceiling(sqrt(pfer*(2*cutoff-1)*P)) 
           
           
           
           # Run Stabiliyt selection on BSS
-            
+            # loop over subsampling process
           Loop_BSS_B <- lapply(1:B, function(b){
             
+            # number of samples in the subsamples based onMeinshausen & 
+            # Bühlmann (2010)
             set.seed(b)
             n_sample <- sample(1:N, N/2)
             
@@ -185,6 +192,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           })
           
           prob_selction_BSS <- Reduce("+", Loop_BSS_B)/B
+          
+          # get "stable" coefficients
           estimated_non_zeros_BSS <- 
             which(apply(prob_selction_BSS, 1, function(i){any(i >= cutoff)}))
           
@@ -231,8 +240,11 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           
           # FSS
+          # loop over subsampling process
           Loop_FSS_B <- lapply(1:B, function(b){
             
+            # number of samples in the subsamples based onMeinshausen & 
+            # Bühlmann (2010)
             set.seed(b)
             n_sample <- sample(1:N, N/2)
             
@@ -254,6 +266,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           })
           
           prob_selction_FSS <- Reduce("+", Loop_FSS_B)/B
+          
+          # get "stable" coefficients
           estimated_non_zeros_FSS <- 
             which(apply(prob_selction_FSS, 1, function(i){any(i >= cutoff)}))
           
@@ -298,7 +312,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           
           ### begin Lasso/Enet
-          
+          # loop over alphas
           Enet_results <- lapply(Alpha, function(i){
             
             Enet <- glmnet(x=X, y=Y, alpha = i, 
@@ -316,8 +330,11 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             
             Enet_lambdas <- Enet$lambda[lambda_indices]
             
+            # loop over subsampling process
             Loop_Enet_B <- lapply(1:B, function(b){
               
+              # number of samples in the subsamples based onMeinshausen & 
+              # Bühlmann (2010)
               set.seed(b)
               n_sample <- sample(1:N, N/2)
               
@@ -332,6 +349,8 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             })
             
             prob_selction_Enet <- Reduce("+", Loop_Enet_B)/B
+            
+            # get "stable" coefficients
             estimated_non_zeros_Enet <- 
               which(apply(prob_selction_Enet, 1, function(i){any(i >= cutoff)}))
             
@@ -405,6 +424,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
       Dim <- "high"
     }
     
+    # save results
     saveRDS(Loop_Rho,
             paste(pfs, "Results_Stability_Selection_",
                   corr_type, "_",
