@@ -184,7 +184,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 alpha=NA,
                 k=x,
                 RSS = RSS,
-                RSS_unbiased = RSS,
+                RSS_selected_betas = RSS,
                 TP,
                 FP,
                 FN,
@@ -200,7 +200,9 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 beta_position = beta_position,
                 beta_switch = NA,
                 status = BSS$status[x],
-                sim.n = sim_n
+                sim.n = sim_n,
+                cutoff = NA,
+                PFER = NA
               )
 
             })
@@ -231,7 +233,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 alpha=NA,
                 k=x,
                 RSS = RSS,
-                RSS_unbiased = RSS,
+                RSS_selected_betas = RSS,
                 TP,
                 FP,
                 FN,
@@ -246,7 +248,9 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 rho = Rho,
                 beta_position = beta_position,
                 status = NA,
-                sim.n = sim_n
+                sim.n = sim_n,
+                cutoff = NA,
+                PFER = NA
               )
               
             })
@@ -291,13 +295,18 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
               
               
               if(length(Enet_betas_indices) < n){
-                betas_unbiased <-  
+                # calculate regression coefficients for selected
+                # (see also "Least squares after model selection in high-
+                # dimensional sparse models" by Belloni & Chernozhukov (2013) )
+                
+                betas_selected <-  
                   solve(t(X[, Enet_betas_indices]) %*% 
                           X[, Enet_betas_indices]) %*% 
                   t(X[, Enet_betas_indices]) %*% 
                   Y
                 
-                RSS_unbiased <- sum((Y - X[, Enet_betas_indices] %*% betas_unbiased)^2)
+                # RSS for selected variables
+                RSS_selected_betas <- sum((Y - X[, Enet_betas_indices] %*% betas_selected)^2)
                 
                 if(alpha == 1){
                   
@@ -320,20 +329,16 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 
                 
               }else{
-                RSS_unbiased <- NA
+                RSS_selected_betas <- NA
                 df <- NA
               }
               
               tibble(
                 method = paste("Enet ", alpha, sep=""),
-                # method="BSS",
-                
                 alpha=alpha,
-                # alpha=NA,
-                
                 k=sum(abs(fit_enet$beta[,x]) > 0.0000001),
                 RSS = RSS,
-                RSS_unbiased = RSS_unbiased,
+                RSS_selected_betas = RSS_selected_betas,
                 df = df,
                 TP,
                 FP,
@@ -349,7 +354,9 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
                 rho = Rho,
                 beta_position = beta_position,
                 status = NA,
-                sim.n = sim_n
+                sim.n = sim_n,
+                cutoff = NA,
+                PFER = NA
               )
               
               
@@ -398,37 +405,37 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
         # calculate BIC, mBIC2 and HQC
         results_BIC <- results %>% filter(k <= 50) %>%
           group_by(snr, rho, method, alpha, sim.n) %>%
-          mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_unbiased/n)))) %>%
+          mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
           mutate(BIC = -2 * ll + log(n) * (k+1)) %>%
           mutate(min_BIC = min(BIC)) %>%
           ungroup() %>%
           filter(min_BIC == BIC) %>%
           mutate(criterion = "BIC") %>%
-          select(method, alpha, RSS, RSS_unbiased,  ll, k, TP, FP, FN, F1, 
+          select(method, alpha, RSS,  RSS_selected_betas, ll, k, TP, FP, FN, F1, 
                  Precision, Accuracy, n, p, s, snr, rho, sim.n, beta_position,
                  corr_type, criterion)
         
         results_HQC <- results %>% filter(k <= 50) %>%
           group_by(snr, rho, method, alpha, sim.n) %>%
-          mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_unbiased/n)))) %>%
+          mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
           mutate(HQC = -2 * ll + 2 * (k)*log(log(n))) %>%
           mutate(min_HQC = min(HQC)) %>%
           ungroup() %>%
           filter(min_HQC == HQC) %>%
           mutate(criterion = "HQC") %>%
-          select(method, alpha, RSS, RSS_unbiased,  ll, k, TP, FP, FN, F1, 
+          select(method, alpha, RSS,  RSS_selected_betas, ll, k, TP, FP, FN, F1, 
                  Precision, Accuracy, n, p, s, snr, rho, sim.n, beta_position,
                  corr_type, criterion)
         
         results_mBIC2 <- results %>% filter(k <= 50) %>%
           group_by(snr, rho, method, sim.n) %>%
-          mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + log(RSS_unbiased/n)))) %>%
+          mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + log(RSS_selected_betas/n)))) %>%
           mutate(mBIC2 = -2 * ll + (k+1)*(log(n) + 2*log(p) - 2*log(4)) - 2*log(factorial(k+1))) %>%
           mutate(min_mBIC2 = min(mBIC2)) %>%
           ungroup() %>%
           filter(min_mBIC2 == mBIC2) %>%
           mutate(criterion = "mBIC2") %>%
-          select(method, alpha, RSS, RSS_unbiased, ll, k, TP, FP, FN, F1, 
+          select(method, alpha, RSS, RSS_selected_betas, ll, k, TP, FP, FN, F1, 
                  Precision, Accuracy, n, p, s, snr, rho, sim.n, beta_position,
                  corr_type, criterion)
         

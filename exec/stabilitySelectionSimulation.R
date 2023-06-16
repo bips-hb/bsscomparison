@@ -145,6 +145,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             beta[1:s] <- 1
           }
           
+          n <- N
           
           # get indices of non-zeros
           non_zero_indices <- which(beta != 0)
@@ -165,7 +166,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           # define max subset size of best subset selection based on
           # per-family error rate and stability thresohold (cutoff)
-          # see paper ofMeinshausen & Bühlmann (2010)
+          # see paper of Meinshausen & Bühlmann (2010)
           q <- ceiling(sqrt(pfer*(2*cutoff-1)*P)) 
           
           
@@ -177,7 +178,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             # number of samples in the subsamples based onMeinshausen & 
             # Bühlmann (2010)
             set.seed(b)
-            n_sample <- sample(1:N, N/2)
+            n_sample <- sample(1:n, n/2)
             
             
             BSS_b <- 
@@ -211,9 +212,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             alpha=NA,
             lambda = NA,
             RSS = NA,
-            RSS_corrected = NA,
-            est_det_IFIM = NA,
-            est_det_FIM = NA,
+            RSS_selected_betas = NA,
             k=length(estimated_non_zeros_BSS),
             TP,
             FP,
@@ -246,7 +245,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             # number of samples in the subsamples based onMeinshausen & 
             # Bühlmann (2010)
             set.seed(b)
-            n_sample <- sample(1:N, N/2)
+            n_sample <- sample(1:n, n/2)
             
             FSS_b <- 
               lars::lars(x=X[n_sample,], y=Y[n_sample], 
@@ -285,9 +284,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
             alpha=NA,
             lambda = NA,
             RSS = NA,
-            RSS_corrected = NA,
-            est_det_IFIM = NA,
-            est_det_FIM = NA,
+            RSS_selected_betas = NA,
             k=length(estimated_non_zeros_FSS),
             TP,
             FP,
@@ -336,7 +333,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
               # number of samples in the subsamples based onMeinshausen & 
               # Bühlmann (2010)
               set.seed(b)
-              n_sample <- sample(1:N, N/2)
+              n_sample <- sample(1:n, n/2)
               
               Enet_b <- 
                 glmnet(x=X[n_sample,], y=Y[n_sample], alpha = i,
@@ -368,9 +365,7 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
               alpha=i,
               lambda = NA,
               RSS = NA,
-              RSS_corrected = NA,
-              est_det_IFIM = NA,
-              est_det_FIM = NA,
+              RSS_selected_betas = NA,
               k=TP+FP,
               TP,
               FP,
@@ -398,7 +393,6 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           out <- rbind(
             BSS_results,
-            #FSS_lambda_results,
             FSS_results,
             Enet_results)
           

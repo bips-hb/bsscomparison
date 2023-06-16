@@ -359,9 +359,7 @@ cat(sprintf("\n \nEnd of masterscript.R"))
 
 #' This part will run the simulation for different selection criteria (BIC, 
 #' mBIC, HQC and stability selection). 
-#' It is important to have Gurobi installed to run BSS. If you want to run the
-#' simulation without BSS you have to comment the BSS parts out in the following
-#' tow scripts
+#' It is important to have Gurobi installed to run BSS. 
 #' 
 #' Further, you have to set the setting in these files. The default is 
 #'    - Block structered correlation
