@@ -7,7 +7,8 @@ while (!answered) {
   # ask whether to run the simulation with different time limits
   time_study <- menu(title = "Do you want to download the intermediate results? Required for creating the related plots.\nYou can download the files manually under\nhttps://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip \nand safe the file in ./data", 
                      choices = c("yes", 
-                                 "no", 
+                                 "no",
+                                 "manual download",
                                  "exit"))
   
   switch(as.character(time_study), 
@@ -24,7 +25,11 @@ while (!answered) {
            answered <- TRUE
          }, 
          
-         "3" = stop_quietly(), 
+         "3" = {
+           cat("--> I have downloaded the results and saved in ./results to generate plots for medium and high dimensional settings\n")
+           create_medium_high_dimensional_plots <- TRUE
+           answered <- TRUE
+         }, 
          
          "4" = stop_quietly())
 }
