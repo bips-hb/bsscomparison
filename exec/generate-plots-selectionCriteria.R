@@ -88,3 +88,73 @@ ggplot(results %>% filter(rho == rho),
 
 ggsave(paste("./plots/Precision_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
        dpi=600, width = 21, height = 18, units = "cm")
+
+
+# generate plot for the results if for each method its best selection criteria is
+# used:
+
+# get the best criterion of each method in terms of mean F1 for each parameter setting
+criterion_mean_best_results <- 
+  results %>% 
+  group_by(method, snr, rho, criterion) %>%
+  summarise(meanF1 = mean(F1)) %>%
+  group_by(method, snr, rho) %>%
+  mutate(max_meanF1 = max(meanF1)) %>% 
+  filter(meanF1 == max_meanF1) %>%
+  distinct(method, snr, rho, .keep_all= TRUE)
+
+# filter the results for the best selection criteria
+best_criterion_results <- 
+  lapply(1:nrow(criterion_mean_best_results), function(j){
+    results %>% 
+      filter(
+        method == criterion_mean_best_results$method[j] &
+          snr == criterion_mean_best_results$snr[j] &
+          rho == criterion_mean_best_results$rho[j] &
+          criterion == criterion_mean_best_results$criterion[j])
+  })
+
+best_criterion_results <- do.call(rbind, best_criterion_results)  
+
+# rename 
+names(best_criterion_results)[c(1,11, 12)] <- 
+  c("Method", 
+    "Precision",
+    "Recall")
+
+best_criterion_results <- best_criterion_results %>% 
+  pivot_longer(c("F1",
+                 "Recall",
+                 "Precision"), 
+               names_to = 'Metric', 
+               values_to = 'Value')
+
+best_criterion_results$Metric <- 
+  factor(best_criterion_results$Metric, 
+         levels=c("F1",
+                  "Precision",
+                  "Recall"))
+
+# set NaN to 0 (e.g. Precision becomes NaN if TP and FP are both 0)
+best_criterion_results$Value[which(is.na(best_criterion_results$Value))] <- 0
+
+# generate plot
+ggplot(best_criterion_results %>%
+         filter(rho == rho,
+                Method %in% methods),
+       aes(x = as.factor(snr), y = Value, fill = Method)) + 
+  geom_boxplot() +
+  facet_wrap( ~ Metric, ncol=1) +
+  scale_fill_manual(values=c(
+    colorRampPalette(c("#FF99CC", "#B266FF"))(sum(methods %in% paste("Enet", seq(0.1,0.9,0.1)))), #Enet colors
+    "#FF3333", # Lasso color
+    "#0080FF", # FSS color
+    "#00CC00" # BSS color
+  )) + 
+  xlab("Signal-to-noise ratio") +
+  ylab("Value") + 
+  ylim(0,1)
+
+# save plot
+ggsave(paste("./plots/BestCriterion_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
+       dpi=600, width = 21, height = 18, units = "cm")
