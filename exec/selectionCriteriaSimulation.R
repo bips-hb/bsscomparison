@@ -422,12 +422,47 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
       
     })
     Loop_Rho <- do.call(rbind, Loop_Rho)
-    Loop_Rho
+    
     
     if(N==1000){
       Dim <- "low"
     }else if(N==100){
       Dim <- "high"
+    }
+    
+    Loop_Rho$method[Loop_Rho$method == "Enet 1"] <- 
+      "Lasso"
+    
+    if(runBSS == TRUE){
+      Loop_Rho$method <- factor(Loop_Rho$method,
+                                levels = 
+                                  c("Enet 0.1",
+                                    "Enet 0.2",
+                                    "Enet 0.3",
+                                    "Enet 0.4",
+                                    "Enet 0.5", 
+                                    "Enet 0.6",
+                                    "Enet 0.7",
+                                    "Enet 0.8",
+                                    "Enet 0.9", 
+                                    "Lasso",
+                                    "FSS",
+                                    "BSS"))
+    }else{
+      Loop_Rho$method <- factor(Loop_Rho$method,
+                                levels = 
+                                  c("Enet 0.1",
+                                    "Enet 0.2",
+                                    "Enet 0.3",
+                                    "Enet 0.4",
+                                    "Enet 0.5", 
+                                    "Enet 0.6",
+                                    "Enet 0.7",
+                                    "Enet 0.8",
+                                    "Enet 0.9", 
+                                    "Lasso",
+                                    "FSS"
+                                  ))
     }
     
     # save results
