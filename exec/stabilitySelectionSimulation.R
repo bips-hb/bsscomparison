@@ -1,15 +1,18 @@
 # This script runs the simulation for the results of the stability selection 
-# bei Meinshausen & Bühlmann (2010). Various settings are possible.
+# by Meinshausen & Bühlmann (2010).
 # For Best Subset Selection the Gurobi solver is necessary.
-# NOTE: Stability Selection is computational challanging especially when
-# when performing subsampling for Stability Selection.
-# It is strongly recommended to run  Best Subset Selection on a high perfomance 
-# clusterin
+# NOTE: Stability Selection is computational challenging especially when
+# when performing subsampling for BSS.
+# It is strongly recommended to run this simulation on a multicore computer or
+# high performance cluster
 
-# Load necessary packages for parallelisation
+# Load necessary packages for parallel computing
 library( parallel)
 library( snow)
-library( Rmpi)
+if(clusterType == "MPI"){
+  library( Rmpi)
+}
+
 
 # Load necessary packages to run the simulation
 library(glmnet)
@@ -19,7 +22,7 @@ library(tidyverse)
 library(mvtnorm)
 library(lars)
 
-# If the (open)MPI enviroment for parallel computing is used this function is
+# If the (open)MPI environment for parallel computing is used this function is
 # necessary in case the run crashes
 .Last <- function(){
   if (is.loaded("mpi_initialize")){
@@ -47,42 +50,11 @@ block_builder <-
 # set path for saving data
 pfs <- "./data/"
 
-# set the number of observations (N), variables (P) and non-zero coefficients (s)
-N <- 100
-P <- 1000
-s <- 10
-
-# set the time limit in sec for the Gurobi solver (Important: this time limit is
-# used in every subsample!)
-gurobiTime <- 180
-
-# set corraltion structure ("block" and "toeplitz" are available) 
-CORR_TYPE <- "block"
-
-# set the signal to noise ratios
-SNR <- c(0.05, 0.25, 0.42, 1.22, 2.07, 6)
-
-# set the correlation between variables
-RHO <- c(0.35, 0.7)
-
-# set the position of the non-zeros ("adjacent" or "spread")
-BETA_POSITION <- "adjacent"
-
-# number of simulation runs
-Sim_n <- 100
-
-# number of maximum subset size for Best Subset Selection and Forward Stepwise
-# Selection
-max.k <- 15
-
-# alpha Values for Enet, i.e. weighting of the ridge penalty part; 1 is Lasso
-Alpha <- seq(0.1,1,0.1)
-
 
 # number of subsamples for the stability approach
 B <- 100
 
-# stabiklity threshold (called pi_thr in the orginal paper by Meinshausen &
+# stability threshold (called pi_thr in the original paper by Meinshausen &
 # Bühlmann; the authors suggest values between 0.6 and 0.9)
 cutoff <- 0.6
 
@@ -90,14 +62,10 @@ cutoff <- 0.6
 pfer <- 5
 
 
-mc <- 105 #Optional: number of cores can be determined automatically
-
-# Type of cluster ("PSOCK" and "MPI" available)  
-clusterType <- "MPI"
 cl <- makeCluster(mc, type=clusterType)
 
 clusterExport(cl, c("block_builder",
-                    "run_BSS",
+                    "runBSS",
                     "gurobiTime",
                     "N",
                     "P",
@@ -173,66 +141,71 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
           # Run Stabiliyt selection on BSS
             # loop over subsampling process
-          Loop_BSS_B <- lapply(1:B, function(b){
+          if(runBSS == TRUE){
+            Loop_BSS_B <- lapply(1:B, function(b){
+              
+              # number of samples in the subsamples based onMeinshausen & 
+              # Bühlmann (2010)
+              set.seed(b)
+              n_sample <- sample(1:n, n/2)
+              
+              
+              BSS_b <- 
+                bs(x=X[n_sample,], y = Y[n_sample], 
+                   intercept = FALSE, 
+                   time.limit = gurobiTime, 
+                   k=1:min(max.k, q), 
+                   verbose=F)
+              
+              BSS_b$beta != 0
+              
+            })
             
-            # number of samples in the subsamples based onMeinshausen & 
-            # Bühlmann (2010)
-            set.seed(b)
-            n_sample <- sample(1:n, n/2)
+            prob_selction_BSS <- Reduce("+", Loop_BSS_B)/B
+            
+            # get "stable" coefficients
+            estimated_non_zeros_BSS <- 
+              which(apply(prob_selction_BSS, 1, function(i){any(i >= cutoff)}))
+            
+            TP <- sum(estimated_non_zeros_BSS %in% non_zero_indices)
+            FP <- length(estimated_non_zeros_BSS)-TP
+            FN <- s-TP
+            F1 <- TP/(TP + 0.5*(FP+FN))
+            Precision <- TP/(TP + FP)
+            Accuracy <- TP/s
             
             
-            BSS_b <- 
-              bs(x=X[n_sample,], y = Y[n_sample], 
-                 intercept = FALSE, 
-                 time.limit = gurobiTime, 
-                 k=1:min(max.k, q), 
-                 verbose=F)
             
-            BSS_b$beta != 0
-            
-          })
+            BSS_results <- tibble(
+              method="BSS_gurobi",
+              alpha=NA,
+              lambda = NA,
+              RSS = NA,
+              RSS_selected_betas = NA,
+              k=length(estimated_non_zeros_BSS),
+              TP,
+              FP,
+              FN,
+              F1,
+              Precision,
+              Accuracy,
+              n,
+              p=P,
+              s,
+              snr,
+              rho=Rho,
+              sim.n = sim_n,
+              beta_position = beta_position,
+              corr_type = corr_type,
+              criterion = "Stability Selection",
+              cutoff = cutoff,
+              PFER = pfer
+            )
+            rm(estimated_non_zeros_BSS)
+          }else{
+            BSS_results <- NULL
+          }
           
-          prob_selction_BSS <- Reduce("+", Loop_BSS_B)/B
-          
-          # get "stable" coefficients
-          estimated_non_zeros_BSS <- 
-            which(apply(prob_selction_BSS, 1, function(i){any(i >= cutoff)}))
-          
-          TP <- sum(estimated_non_zeros_BSS %in% non_zero_indices)
-          FP <- length(estimated_non_zeros_BSS)-TP
-          FN <- s-TP
-          F1 <- TP/(TP + 0.5*(FP+FN))
-          Precision <- TP/(TP + FP)
-          Accuracy <- TP/s
-          
-          
-          
-          BSS_results <- tibble(
-            method="BSS_gurobi",
-            alpha=NA,
-            lambda = NA,
-            RSS = NA,
-            RSS_selected_betas = NA,
-            k=length(estimated_non_zeros_BSS),
-            TP,
-            FP,
-            FN,
-            F1,
-            Precision,
-            Accuracy,
-            n,
-            p=P,
-            s,
-            snr,
-            rho=Rho,
-            sim.n = sim_n,
-            beta_position = beta_position,
-            corr_type = corr_type,
-            criterion = "Stability Selection",
-            cutoff = cutoff,
-            PFER = pfer
-          )
-          rm(estimated_non_zeros_BSS)
           
           # end BSS
           

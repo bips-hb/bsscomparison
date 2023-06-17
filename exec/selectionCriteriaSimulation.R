@@ -1,15 +1,16 @@
-# This script runs the simulation for various tuning paramter/subset size 
-# criterua: BIC, mBIC2 and HQC. Various settings are possible.
+# This script runs the simulation for various tuning parameter/subset size 
+# criteria: BIC, mBIC2 and HQC. 
 # For Best Subset Selection the Gurobi solver is necessary.
-# NOTE: Stability Selection is computational challanging especially when
-# when performing subsampling for Stability Selection.
-# It is strongly recommended to run  Best Subset Selection on a high perfomance 
-# clusterin
+# NOTE: This simulation is computational challenging even without BSS.
+# It is strongly recommended to run this simulation on a multicore computer or
+# high performance cluster
 
-# Load necessary packages for parallelisation
+# Load necessary packages for parallel computing
 library( parallel)
 library( snow)
-library( Rmpi)
+if(clusterType == "MPI"){
+  library( Rmpi)
+}
 
 # Load necessary packages to run the simulation
 library(glmnet)
@@ -19,7 +20,7 @@ library(tidyverse)
 library(mvtnorm)
 library(lars)
 
-# If the (open)MPI enviroment for parallel computing is used this function is
+# If the (open)MPI environment for parallel computing is used this function is
 # necessary in case the run crashes
 .Last <- function(){
   if (is.loaded("mpi_initialize")){
@@ -47,46 +48,11 @@ block_builder <-
 # set path for saving data
 pfs <- "./data/"
 
-# set the number of observations (N), variables (P) and non-zero coefficients (s)
-N <- 100
-P <- 1000
-s <- 10
-
-
-# set the time limit in sec for the Gurobi solver (Important: this time limit is
-# used in every subsample!)
-gurobiTime <- 180
-
-# set corraltion structure ("block" and "toeplitz" are available) 
-CORR_TYPE <- "block"
-
-# set the signal to noise ratios
-SNR <- c(0.05, 0.25, 0.42, 1.22, 2.07, 6)
-
-# set the correlation between variables
-RHO <- c(0.35, 0.7)
-
-# set the position of the non-zeros ("adjacent" or "spread")
-BETA_POSITION <- "adjacent"
-
-# number of simulation runs
-Sim_n <- 100
-
-# number of maximum subset size for Best Subset Selection and Forward Stepwise
-# Selection
-max.k <- 15
-
-# alpha Values for Enet, i.e. weighting of the ridge penalty part; 1 is Lasso
-Alpha <- seq(0.1,1,0.1)
-
-mc <- 105 #Optional: number of cores can be determined automatically
-
-# Type of cluster ("PSOCK" and "MPI" available)  
-clusterType <- "MPI"
 cl <- makeCluster(mc, type=clusterType)
 
 clusterExport(cl, c("block_builder",
                     "gurobiTime",
+                    "runBSS",
                     "N",
                     "P",
                     "s",
@@ -161,54 +127,59 @@ Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
           
 
           ### begin BSS
-          
-          BSS <- bs(x=X, y=Y, intercept=FALSE,
-                    time.limit=gurobiTime,
-                    k=1:max.k, verbose=F)
-          
-          # loop over subsetsizes for results like true positives (TP), false
-          # positves (FP), F1 etc
-          BSS_results <-
-            lapply(1:max.k, function(x){
-              RSS <- sum((Y - X %*% BSS$beta[,x])^2)
-
-              TP <- sum(which(abs(BSS$beta[,x]) > 0.00001) %in% non_zero_indices)
-              FP <- x-TP
-              FN <- s-TP
-              F1 <- TP/(TP + 0.5*(FP+FN))
-              Precision <- TP/(TP + FP)
-              Accuracy <- TP/s
-
-              tibble(
-                method="BSS",
-                alpha=NA,
-                k=x,
-                RSS = RSS,
-                RSS_selected_betas = RSS,
-                TP,
-                FP,
-                FN,
-                F1,
-                Precision,
-                Accuracy,
-                n,
-                p,
-                s,
-                snr,
-                corr_type = corr_type,
-                rho = Rho,
-                beta_position = beta_position,
-                beta_switch = NA,
-                status = BSS$status[x],
-                sim.n = sim_n,
-                cutoff = NA,
-                PFER = NA
-              )
-
-            })
-
-          BSS_results <-
-            do.call(rbind, BSS_results)
+          if(runBSS == TRUE){
+            
+            BSS <- bs(x=X, y=Y, intercept=FALSE,
+                      time.limit=gurobiTime,
+                      k=1:max.k, verbose=F)
+            
+            # loop over subsetsizes for results like true positives (TP), false
+            # positves (FP), F1 etc
+            BSS_results <-
+              lapply(1:max.k, function(x){
+                RSS <- sum((Y - X %*% BSS$beta[,x])^2)
+                
+                TP <- sum(which(abs(BSS$beta[,x]) > 0.00001) %in% non_zero_indices)
+                FP <- x-TP
+                FN <- s-TP
+                F1 <- TP/(TP + 0.5*(FP+FN))
+                Precision <- TP/(TP + FP)
+                Accuracy <- TP/s
+                
+                tibble(
+                  method="BSS",
+                  alpha=NA,
+                  k=x,
+                  RSS = RSS,
+                  RSS_selected_betas = RSS,
+                  TP,
+                  FP,
+                  FN,
+                  F1,
+                  Precision,
+                  Accuracy,
+                  n,
+                  p,
+                  s,
+                  snr,
+                  corr_type = corr_type,
+                  rho = Rho,
+                  beta_position = beta_position,
+                  beta_switch = NA,
+                  status = BSS$status[x],
+                  sim.n = sim_n,
+                  cutoff = NA,
+                  PFER = NA
+                )
+                
+              })
+            
+            BSS_results <-
+              do.call(rbind, BSS_results)
+            
+          }else{
+            BSS_results <- NULL
+          }
           
           # end BSS
           

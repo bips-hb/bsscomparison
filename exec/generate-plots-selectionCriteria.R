@@ -2,15 +2,15 @@
 
 library(tidyverse)
 
-# setting setting to plot:
-corr_struc <- "block"
-Dim <- "high"
-beta_position <- "adjacent"
-rho <- 0.7
+if(runCriteriaSimu == TRUE){
+  path2data <- "./data/" 
+}else{
+  path2data <- "./results/" 
+}
 
 sc_data <- 
   readRDS(
-    paste("./data/Results_Selection_Criteria_",
+    paste(path2data, "Results_Selection_Criteria_",
           corr_struc, "_",
           Dim, "_",
           beta_position,
@@ -20,7 +20,7 @@ sc_data <-
 
 ss_data <-
   readRDS(
-    paste("./data/Results_Stability_Selection_",
+    paste(path2data, "Results_Stability_Selection_",
           corr_struc, "_",
           Dim, "_",
           beta_position,
@@ -36,7 +36,7 @@ results$beta_position[results$beta_position == "spread"] <- "equally spaced"
 results$beta_position[results$beta_position == "adjacent"] <- "consecutive"
 
 # Generarte pltos for F1-score, Recall and Precision for BIC, mBIC2, HQC and
-# Stability Selection
+# Stability Selection and save in ./plots
 ggplot(results %>% filter(rho == rho),
        aes(x=as.factor(snr), y=F1, fill=method)) +
   geom_boxplot(outlier.size = 0.5) +
@@ -50,6 +50,9 @@ ggplot(results %>% filter(rho == rho),
   xlab("Signal-to-noise ratio") +
   ylab("F1-score") +
   ylim(0,1)
+
+ggsave(paste("./plots/F1_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
+       dpi=600, width = 21, height = 18, units = "cm")
 
 ggplot(results %>% filter(rho == rho),
        aes(x=as.factor(snr), y=Accuracy, fill=method)) +
@@ -65,6 +68,10 @@ ggplot(results %>% filter(rho == rho),
   ylab("Recall") +
   ylim(0,1)
 
+ggsave(paste("./plots/Accuracy_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
+       dpi=600, width = 21, height = 18, units = "cm")
+
+
 ggplot(results %>% filter(rho == rho),
        aes(x=as.factor(snr), y=Precision, fill=method)) +
   geom_boxplot(outlier.size = 0.5) +
@@ -78,3 +85,6 @@ ggplot(results %>% filter(rho == rho),
   xlab("Signal-to-noise ratio") +
   ylab("Precision") +
   ylim(0,1)
+
+ggsave(paste("./plots/Precision_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
+       dpi=600, width = 21, height = 18, units = "cm")
