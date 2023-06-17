@@ -370,7 +370,7 @@ cat(sprintf("\n \nEnd of masterscript.R"))
 #' by running the script of next section (VII)
 
 #' Run simulation?
-runCriteriaSimu <- TRUE
+runCriteriaSimu <- FALSE
 
 #' run BSS?
 runBSS <- FALSE
@@ -408,11 +408,13 @@ max.k <- 15
 # alpha Values for Enet, i.e. weighting of the ridge penalty part; 1 is Lasso
 Alpha <- seq(0.1,1,0.1)
 
-mc <- 100 #Optional: number of cores can be determined automatically
-
-# Type of cluster ("PSOCK"/"SOCK" and "MPI" available)
+# Type of cluster ("PSOCK"/"SOCK" and "MPI" available); if you are NOT working
+# on a HPC with (open)MPI we suggest to use "SOCK"
 clusterType <- "MPI"
 
+# number of workers for parallel computation (should not exceed the number of 
+# (physical) cores)
+mc <- 100 
 
 if(runCriteriaSimu == TRUE){
   #' run stability selection
