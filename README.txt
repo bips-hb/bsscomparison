@@ -18,7 +18,9 @@ IMPORTANT:
     the default values in these chapter. 
 
     In chapter VII you can change manually the parameter settings you 
-    want to plot of Stability Selection and BIC, mBIC2 and HQC.
+    want to plot of Stability Selection and BIC, mBIC2 and HQC. The
+    default is a high-dimensional block structure with correlation
+    rho = 0.7 and consecutive ("adjacent") non-zero betas
 
 
 A TCGA dataset is needed for the semi-synthetic data generation and 
