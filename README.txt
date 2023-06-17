@@ -7,14 +7,26 @@ In case of questions or comments please contact hanke@leibniz-bips.de
 
 IMPORTANT: 
 
-    In order to run the code, you need to source the masterscript: 
+    In order to run the code, you need to source the masterscript.R: 
     
     > source("masterscript.R")
+
+    The simulation for Stability Selection and BIC, mBIC2 and HQC
+    in chapter VI is omitted by default because of its long running
+    time. You have to change "runCriteriaSimu <- FALSE" to 
+    "runCriteriaSimu <- TRUE" to run these simulations. Please the
+    the default values in these chapter. 
+
+    In chapter VII you can change manually the parameter settings you 
+    want to plot of Stability Selection and BIC, mBIC2 and HQC.
+
 
 A TCGA dataset is needed for the semi-synthetic data generation and 
 is stored in the subfolder ./data. It is also available online at 
 https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
 
+If you do not run the Stability Selection and BIC/mBIC2/HQC simulation
+our raw results are stored in ./results to plot them.
 
 The code was written R, run on a Linux High Performance Cluster and used 
 Gurobi Optimizer version 8.1 (linux64) which is mandatory to run the 
