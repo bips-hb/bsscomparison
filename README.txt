@@ -14,8 +14,8 @@ IMPORTANT:
     The simulation for Stability Selection and BIC, mBIC2 and HQC
     in chapter VI is omitted by default because of its long running
     time. You have to change "runCriteriaSimu <- FALSE" to 
-    "runCriteriaSimu <- TRUE" to run these simulations. Please the
-    the default values in these chapter. 
+    "runCriteriaSimu <- TRUE" to run these simulations. Please see
+    the default values in this chapter. 
 
     In chapter VII you can change manually the parameter settings you 
     want to plot of Stability Selection and BIC, mBIC2 and HQC. The
