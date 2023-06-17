@@ -359,19 +359,67 @@ cat(sprintf("\n \nEnd of masterscript.R"))
 
 #' This part will run the simulation for different selection criteria (BIC, 
 #' mBIC, HQC and stability selection). 
-#' It is important to have Gurobi installed to run BSS. 
-#' 
-#' Further, you have to set the setting in these files. The default is 
-#'    - Block structered correlation
-#'    - correlation = c(0.35, 0.7)
-#'    - consecutive (adjacent) non-zero coefficients
-#'    - high-dimensional problem (n=100, p=1000, s=10)
-#' 
-#' run stability selection
-source("exec/stabilitySelectionSimulation.R")
-#' run BIC, mBIC2 and HQC
-source("exec/selectionCriteriaSimulation.R")
-#' plots are saved in subfolder ./plots
+#' It is important to have Gurobi installed to run BSS but you can can the 
+#' without BSS by setting runBSS <- FALSE. 
+#' NOTE: even without BSS this simulation runs rather long due to the many 
+#' different parameter combinations and subsampling process of Stability 
+#' Selection. We suggest to use a multicore processor or HPC to apply parallel
+#' computing or reduce the number of simualtion runs and/or parameter 
+#' combinations. Alternatively, by setting runCriteriaSimu <- FALSE you can omit 
+#' thesimulation and only generate the plots using our raw data under ./results
+#' by running the script of next section (VII)
+
+#' Run simulation?
+runCriteriaSimu <- TRUE
+
+#' run BSS?
+runBSS <- FALSE
+
+#' ---- Settings for simulation ----
+
+# set the number of observations (N), variables (P) and non-zero coefficients (s)
+N <- 100
+P <- 1000
+s <- 10
+
+# set the time limit in sec for the Gurobi solver (Important: this time limit is
+# also used in every subsample of Stability Selection!)
+gurobiTime <- 180
+
+# set corraltion structure ("block" and "toeplitz" are available) 
+CORR_TYPE <- "block"
+
+# set the signal to noise ratios
+SNR <- c(0.05, 0.25, 0.42, 1.22, 2.07, 6)
+
+# set the correlation between variables
+RHO <- c(0.7)
+
+# set the position of the non-zeros ("adjacent" or "spread")
+BETA_POSITION <- "adjacent"
+
+# number of simulation runs
+Sim_n <- 100
+
+# number of maximum subset size for Best Subset Selection and Forward Stepwise
+# Selection
+max.k <- 15
+
+# alpha Values for Enet, i.e. weighting of the ridge penalty part; 1 is Lasso
+Alpha <- seq(0.1,1,0.1)
+
+mc <- 100 #Optional: number of cores can be determined automatically
+
+# Type of cluster ("PSOCK"/"SOCK" and "MPI" available)
+clusterType <- "MPI"
+
+
+if(runCriteriaSimu == TRUE){
+  #' run stability selection
+  source("exec/stabilitySelectionSimulation.R")
+  #' run BIC, mBIC2 and HQC
+  source("exec/selectionCriteriaSimulation.R")
+}
 
 
 #' #############################################################################
@@ -381,14 +429,15 @@ source("exec/selectionCriteriaSimulation.R")
 #' #############################################################################
 
 #' Script for generating the plots of the selection criteria based on the 
-#' simulation results of the previous section
-#' 
-#' Default is
-#'    - Block structered correlation
-#'    - correlation = 0.7
-#'    - consecutive (adjacent) non-zero coefficients
-#'    - high-dimensional problem (n=100, p=1000, s=10)
-#' 
-#' Cahnge in the scripot for different settings
-#' 
+#' simulation results of the previous section or on the raw data from ./results
+#' Plots are saved in subfolder ./plots
+
+#' Settings to plot:
+
+corr_struc <- "block"
+Dim <- "high"
+beta_position <- "adjacent"
+rho <- 0.7
+
+
 source("exec/generate-plots-selectionCriteria.R")
