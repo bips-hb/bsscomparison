@@ -347,10 +347,12 @@ source("exec/generate-plots-BSS-time-limits.R")
 
 cat(sprintf("DONE generating plots..."))
 
-cat(sprintf("\n \nEnd of masterscript.R"))
 
 
+cat(sprintf("\n \n Star Section for Selection Criteria and Stability Selectio"))
 
+cat(sprintf("\nDefault is not to run the simulation but generate the Figure 9"))
+cat(sprintf("i.e. a high-dimensional block setting with rho=0.7"))
 #' #############################################################################
 #' #############################################################################
 #'                      VI.: Simulation for Selection Criteria
@@ -434,7 +436,7 @@ if(runCriteriaSimu == TRUE){
 #' simulation results of the previous section or on the raw data from ./results
 #' Plots are saved in subfolder ./plots
 
-#' Settings to plot. The defauklt is for the plot of Figure 9 of our paper
+#' Settings to plot. The default is for the plot of Figure 9 of our paper
 
 methods <- c("Enet 0.1", "Enet 0.5", "Enet 0.9", "Lasso", "FSS", "BSS")
 corr_struc <- "block"
@@ -444,3 +446,5 @@ rho <- 0.7
 
 
 source("exec/generate-plots-selectionCriteria.R")
+
+cat(sprintf("\n \nEnd of masterscript.R"))
