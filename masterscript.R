@@ -323,6 +323,9 @@ SNR_BSS_k <- c(0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6)
 source("exec/generate-plots-synthetic.R")
 #' plots are saved in subfolder ./plots
 
+#' start script to plot Figure 8 and 10 (performance for different correlation
+#' and dimensional settings as well as based on increasing subset size )
+source("exec/generate-plots-corrDim-and-subsetSizes.R")
 
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'                        2. Semi-synthetic data setting
