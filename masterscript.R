@@ -318,6 +318,7 @@ if (create_medium_high_dimensional_plots) {
 #' different subset sizes k:
 SNR_BSS_k <- c(0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6)
 
+cat(sprintf("Start to generate plots. This may take some time..."))
 #' start script for plotting best possible F1-scores and BSS results based on 
 #' subset size k for synthetic data
 source("exec/generate-plots-synthetic.R")
