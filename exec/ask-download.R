@@ -8,7 +8,7 @@ while (!answered) {
   time_study <- menu(title = "Do you want to download the intermediate results? Required for creating the related plots.\nYou can download the files manually under\nhttps://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip \nand safe the file in ./results", 
                      choices = c("yes", 
                                  "no",
-                                 "manual download",
+                                 "downloaded manually",
                                  "exit"))
   
   switch(as.character(time_study), 
