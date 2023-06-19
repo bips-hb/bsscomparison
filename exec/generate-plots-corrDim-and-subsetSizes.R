@@ -1,7 +1,7 @@
 # Generate Figure 8 (correlation and dimensionality) and Figure 10 (performance
 # based on subset size)
 
-library(latex2exp)
+
 
 ## Effect of k
 Corr <- c("block")
@@ -84,7 +84,7 @@ out_snr <- lapply(SNR, function(Snr){
   
   one_setting <- bind_rows(enets, no_enets)
   
-  # dismiss hybrid 
+  # dismiss hybrid (Enet followed by FSS/BSS)
   one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
   
   one_setting$method <- factor(one_setting$method,
@@ -210,15 +210,16 @@ Snr <-   2.07
 
 out <- lapply(DIM, function(Dim){
   
-  
+  # load results 
   raw_results <- 
-    readRDS(paste(".results/raw_results_",
+    readRDS(paste("./results/raw_results_",
                   Dim, "_",
                   Beta, "_",
                   Corr, ".RDS",
                   sep="")
     )
   
+  # rename list elements
   names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                           "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
                           "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
@@ -230,7 +231,7 @@ out <- lapply(DIM, function(Dim){
   
   RHO <- unique(raw_results$rho)
   
-  
+  # generate tibble for rho =c(0.35, 0.7)
   out_rho_block <- lapply(RHO, function(Rho){
     
     indices <- which(raw_results$dimensionality == Dim & 
@@ -269,7 +270,7 @@ out <- lapply(DIM, function(Dim){
 
     one_setting <- bind_rows(enets, no_enets)
     
-    # dismiss hybrid 
+    # dismiss hybrid (Enet followeb by FSS/BSS)
     one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
     
     one_setting$method <- factor(one_setting$method,
@@ -297,18 +298,18 @@ out <- lapply(DIM, function(Dim){
   
   out_rho_block <- do.call(rbind, out_rho_block)
   
-  
+  # generate tibble for rho=0 (independent)
   Corr <- "independent"
   
   raw_results <- 
-    readRDS(paste("./raw_results_",
+    readRDS(paste("./results/raw_results_",
                   Dim, "_",
                   Beta, "_",
                   Corr, ".RDS",
                   sep="")
     )
   
-  
+  # name list elements
   names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                           "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
                           "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
@@ -357,30 +358,21 @@ out <- lapply(DIM, function(Dim){
     enets$alpha <- round(enets$alpha,2)
     enets <- enets %>% 
       mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
-      # mutate(method = replace(method, alpha == 0.2, "enet_0.2")) %>%
-      # mutate(method = replace(method, alpha == 0.3, "enet_0.3")) %>%
-      # mutate(method = replace(method, alpha == 0.4, "enet_0.4")) %>%
       mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
-      # mutate(method = replace(method, alpha == 0.6, "enet_0.6")) %>%
-      # mutate(method = replace(method, alpha == 0.7, "enet_0.7")) %>%
-      # mutate(method = replace(method, alpha == 0.8, "enet_0.8")) %>%
       mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
     
     enets <- enets[enets$method != "enet",]
     
-    #top100enet <- arrange(enets, desc(F1))[1:100,]
     
-    
-    #one_setting <- bind_rows(top100enet, no_enets)
     one_setting <- bind_rows(enets, no_enets)
     
     # dismiss hybrid 
     one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
     
     one_setting$method <- factor(one_setting$method,
-                                 levels = c(# "enet_bs_hybrid", 
-                                   "enet_0.1", #"enet_0.2", "enet_0.3", "enet_0.4", 
-                                   "enet_0.5", #"enet_0.6", "enet_0.7", "enet_0.8", 
+                                 levels = c( 
+                                   "enet_0.1",  
+                                   "enet_0.5",  
                                    "enet_0.9", 
                                    "lasso",
                                    "fs",
@@ -409,7 +401,7 @@ out <- lapply(DIM, function(Dim){
 
 out <- do.call(rbind, out)
 
-
+# rename levels
 levels(out$Method)[levels(out$Method) == "enet_0.1"] <- 
   "Enet 0.1"
 levels(out$Method)[levels(out$Method) == "enet_0.5"] <- 
@@ -423,11 +415,12 @@ levels(out$Method)[levels(out$Method) == "fs"] <-
 levels(out$Method)[levels(out$Method) == "bs"] <- 
   "BSS"
 
+# rename settings
 out$dim[out$dim == "low"] <- "low (n = 1000, p = 100)"
 out$dim[out$dim == "medium"] <- "medium (n = 500, p = 500)"
 out$dim[out$dim == "high"] <- "high (n = 100, p = 1000)"
 
-
+# generate plot
 ggplot(out, aes(x = as.factor(rho), y = Value, fill=Method))+
   geom_boxplot()+
   facet_wrap( ~ factor(dim, 
@@ -447,6 +440,6 @@ ggplot(out, aes(x = as.factor(rho), y = Value, fill=Method))+
   ylab("Best possible F1-score") + 
   xlab(TeX(r'(Correlation strength $\rho$)'))
 
-
-ggsave(filename = "~/Documents/Dokumente - MacBook Pro/Arbeit/BIPS/MSTP_Paper/Biometrical Journal/Best subset (Sondernausgabe)/9_Corr_and_Dim.png",
+# save plot
+ggsave(filename = "./plots/Figure8_Corr_and_Dim.png",
        width = 2800, height = 1200, units = "px", dpi = 400)
