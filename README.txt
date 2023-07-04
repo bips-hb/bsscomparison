@@ -36,6 +36,11 @@ simulation study including best subset selection. However, we implemented
 also examples to re-run the code without best subset selection (the 
 masterscript.R will ask what kind of simulation to re-run).
 
+If you do not want to re-run the simulation for the synthetic data you
+can download the result for the medium- and high-dimensional settings
+under https://figshare.com/articles/dataset/Simualtion_Results/23578647
+or alternatively under https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+
 
 The following R output shows the session Info on our cluster: 
 
