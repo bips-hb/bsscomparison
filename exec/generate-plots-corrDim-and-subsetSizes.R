@@ -84,7 +84,11 @@ out_snr <- lapply(SNR, function(Snr){
   
   one_setting <- bind_rows(enets, no_enets)
   
-  # dismiss hybrid (Enet followed by FSS/BSS)
+  # dismiss hybrid (we implemented our idea of a two step procedure by a
+  # pre-selection via Enet/Lasso followed by BSS; these results are not
+  # part of the paper "Variable selection in linear regression models: 
+  # choosing the best subset is not always the best choice" and are 
+  # therefore dismissed from the following analysis.)
   one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
   
   one_setting$method <- factor(one_setting$method,
