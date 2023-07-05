@@ -1,7 +1,7 @@
 Supplementary information / R code for the manuscript  
 "When choosing the best subset is not the best choice"
 
-Authors: Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2022)
+Authors: Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2023)
 Code was written bei Hanke, M. and Dijkstra, L.
 In case of questions or comments please contact hanke@leibniz-bips.de
 
