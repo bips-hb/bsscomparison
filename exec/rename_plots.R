@@ -12,7 +12,7 @@ filenames.from <- c("Resultshigh_block_spread_35.png",
                     "Results_low_semisyn.png",
                     "Corr_and_Dim.png",
                     "BestCriterion_block_high_0.7.png",
-                    "Value_vs_k.tiff",
+                    "Value_vs_k.png",
                     "Time_comparison_blocklowfirst70_snr042.png")
 
 # New file names
