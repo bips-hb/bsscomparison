@@ -58,6 +58,10 @@
 #' VI.: Simulation for Selection Criteria
 #' 
 #' VII.: Plots for Selection Criteria
+#' 
+#' VIII.: Rename Plots 
+#' 
+#' 
 #'
 #' #############################################################################
 #'                              0. SET-UP
