@@ -34,3 +34,19 @@ results. It contains the following files:
 * time-limits-BSS-synthetic.R - runs the analysis for the effect
   that changing the time limits has on BSS. The synthetic simulation 
   is used. 
+
+* stabilitySelectionSimulation.R - runs the simulation for the 
+  stability selection
+
+* selectionCriteriaSimulation.R - runs the simulation for BIC, HQC 
+  and mBIC2
+
+* generate-plots-corrDim-and-subsetSizes.R - generates the plots for
+  the BSS/FSS/Lasso/Enet performance based on different subset sizes
+  and the performance for correlation vs dimensionality
+
+* generate-plots-selectionCriteria.R - generates plots for the 
+  different selection criteria
+
+* rename_plots.R - renames th created plots according to the Figures
+  in the paper
