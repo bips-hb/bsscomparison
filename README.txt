@@ -24,7 +24,7 @@ IMPORTANT:
 
     The master script contains 8 chapters:
     
-    0.: a set-up script to install the necessary packages. If you run
+    0.: A set-up script to install the necessary packages. If you run
     into trouble installing the packages automatically via this script
     please install them manually.
 
@@ -34,32 +34,60 @@ IMPORTANT:
 
     III.: Apply Best Subset Selection with different time limits
 
-    IV.: Generate all plots for the results of Chapter I and II. The
-    plots 
-    (NOTICE: you can run this script without running Chapoter I & II
+    IV.: Generate all plots for the results of Chapter I and II (Semi-
+    synthetic and synthetic settings)
+    (NOTICE: you can run this script without running Chapter I & II
     but in this case you will need to download the raw results. See 
     below for the links.)
 
-    V.: Generate all plots for the results of Chapter III 
+    V.: Generate all plots for the results of Chapter III (time limits)
     (NOTICE: you can run this script without running Chapter III based
     on the raw results in ./results)
 
     VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC
-    This is omitted by default because of its long running
-    time. You have to change "runCriteriaSimu <- FALSE" to 
+    This is omitted by default because of its long running time. You 
+    have to change "runCriteriaSimu <- FALSE" to 
     "runCriteriaSimu <- TRUE" to run these simulations in the master
-    script. Please see the default values in this chapter. 
-
+    script. Please see also the default parameter values in this chapter. 
 
     VII.: Plot the results of you can Stability Selection, BIC, mBIC2 
     and HQC 
-    The default is a high-dimensional block structure with correlation
-    rho = 0.7 and consecutive ("adjacent") non-zero betas.
+    The default setting is a high-dimensional block structure with 
+    correlation rho = 0.7 and consecutive ("adjacent") non-zero betas.
 
 
 PLOTS: 
 
-    This repository generates all plots of our simulation study.- 
+    This repository generates all plots of our simulation study and saves
+    them under ./plots
+    The following table gives the name of the plots with its corresponding
+    figure number in our paper. Further, the table contains the chapter 
+    number of the master script to generate the plot.
+
+    -------------------------------------------------------------------------|
+    |        Name of generated plot                |  Figure No. |  Chapter  |
+    =========================================================================|
+    |                                              |             |           |
+    |  Resultshigh_block_spread_35.png             |      2      |    IV     |
+    |                                              |             |           |
+    |  Resultshigh_toeplitz_first_70.png           |      3      |    IV     |
+    |                                              |             |           |
+    |  Resultslow_block_spread_70.png              |      4      |    IV     |
+    |                                              |             |           |
+    |  Resultslow_block_first_70.png               |      5      |    IV     |
+    |                                              |             |           |
+    |  Results_high_semisyn.png                    |      6      |    IV     |
+    |                                              |             |           |
+    |  Results_low_semisyn.png                     |      7      |    IV     |
+    |                                              |             |           |
+    |  Figure8_Corr_and_Dim.png                    |      8      |    IV     |
+    |                                              |             |           |
+    |  BestCriterion_block_high_0.7.png            |      9      |    VII    |
+    |                                              |             |           |
+    |  Figure10_Value_vs_k.png                     |     10      |    IV     |
+    |                                              |             |           |
+    |  Time_comparison_blocklowfirst70_snr042.png  |     11      |     V     |
+    --------------------------------------------------------------------------
 
 
 DATASETS & AVAILABILITY:
