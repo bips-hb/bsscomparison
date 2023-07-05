@@ -27,9 +27,9 @@ OVERVIEW/INSTRUCTIONS:
     The master script contains 8+1 chapters:
     
     0.: Set-Up
-    A script to install the necessary packages. If you run into trouble 
-    installing the packages automatically via this script please install 
-    them manually. Please see our session info at the end of this README.
+    A script which asks the user to install the necessary packages. 
+    If you run into trouble installing the packages via this script please 
+    install them manually. See our session info at the end of this README.
 
     I.: Run the simulation for the semi-synthetic setting 
 
