@@ -168,7 +168,8 @@ lapply(DIM, function(Dim){
         p <- unique(out_snr$p)
         s <- unique(out_snr$s)
         
-        pic <- ggplot(out_snr, aes(x = as.factor(snr), y = Value, fill = Method))+
+        pic <- ggplot(out_snr %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6)), 
+                      aes(x = as.factor(snr), y = Value, fill = Method))+
           geom_boxplot()+
           facet_wrap( ~ Metric, ncol = 1)+
           ylim(0,1)+
@@ -189,7 +190,6 @@ lapply(DIM, function(Dim){
                      Corr, "_",
                      Beta, "_",
                      100*Rho,
-                     #Snr, "_",
                      ".png", sep=""), 
                width = 18, 
                height = 18, units = "cm", dpi = 300)

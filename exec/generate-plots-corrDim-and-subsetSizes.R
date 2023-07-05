@@ -192,7 +192,7 @@ ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(file="./plots/Figure10_Value_vs_k.tiff",
+ggsave(file="./plots/Value_vs_k.tiff",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
@@ -441,5 +441,5 @@ ggplot(out, aes(x = as.factor(rho), y = Value, fill=Method))+
   xlab(TeX(r'(Correlation strength $\rho$)'))
 
 # save plot
-ggsave(filename = "./plots/Figure8_Corr_and_Dim.png",
+ggsave(filename = "./plots/Corr_and_Dim.png",
        width = 2800, height = 1200, units = "px", dpi = 400)
