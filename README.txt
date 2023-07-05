@@ -76,7 +76,13 @@ PLOTS/FIGURES:
     To compare these plots to the plots of the paper the master script
     calls a script to rename them as "Figure_02", "Figure_03", etc. 
     If you do not want to rename the plots please delete the 
-    "source(rename_plots.R)" at the end of the master script (Chapter VIII).
+    "source(rename_plots.R)" line at the end of the master script (see 
+    Chapter VIII).
+
+    Note: Figure 1 in the paper is just a schematic representation of the 
+    different correlation structures and the positioning of the direct 
+    predictors. We do not provide any code for generating this figure 
+    since it does not contain any results.
 
     -------------------------------------------------------------------------|
     |        Name of generated plot                |  Figure No. |  Chapter  |
@@ -103,9 +109,6 @@ PLOTS/FIGURES:
     |  Time_comparison_blocklowfirst70_snr042.png  |     11      |     V     |
     --------------------------------------------------------------------------
 
-    Note: Figure 1 in the paper is just a schematic representation of the 
-    different correlation structures and the positioning of the direct 
-    predictors.
 
 
 DATASETS & AVAILABILITY:
