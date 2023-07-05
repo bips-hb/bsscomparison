@@ -452,3 +452,16 @@ rho <- 0.7
 source("exec/generate-plots-selectionCriteria.R")
 
 cat(sprintf("\n \nEnd of masterscript.R"))
+
+
+
+#' #############################################################################
+#' #############################################################################
+#'                            VIII.: Rename Plots 
+#' #############################################################################
+#' #############################################################################
+
+
+# rename the previous plots according to their appearance in the paper
+
+source(rename_plots.R)
