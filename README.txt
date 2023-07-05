@@ -13,20 +13,22 @@ IMPORTANT:
     
     > source("masterscript.R")
 
-    The master script calls two types of scripts: interactive scripts
-    to ask which kind of simulation you want to run and the scripts
-    to run the selected simulations. You could also call each of the 
-    scripts manually via the master script. Since our simulation study
-    is computationally challenging we also give the user the option to 
-    run examples of the simulation study (including an comparison of 
-    the results to the original ones) or just to generate the results 
-    based on the raw results provided by us.
+    The master script calls two types of scripts: 
+    1. interactive scripts askin which simulations to run
+    2. the actual scripts to run the selected simulations.
+    You can also run each of the scripts manually via the master script. 
+    Since our simulation study is computationally challenging we also 
+    give the user the option either to run examples of the simulation 
+    study (including an comparison of the results to the original ones) 
+    or to generate just the plots based on the raw results provided by us
+    (see below for the links).
 
-    The master script contains 8 chapters:
+    The master script contains 8+1 chapters:
     
-    0.: A set-up script to install the necessary packages. If you run
-    into trouble installing the packages automatically via this script
-    please install them manually.
+    0.: Set-Up
+    A script to install the necessary packages. If you run into trouble 
+    installing the packages automatically via this script please install 
+    them manually. Please see our session info at the end of this README.
 
     I.: Run the simulation for the semi-synthetic setting 
 
@@ -35,34 +37,45 @@ IMPORTANT:
     III.: Apply Best Subset Selection with different time limits
 
     IV.: Generate all plots for the results of Chapter I and II (Semi-
-    synthetic and synthetic settings)
+    synthetic and synthetic settings, different subset sizes and 
+    correlation vs dimensionality)
     (NOTICE: you can run this script without running Chapter I & II
-    but in this case you will need to download the raw results. See 
-    below for the links.)
+    but in this case you will need to download the raw results and save 
+    them under "./results". See below for the links.)
 
     V.: Generate all plots for the results of Chapter III (time limits)
     (NOTICE: you can run this script without running Chapter III based
-    on the raw results in ./results)
+    on the raw results in ./results. No extra download needed)
 
     VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC
     This is omitted by default because of its long running time. You 
     have to change "runCriteriaSimu <- FALSE" to 
-    "runCriteriaSimu <- TRUE" to run these simulations in the master
-    script. Please see also the default parameter values in this chapter. 
+    "runCriteriaSimu <- TRUE" in the master script to run these simulations. 
+    Please see also the default parameter values in the corresponding 
+    chapter. 
 
-    VII.: Plot the results of you can Stability Selection, BIC, mBIC2 
-    and HQC 
+    VII.: Plot the results of Stability Selection, BIC, mBIC2 and HQC 
     The default setting is a high-dimensional block structure with 
     correlation rho = 0.7 and consecutive ("adjacent") non-zero betas.
+
+    VIII.: Rename plots
+    A short script to rename the previous generated plots according to 
+    the figures of the paper.
 
 
 PLOTS: 
 
     This repository generates all plots of our simulation study and saves
-    them under ./plots
-    The following table gives the name of the plots with its corresponding
-    figure number in our paper. Further, the table contains the chapter 
-    number of the master script to generate the plot.
+    them under "./plots".
+    The following table gives the name of the plots with their corresponding
+    figure numbers according to their appearance in our paper. Further, the 
+    table contains the chapter number of the master script to generate the 
+    plots.
+
+    To compare these plots to the plots of the paper the master script
+    calls a script to rename them as "Figure_02", "Figure_03", etc. 
+    If you do not want to rename the plots please delete the 
+    "source(rename_plots.R)" at the end of the master script (Chapter VIII).
 
     -------------------------------------------------------------------------|
     |        Name of generated plot                |  Figure No. |  Chapter  |
@@ -80,11 +93,11 @@ PLOTS:
     |                                              |             |           |
     |  Results_low_semisyn.png                     |      7      |    IV     |
     |                                              |             |           |
-    |  Figure8_Corr_and_Dim.png                    |      8      |    IV     |
+    |  Corr_and_Dim.png                            |      8      |    IV     |
     |                                              |             |           |
     |  BestCriterion_block_high_0.7.png            |      9      |    VII    |
     |                                              |             |           |
-    |  Figure10_Value_vs_k.png                     |     10      |    IV     |
+    |  Value_vs_k.png                              |     10      |    IV     |
     |                                              |             |           |
     |  Time_comparison_blocklowfirst70_snr042.png  |     11      |     V     |
     --------------------------------------------------------------------------
@@ -112,7 +125,7 @@ FURTHER INFORMATION:
     Gurobi Optimizer version 8.1 (linux64) which is mandatory to run the 
     simulation study including best subset selection. However, we implemented 
     also examples to re-run the code without best subset selection (the 
-    masterscript.R will ask what kind of simulation to re-run).
+    masterscript.R will ask what kind of simulation to re-run. See above.).
 
     The following R output shows the session Info on our cluster: 
 
