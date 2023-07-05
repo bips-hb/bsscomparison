@@ -5,7 +5,8 @@ Authors: Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2022)
 Code was written bei Hanke, M. and Dijkstra, L.
 In case of questions or comments please contact hanke@leibniz-bips.de
 
-IMPORTANT: 
+
+OVERVIEW/INSTRUCTIONS: 
 
     In order to run the code, you need to set the working directory to 
     the folder of the lokal copy of this repository and source the 
@@ -101,6 +102,10 @@ PLOTS:
     |                                              |             |           |
     |  Time_comparison_blocklowfirst70_snr042.png  |     11      |     V     |
     --------------------------------------------------------------------------
+
+    Note: Figure 1 in the paper is just a schematic representation of the 
+    different correlation structures and the positioning of the direct 
+    predictors.
 
 
 DATASETS & AVAILABILITY:
