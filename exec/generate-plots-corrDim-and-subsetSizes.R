@@ -192,7 +192,7 @@ ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(file="./plots/Value_vs_k.tiff",
+ggsave(file="./plots/Value_vs_k.png",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
