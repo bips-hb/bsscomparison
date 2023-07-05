@@ -64,7 +64,7 @@ OVERVIEW/INSTRUCTIONS:
     the figures of the paper.
 
 
-PLOTS: 
+PLOTS/FIGURES: 
 
     This repository generates all plots of our simulation study and saves
     them under "./plots".
