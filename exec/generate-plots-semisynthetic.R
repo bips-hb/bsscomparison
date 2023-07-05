@@ -66,7 +66,7 @@ melted_out_sim_TCGA <-
 
 #' generate plot
 pic_out <- 
-  ggplot(melted_out_sim_TCGA %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6)),
+  ggplot(melted_out_sim_TCGA %>% filter(snr %in% c(0.42, 1.22, 3.52)),
          aes(x = as.factor(snr), y = value, fill = method)) +
   geom_boxplot(width=0.5)+
   ylim(0,1) +
@@ -214,7 +214,7 @@ melted_out_sim_TCGA <-  melted_out_sim_TCGA %>%
                               TRUE ~ variable ))
 
 
-pic_out <- ggplot(melted_out_sim_TCGA %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6)),
+pic_out <- ggplot(melted_out_sim_TCGA %>% filter(snr %in% c(0.42, 1.22, 3.52)),
                   aes(x = as.factor(snr), y = value, fill = method)) +
   geom_boxplot(width=0.5)+
   ylim(0,1) +
