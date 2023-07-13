@@ -124,7 +124,9 @@ DATASETS & AVAILABILITY:
 
     If you do not want to re-run the simulation for the synthetic data you
     can download the result for the medium- and high-dimensional settings
-    under https://figshare.com/articles/dataset/Simualtion_Results/23578647
+    under https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
+    
+     https://figshare.com/articles/dataset/Simualtion_Results/23578647
     or alternatively under 
     https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
 
