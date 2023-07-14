@@ -9,8 +9,11 @@ In case of questions or comments please contact hanke@leibniz-bips.de
 OVERVIEW/INSTRUCTIONS: 
 
     In order to run the code, you need to set the working directory to 
-    the folder of the lokal copy of this repository and source the 
-    masterscript.R: 
+    the folder of the local copy of this repository 
+    
+    > setwd("<file>/<path>/<to>/bsscomparison")
+
+    and source the masterscript.R
     
     > source("masterscript.R")
 
@@ -43,6 +46,10 @@ OVERVIEW/INSTRUCTIONS:
     (NOTE: you can run this script without running Chapter I & II
     but in this case you will need to download the raw results and save 
     them under "./results". See below for the links.)
+    IMPORTANT: If you use our build-in R-script 
+    "download-intermediateresults-medium-high.R" and get an timout error 
+    please make sure to set an appropriate timeout limit (e.g. 
+    options(timeout=1000)). 
 
     V.: Generate all plots for the results of Chapter III (time limits)
     (NOTE: you can run this script without running Chapter III based
@@ -113,8 +120,7 @@ PLOTS/FIGURES:
 DATASETS & AVAILABILITY:
 
     A TCGA dataset is needed for the semi-synthetic data generation and 
-    is stored in the subfolder ./data. It is also available online at 
-    https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
+    is stored in the subfolder ./data. 
 
     If you do not want to re-run the Stability Selection and BIC/mBIC2/HQC 
     simulation our raw results are stored in ./results to plot them.
@@ -125,10 +131,8 @@ DATASETS & AVAILABILITY:
     If you do not want to re-run the simulation for the synthetic data you
     can download the result for the medium- and high-dimensional settings
     under https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
-    
-     https://figshare.com/articles/dataset/Simualtion_Results/23578647
     or alternatively under 
-    https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+    https://figshare.com/articles/dataset/Simualtion_Results/23578647
 
 
 FURTHER INFORMATION:
