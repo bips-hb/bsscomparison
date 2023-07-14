@@ -1,5 +1,6 @@
-#' Masterscript for the paper "When choosing the best subset is not the best 
-#' choice" by Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2022)
+#' Masterscript for the paper "Variable selection in linear regression models: 
+#' choosing the best subset is not always the best choice" by Hanke, M., 
+#' Dijkstra, L., Foraita, R. and Didelez, V. (2023)
 #' 
 #' masterscript.R replicates all the results and plots presented in our paper.
 #' Some steps are programmed in different scripts to make it easier to read.
@@ -28,7 +29,7 @@
 #' - Raw results for different time limits are in the subfolder "results/"  
 #' - all other raw results can be downloaded by running 
 #'   source("download-intermediate-results-medium-high.R") or manually from
-#'   https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+#'   https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
 #'   (The raw results are .rds files and need to be put into "results/" before
 #'   analyzing/plotting)
 #' 
