@@ -192,11 +192,8 @@ for(Dim in DIM){
           theme(plot.title = element_text(size=9))
   
         counter <- counter +1
-        ggsave(paste("./plots/Appendix_Figures",
-                     Dim, "_",
-                     Beta, "_",
-                     Corr, "_",
-                     100*Rho,
+        ggsave(paste("./plots/Appendix_Figure_",
+                     counbter,
                      ".png", sep=""), 
                width = 18, 
                height = 18, units = "cm", dpi = 300)
