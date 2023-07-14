@@ -20,7 +20,7 @@ BETA <- c("spread", "first")
 CORR <- c("block", "toeplitz", "independent")
 
 
-
+counter <- 0
 for(Dim in DIM){
   
   for(Beta in BETA){
@@ -191,7 +191,7 @@ for(Dim in DIM){
           xlab("Signal-to-noise ratrio τ")+
           theme(plot.title = element_text(size=9))
   
-        
+        counter <- counter +1
         ggsave(paste("./plots/Appendix_Figures",
                      Dim, "_",
                      Beta, "_",
