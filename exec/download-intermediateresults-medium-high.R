@@ -6,8 +6,8 @@
 
 # check first whether file was already downloaded
 if (! file.exists("results/raw_results_high_spread_block.RDS")) { 
-  
-  url <- "https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip" 
+
+  url <- "https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1"
   
   cat(sprintf("Start downloading results file for medium and high dimensional settings...\n"))
   cat(sprintf("NOTE: this can take a considerable amount of time (~ 1.5 Gb)\n\n"))
