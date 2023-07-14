@@ -11,6 +11,10 @@ if (! file.exists("results/raw_results_high_spread_block.RDS")) {
   
   cat(sprintf("Start downloading results file for medium and high dimensional settings...\n"))
   cat(sprintf("NOTE: this can take a considerable amount of time (~ 1.5 Gb)\n\n"))
+  cat(sprintf(" \n\n"))
+  cat(sprintf("IMPORTAT: If the download fails because of an timeout error \n"))
+  cat(sprintf("please set a higher timout limit (e.g. options(timeout=1000) ) \n"))
+  
   download.file(url, "results/BestSubsetResults.zip", method = "auto", quiet = FALSE, mode = "w",
                 cacheOK = TRUE,
                 extra = getOption("download.file.extra"),
@@ -21,7 +25,20 @@ if (! file.exists("results/raw_results_high_spread_block.RDS")) {
   unzip("results/BestSubsetResults.zip", exdir = "./results/")
   
   cat(sprintf("Unzipped file\n"))
+  
+  # Move files to ./results
+  files_to_move <- list.files("./results/BestSubsetResults/")
+  file.copy(from = paste("./results/BestSubsetResults/", files_to_move, sep=""), 
+            to = paste("./results/", files_to_move, sep=""))
+  
+  # delete unpacked original directory -- must add recursive = TRUE
+  unlink("./results/BestSubsetResults.zip", recursive = TRUE)
+  unlink("./results/__MACOSX/", recursive = TRUE)
+  unlink("./results/BestSubsetResults", recursive = TRUE)
+  
   cat(sprintf("DONE Download\n"))
+  
+  
   
 } else { 
   cat(sprintf("File has already been downloaded, see 'results/intermediate-results.RDS'\n")) 
