@@ -5,7 +5,7 @@
 #' @param DIM dimensionality of problem
 #' @param SNR vecotr of signal-to-noise values
 #' 
-#' loadd neccessary packages
+#' load neccessary packages
 library(dplyr)
 library(tibble)
 library(ggplot2)
@@ -14,20 +14,23 @@ library(ggpubr)
 library(reshape2)
 
 
+#### Plots for the Appendix ####
+DIM <- c("high", "medium", "low")
+BETA <- c("spread", "first")
+CORR <- c("block", "toeplitz", "independent")
 
 
 
-
-lapply(DIM, function(Dim){
+for(Dim in DIM){
   
-  lapply(BETA, function(Beta){
+  for(Beta in BETA){
     if(Beta == "first"){
       Beta_title <- "adjacent"
     }else{
       Beta_title <- "equally distributed"
     }
     
-    lapply(CORR, function(Corr){
+    for(Corr in CORR){
       
       
       if(Corr == "independent"){
@@ -56,7 +59,7 @@ lapply(DIM, function(Dim){
       RHO <- unique(raw_results$rho)
       
       
-      lapply(RHO, function(Rho){
+      for(Rho in RHO){
         
         out_snr <- lapply(SNR, function(Snr){
           
@@ -172,7 +175,7 @@ lapply(DIM, function(Dim){
         p <- unique(out_snr$p)
         s <- unique(out_snr$s)
         
-        pic <- ggplot(out_snr %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6)), 
+        pic <- ggplot(out_snr , 
                       aes(x = as.factor(snr), y = Value, fill = Method))+
           geom_boxplot()+
           facet_wrap( ~ Metric, ncol = 1)+
@@ -189,10 +192,10 @@ lapply(DIM, function(Dim){
           theme(plot.title = element_text(size=9))
   
         
-        ggsave(paste("./plots/Results",
+        ggsave(paste("./plots/Appendix_Figures",
                      Dim, "_",
-                     Corr, "_",
                      Beta, "_",
+                     Corr, "_",
                      100*Rho,
                      ".png", sep=""), 
                width = 18, 
@@ -201,7 +204,25 @@ lapply(DIM, function(Dim){
         
         
         
-      })
+      }
+      
+      
+    }
+    
+  }
+  
+}
+
+# Rename the figures of the Appendix:
+
+fig_counter <- 0
+
+lapply(DIM, function(Dim){
+  lapply(BETA, function(Beta){
+    lapply(CORR, function(Corr){
+      lapply()
+      
+      
       
       
     })
@@ -209,8 +230,6 @@ lapply(DIM, function(Dim){
   })
   
 })
-
-
 
 
 
