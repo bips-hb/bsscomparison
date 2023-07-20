@@ -15,26 +15,25 @@ library(reshape2)
 
 
 #### Plots for the Appendix ####
+# define dimension, position of non-zeros and correlation structure
 DIM <- c("high", "medium", "low")
-BETA <- c("spread", "first")
 CORR <- c("block", "toeplitz", "independent")
-
+BETA <- c("spread", "first")
 
 counter <- 0
 for(Dim in DIM){
   
-  for(Beta in BETA){
-    if(Beta == "first"){
-      Beta_title <- "adjacent"
-    }else{
-      Beta_title <- "equally distributed"
-    }
+  for(Corr in CORR){
     
-    for(Corr in CORR){
-      
-      
-      if(Corr == "independent"){
-        Beta <- "first"
+    for(Beta in BETA){
+      if(Beta == "first"){
+        Beta_title <- "adjacent"
+      }else{
+        Beta_title <- "equally distributed"
+      }
+    
+      if(Corr == "independent" & Beta == "spread"){
+        next
       }
       
       raw_results <- 
@@ -193,7 +192,7 @@ for(Dim in DIM){
   
         counter <- counter +1
         ggsave(paste("./plots/Appendix_Figure_",
-                     counbter,
+                     counter,
                      ".png", sep=""), 
                width = 18, 
                height = 18, units = "cm", dpi = 300)
