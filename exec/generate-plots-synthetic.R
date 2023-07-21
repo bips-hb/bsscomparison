@@ -15,12 +15,18 @@ library(reshape2)
 
 
 #### Plots for the Appendix ####
-# define dimension, position of non-zeros and correlation structure
-DIM <- c("high", "medium", "low")
-CORR <- c("block", "toeplitz", "independent")
-BETA <- c("spread", "first")
 
-counter <- 0
+
+
+# counter is needed for labaling the figures according to the appendix.
+# If only low dimensional data is available, set counter to 18
+
+if(all(c("high", "medium") %in% DIM)){
+  counter <- 0
+}else{
+  counter <- 18
+}
+
 for(Dim in DIM){
   
   for(Corr in CORR){
@@ -31,11 +37,16 @@ for(Dim in DIM){
       }else{
         Beta_title <- "equally distributed"
       }
-    
+      
+      # we only need one beta positioning if there is no correlation between
+      #. any predictor
       if(Corr == "independent" & Beta == "spread"){
         next
       }
       
+      raw_results <- NULL
+      
+      # load the raws results
       raw_results <- 
         readRDS(paste("./results/raw_results_",
                       Dim, "_",
@@ -43,6 +54,8 @@ for(Dim in DIM){
                       Corr, ".RDS",
                       sep="")
         )
+      
+      
       
       names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                               "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
@@ -59,6 +72,8 @@ for(Dim in DIM){
       
       
       for(Rho in RHO){
+        
+        
         
         out_snr <- lapply(SNR, function(Snr){
           
@@ -209,23 +224,8 @@ for(Dim in DIM){
   
 }
 
-# Rename the figures of the Appendix:
 
-fig_counter <- 0
 
-lapply(DIM, function(Dim){
-  lapply(BETA, function(Beta){
-    lapply(CORR, function(Corr){
-      lapply()
-      
-      
-      
-      
-    })
-    
-  })
-  
-})
 
 
 
@@ -247,13 +247,26 @@ lapply(DIM, function(Dim){
         Beta <- "first"
       }
       
-      raw_results <- 
+      raw_results <- NULL
+      
+      try(raw_results <- 
         readRDS(paste("./results/raw_results_",
                       Dim, "_",
                       Beta, "_",
                       Corr, ".RDS",
                       sep="")
         )
+      )
+      
+      if(is.null(raw_results)){
+        cat(paste("There are no results for a ", 
+                  Dim, "-dimensional setting with\n ",
+                  Corr, " correlation structure and ",
+                  Beta_title, " non-zero true predictors.\n",
+                  "Have you downloaded all results? See README.txt",
+                  sep=""))
+        next
+      }
       
       names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                               "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
