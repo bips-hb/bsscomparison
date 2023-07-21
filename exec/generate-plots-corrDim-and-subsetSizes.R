@@ -1,8 +1,6 @@
 # Generate Figure 8 (correlation and dimensionality) and Figure 10 (performance
 # based on subset size)
 
-
-
 ## Effect of k
 Corr <- c("block")
 Beta <- c("first")
@@ -196,7 +194,7 @@ ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(file="./plots/Value_vs_k.png",
+ggsave(file="./plots/Figure_10.png",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
@@ -214,29 +212,125 @@ Snr <-   2.07
 
 out <- lapply(DIM, function(Dim){
   
-  # load results 
-  raw_results <- 
+  # load results
+  
+  raw_results <- NULL
+  
+  tryCatch(raw_results <- 
     readRDS(paste("./results/raw_results_",
                   Dim, "_",
                   Beta, "_",
                   Corr, ".RDS",
                   sep="")
-    )
+    ), error = function(e) cat(paste("No data for ", Dim, 
+                                     "-dimensional setting found ! \n", sep=""))
+  )
   
-  # rename list elements
-  names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
-                          "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
-                          "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
-                          "alpha"      ,    "result" )
-  
-  
-  SNR <- unique(raw_results$snr)
-  
-  
-  RHO <- unique(raw_results$rho)
-  
-  # generate tibble for rho =c(0.35, 0.7)
-  out_rho_block <- lapply(RHO, function(Rho){
+  if(is.null(raw_results)){
+    out_dim <- NULL
+  }else{
+    # rename list elements
+    names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
+                            "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
+                            "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
+                            "alpha"      ,    "result" )
+    
+    
+    SNR <- unique(raw_results$snr)
+    
+    
+    RHO <- unique(raw_results$rho)
+    
+    # generate tibble for rho =c(0.35, 0.7)
+    out_rho_block <- lapply(RHO, function(Rho){
+      
+      indices <- which(raw_results$dimensionality == Dim & 
+                         raw_results$rho == Rho & 
+                         raw_results$snr == Snr & 
+                         raw_results$corr_type == Corr & 
+                         raw_results$beta_type == Beta)
+      
+      out <- lapply(indices, function(x){
+        data_tmp <- raw_results$result[[x]]
+        index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+        if(length(index_maxF1)==0){
+          out <- raw_results$result[[x]][1,]
+          out$F1 <- 0
+        }else{
+          out <- data_tmp[index_maxF1,]
+          
+        }
+        out
+      })
+      
+      out <- do.call(rbind, out)
+      
+      no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
+        mutate(method = replace(method, alpha == 1, "lasso"))
+      
+      enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
+      enets$alpha <- round(enets$alpha,2)
+      enets <- enets %>% 
+        mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
+        mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
+        mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
+      
+      enets <- enets[enets$method != "enet",]
+      
+      
+      one_setting <- bind_rows(enets, no_enets)
+      
+      # dismiss hybrid (Enet followeb by FSS/BSS)
+      one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
+      
+      one_setting$method <- factor(one_setting$method,
+                                   levels = c(
+                                     "enet_0.1", 
+                                     "enet_0.5", 
+                                     "enet_0.9", 
+                                     "lasso",
+                                     "fs",
+                                     "bs" ))
+      
+      names(one_setting)[c(1,12,13,14)] <- c("Method", "Recall", "Precision", "Best_F1")
+      
+      one_setting <- one_setting %>% 
+        pivot_longer(c(Best_F1,Recall,Precision), names_to = 'Metric', values_to = 'Value')
+      
+      p <- unique(one_setting$p)
+      s <- unique(one_setting$s)
+      one_setting$rho <- Rho 
+      one_setting$dim <- Dim
+      
+      one_setting
+      
+    })
+    
+    out_rho_block <- do.call(rbind, out_rho_block)
+    
+    # generate tibble for rho=0 (independent)
+    Corr <- "independent"
+    
+    raw_results <- 
+      readRDS(paste("./results/raw_results_",
+                    Dim, "_",
+                    Beta, "_",
+                    Corr, ".RDS",
+                    sep="")
+      )
+    
+    # name list elements
+    names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
+                            "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
+                            "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
+                            "alpha"      ,    "result" )
+    
+    
+    
+    
+    RHO <- unique(raw_results$rho)
+    
+    Rho <- RHO
     
     indices <- which(raw_results$dimensionality == Dim & 
                        raw_results$rho == Rho & 
@@ -244,162 +338,77 @@ out <- lapply(DIM, function(Dim){
                        raw_results$corr_type == Corr & 
                        raw_results$beta_type == Beta)
     
-    out <- lapply(indices, function(x){
-      data_tmp <- raw_results$result[[x]]
-      index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
-      if(length(index_maxF1)==0){
-        out <- raw_results$result[[x]][1,]
-        out$F1 <- 0
-      }else{
-        out <- data_tmp[index_maxF1,]
-        
-      }
-      out
+    out_independent <- lapply(RHO, function(Rho){
+      
+      indices <- which(raw_results$dimensionality == Dim & 
+                         raw_results$rho == Rho & 
+                         raw_results$snr == Snr & 
+                         raw_results$corr_type == Corr & 
+                         raw_results$beta_type == Beta)
+      
+      out <- lapply(indices, function(x){
+        data_tmp <- raw_results$result[[x]]
+        index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+        if(length(index_maxF1)==0){
+          out <- raw_results$result[[x]][1,]
+          out$F1 <- 0
+        }else{
+          out <- data_tmp[index_maxF1,]
+          
+        }
+        out
+      })
+      
+      out <- do.call(rbind, out)
+      
+      no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
+        mutate(method = replace(method, alpha == 1, "lasso"))
+      
+      enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
+      enets$alpha <- round(enets$alpha,2)
+      enets <- enets %>% 
+        mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
+        mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
+        mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
+      
+      enets <- enets[enets$method != "enet",]
+      
+      
+      one_setting <- bind_rows(enets, no_enets)
+      
+      # dismiss hybrid 
+      one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
+      
+      one_setting$method <- factor(one_setting$method,
+                                   levels = c( 
+                                     "enet_0.1",  
+                                     "enet_0.5",  
+                                     "enet_0.9", 
+                                     "lasso",
+                                     "fs",
+                                     "bs" ))
+      
+      names(one_setting)[c(1,12,13,14)] <- c("Method", "Recall", "Precision", "Best_F1")
+      
+      one_setting <- one_setting %>% 
+        pivot_longer(c(Best_F1,Recall,Precision), names_to = 'Metric', values_to = 'Value')
+      
+      p <- unique(one_setting$p)
+      s <- unique(one_setting$s)
+      one_setting$rho <- Rho 
+      one_setting$dim <- Dim
+      
+      one_setting
+      
     })
     
-    out <- do.call(rbind, out)
+    out_independent <- do.call(rbind, out_independent)
     
-    no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
-      mutate(method = replace(method, alpha == 1, "lasso"))
     
-    enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
-    enets$alpha <- round(enets$alpha,2)
-    enets <- enets %>% 
-      mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
-      mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
-      mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
-    
-    enets <- enets[enets$method != "enet",]
-    
-
-    one_setting <- bind_rows(enets, no_enets)
-    
-    # dismiss hybrid (Enet followeb by FSS/BSS)
-    one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
-    
-    one_setting$method <- factor(one_setting$method,
-                                 levels = c(
-                                   "enet_0.1", 
-                                   "enet_0.5", 
-                                   "enet_0.9", 
-                                   "lasso",
-                                   "fs",
-                                   "bs" ))
-    
-    names(one_setting)[c(1,12,13,14)] <- c("Method", "Recall", "Precision", "Best_F1")
-    
-    one_setting <- one_setting %>% 
-      pivot_longer(c(Best_F1,Recall,Precision), names_to = 'Metric', values_to = 'Value')
-    
-    p <- unique(one_setting$p)
-    s <- unique(one_setting$s)
-    one_setting$rho <- Rho 
-    one_setting$dim <- Dim
-    
-    one_setting
-    
-  })
+    out_dim <- bind_rows(out_independent, out_rho_block)
+  }
   
-  out_rho_block <- do.call(rbind, out_rho_block)
-  
-  # generate tibble for rho=0 (independent)
-  Corr <- "independent"
-  
-  raw_results <- 
-    readRDS(paste("./results/raw_results_",
-                  Dim, "_",
-                  Beta, "_",
-                  Corr, ".RDS",
-                  sep="")
-    )
-  
-  # name list elements
-  names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
-                          "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
-                          "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
-                          "alpha"      ,    "result" )
-  
-  
-  
-  
-  RHO <- unique(raw_results$rho)
-  
-  Rho <- RHO
-  
-  indices <- which(raw_results$dimensionality == Dim & 
-                     raw_results$rho == Rho & 
-                     raw_results$snr == Snr & 
-                     raw_results$corr_type == Corr & 
-                     raw_results$beta_type == Beta)
-  
-  out_independent <- lapply(RHO, function(Rho){
-    
-    indices <- which(raw_results$dimensionality == Dim & 
-                       raw_results$rho == Rho & 
-                       raw_results$snr == Snr & 
-                       raw_results$corr_type == Corr & 
-                       raw_results$beta_type == Beta)
-    
-    out <- lapply(indices, function(x){
-      data_tmp <- raw_results$result[[x]]
-      index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
-      if(length(index_maxF1)==0){
-        out <- raw_results$result[[x]][1,]
-        out$F1 <- 0
-      }else{
-        out <- data_tmp[index_maxF1,]
-        
-      }
-      out
-    })
-    
-    out <- do.call(rbind, out)
-    
-    no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
-      mutate(method = replace(method, alpha == 1, "lasso"))
-    
-    enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
-    enets$alpha <- round(enets$alpha,2)
-    enets <- enets %>% 
-      mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
-      mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
-      mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
-    
-    enets <- enets[enets$method != "enet",]
-    
-    
-    one_setting <- bind_rows(enets, no_enets)
-    
-    # dismiss hybrid 
-    one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
-    
-    one_setting$method <- factor(one_setting$method,
-                                 levels = c( 
-                                   "enet_0.1",  
-                                   "enet_0.5",  
-                                   "enet_0.9", 
-                                   "lasso",
-                                   "fs",
-                                   "bs" ))
-    
-    names(one_setting)[c(1,12,13,14)] <- c("Method", "Recall", "Precision", "Best_F1")
-    
-    one_setting <- one_setting %>% 
-      pivot_longer(c(Best_F1,Recall,Precision), names_to = 'Metric', values_to = 'Value')
-    
-    p <- unique(one_setting$p)
-    s <- unique(one_setting$s)
-    one_setting$rho <- Rho 
-    one_setting$dim <- Dim
-    
-    one_setting
-    
-  })
-  
-  out_independent <- do.call(rbind, out_independent)
-  
-  
-  out_dim <- bind_rows(out_independent, out_rho_block)
+  out_dim
   
 })
 
@@ -419,31 +428,42 @@ levels(out$Method)[levels(out$Method) == "fs"] <-
 levels(out$Method)[levels(out$Method) == "bs"] <- 
   "BSS"
 
-# rename settings
-out$dim[out$dim == "low"] <- "low (n = 1000, p = 100)"
-out$dim[out$dim == "medium"] <- "medium (n = 500, p = 500)"
-out$dim[out$dim == "high"] <- "high (n = 100, p = 1000)"
+if(!all(c("high", "medium", "low") %in% out$dim)){
+  cat(paste("! ! ! NOTE: Could not produce Figure 08 ! ! !\n",
+            "Raw results for high- and medium-dimensional settings are needed.\n",
+            "Please follow instructions in the README to download the data or generate\n",
+            "all raw results with Chapter II in the master script.\n",
+            sep=""))
+  
+}else{
+  
+  # rename settings
+  out$dim[out$dim == "low"] <- "low (n = 1000, p = 100)"
+  out$dim[out$dim == "medium"] <- "medium (n = 500, p = 500)"
+  out$dim[out$dim == "high"] <- "high (n = 100, p = 1000)"
+  
+  # generate plot
+  ggplot(out, aes(x = as.factor(rho), y = Value, fill=Method))+
+    geom_boxplot()+
+    facet_wrap( ~ factor(dim, 
+                         levels = c("low (n = 1000, p = 100)", 
+                                    "medium (n = 500, p = 500)", 
+                                    "high (n = 100, p = 1000)")), 
+                nrow=1)+
+    ylim(0,1) +
+    scale_fill_manual(values=c(
+      "#FF99CC",
+      "#FF66FF",
+      "#B266FF",
+      "#FF3333",
+      "#0080FF",
+      "#00CC00"
+    )) + 
+    ylab("Best possible F1-score") + 
+    xlab(TeX(r'(Correlation strength $\rho$)'))
+  
+  # save plot
+  ggsave(filename = "./plots/Figure_08.png",
+         width = 2800, height = 1200, units = "px", dpi = 400)
+}
 
-# generate plot
-ggplot(out, aes(x = as.factor(rho), y = Value, fill=Method))+
-  geom_boxplot()+
-  facet_wrap( ~ factor(dim, 
-                       levels = c("low (n = 1000, p = 100)", 
-                                  "medium (n = 500, p = 500)", 
-                                  "high (n = 100, p = 1000)")), 
-              nrow=1)+
-  ylim(0,1) +
-  scale_fill_manual(values=c(
-    "#FF99CC",
-    "#FF66FF",
-    "#B266FF",
-    "#FF3333",
-    "#0080FF",
-    "#00CC00"
-  )) + 
-  ylab("Best possible F1-score") + 
-  xlab(TeX(r'(Correlation strength $\rho$)'))
-
-# save plot
-ggsave(filename = "./plots/Corr_and_Dim.png",
-       width = 2800, height = 1200, units = "px", dpi = 400)
