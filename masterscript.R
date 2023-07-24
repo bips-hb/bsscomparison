@@ -309,7 +309,7 @@ BETA <- c("spread", "first")
 #' Next, you ill be asked if you want to download the raw results for medium and
 #' hig dimensional settings. Alternatively you can download the results manually
 #' from
-#' https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+#' https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
 
 source("exec/ask-download.R")
 
