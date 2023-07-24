@@ -432,7 +432,7 @@ if(!all(c("high", "medium", "low") %in% out$dim)){
   cat(paste("! ! ! NOTE: Could not produce Figure 08 ! ! !\n",
             "Raw results for high- and medium-dimensional settings are needed.\n",
             "Please follow instructions in the README to download the data or generate\n",
-            "all raw results with Chapter II in the master script.\n",
+            "all raw results by applying Chapter II in the master script.\n",
             sep=""))
   
 }else{
