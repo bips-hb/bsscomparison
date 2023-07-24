@@ -47,7 +47,7 @@ OVERVIEW/INSTRUCTIONS:
     but in this case you will need to download the raw results and save 
     them under "./results". See below for the links.)
     IMPORTANT: If you use our build-in R-script 
-    "download-intermediateresults-medium-high.R" and get an timout error 
+    "download-intermediate results-medium-high.R" and get an timeout error 
     please make sure to set an appropriate timeout limit (e.g. 
     options(timeout=1000)). 
 
