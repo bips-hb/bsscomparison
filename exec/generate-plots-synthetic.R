@@ -25,6 +25,7 @@ if(all(c("high", "medium") %in% DIM)){
   counter <- 0
 }else{
   counter <- 18
+  cat("There is no high/medium-dimensional setting data available.\nWill only plot results for low-dimensional settings.\n")
 }
 
 for(Dim in DIM){
