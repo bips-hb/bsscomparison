@@ -375,6 +375,9 @@ if(!all(c("high", "medium", "low") %in% DIM)){
   DIM <- c("low", "medium", "high") # order of dimensionality in the Appendix
 }
 
+CORR <- c("block", "toeplitz", "independent")
+BETA <- c("spread", "first")
+
 
 for(Dim in DIM){
   
@@ -432,125 +435,44 @@ for(Dim in DIM){
                              raw_results$beta_type == Beta)
           
           out <- lapply(indices, function(x){
-            raw_results$result[[x]]
-            
+            data_tmp <- raw_results$result[[x]]
+            index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+            if(length(index_maxF1)==0){
+              out <- raw_results$result[[x]][1,]
+              out$F1 <- 0
+              out$snr <- Snr
+            }else{
+              out <- data_tmp[index_maxF1,]
+              out$snr <- Snr
+            }
+            out
           })
           
           out <- do.call(rbind, out)
           
-          out_BSS <- 
-          
-          no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
-            mutate(method = replace(method, alpha == 1, "lasso"))
-          
-          enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
-          enets$alpha <- round(enets$alpha,2)
-          enets <- enets %>% 
-            # uncomment if more Enet versions are desired
-            mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
-            # mutate(method = replace(method, alpha == 0.2, "enet_0.2")) %>%
-            # mutate(method = replace(method, alpha == 0.3, "enet_0.3")) %>%
-            # mutate(method = replace(method, alpha == 0.4, "enet_0.4")) %>%
-            mutate(method = replace(method, alpha == 0.5, "enet_0.5")) %>%
-            # mutate(method = replace(method, alpha == 0.6, "enet_0.6")) %>%
-            # mutate(method = replace(method, alpha == 0.7, "enet_0.7")) %>%
-            # mutate(method = replace(method, alpha == 0.8, "enet_0.8")) %>%
-            mutate(method = replace(method, alpha == 0.9, "enet_0.9"))
-          
-          enets <- enets[enets$method != "enet",]
-          
-          one_setting <- bind_rows(enets, no_enets)
-          
-          # dismiss hybrid (we implemented our idea of a two step procedure by a
-          # pre-selection via Enet/Lasso followed by BSS; these results are not
-          # part of the paper "Variable selection in linear regression models: 
-          # choosing the best subset is not always the best choice" and are 
-          # therefore dismissed from the following analysis.)
-          one_setting <- one_setting[one_setting$method != "enet_bs_hybrid", ]
-          
-          one_setting$method <- factor(one_setting$method,
-                                       levels = 
-                                         c("enet_0.1",
-                                           # "enet_0.2", 
-                                           # "enet_0.3", 
-                                           # "enet_0.4", 
-                                           "enet_0.5", 
-                                           # "enet_0.6", 
-                                           # "enet_0.7", 
-                                           # "enet_0.8", 
-                                           "enet_0.9", 
-                                           "lasso",
-                                           "fs",
-                                           "bs" ))
-          levels(one_setting$method)[levels(one_setting$method) == "enet_0.1"] <- 
-            "Enet 0.1"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.2"] <- 
-          #   "Enet 0.2"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.3"] <- 
-          #   "Enet 0.3"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.4"] <- 
-          #   "Enet 0.4"
-          levels(one_setting$method)[levels(one_setting$method) == "enet_0.5"] <- 
-            "Enet 0.5"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.6"] <- 
-          #   "Enet 0.6"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.7"] <- 
-          #   "Enet 0.7"
-          # levels(one_setting$method)[levels(one_setting$method) == "enet_0.8"] <- 
-          #   "Enet 0.8"
-          levels(one_setting$method)[levels(one_setting$method) == "enet_0.9"] <- 
-            "Enet 0.9"
-          levels(one_setting$method)[levels(one_setting$method) == "lasso"] <- 
-            "Lasso"
-          levels(one_setting$method)[levels(one_setting$method) == "fs"] <- 
-            "FSS"
-          levels(one_setting$method)[levels(one_setting$method) == "bs"] <- 
-            "BSS"
-          
-          names(one_setting)[c(1,12,13,14)] <- c("Method", 
-                                                 "Corresponding Recall", 
-                                                 "Corresponding Precision", 
-                                                 "Best possible F1")
-          
-          one_setting <- one_setting %>% 
-            pivot_longer(c("Best possible F1",
-                           "Corresponding Recall",
-                           "Corresponding Precision"), 
-                         names_to = 'Metric', 
-                         values_to = 'Value')
-          
-          p <- unique(one_setting$p)
-          s <- unique(one_setting$s)
-          
-          one_setting
+          # we only need the Best subset Data which has a maximum subset size
+          # of k=15 
+          out_BSS <- out[out$method == "bs" & k <= 15]
+          out_BSS
         })
         out_snr <- do.call(bind_rows, out_snr)
         
-        p <- unique(out_snr$p)
-        s <- unique(out_snr$s)
+        out_snr$finished[out_snr$finished == "OPTIMAL"] <- "yes"
+        out_snr$finished[out_snr$finished == "TIME_LIMIT"] <- "No (time limit reached)"
         
         pic <- ggplot(out_snr , 
-                      aes(x = as.factor(snr), y = Value, fill = Method))+
-          geom_boxplot()+
-          facet_wrap( ~ Metric, ncol = 1)+
-          ylim(0,1)+
-          scale_fill_manual(values=c(
-            "#FF99CC",
-                     "#FF66FF",
-                     "#B266FF",
-                     "#FF3333",
-                     "#0080FF",
-                     "#00CC00"
-          )) + 
+                      aes(x = as.factor(snr), fill = finished))+
+          geom_bar(position = position_dodge2(preserve = "single")) +
           xlab("Signal-to-noise ratrio τ")+
-          theme(plot.title = element_text(size=9))
+          ylab("Number of simulation runs") +
+          theme(plot.title = element_text(size=9)) 
         
         counter <- counter +1
         ggsave(paste("./plots/Appendix_Figure_",
                      counter,
                      ".png", sep=""), 
                width = 18, 
-               height = 18, units = "cm", dpi = 300)
+               height = 12, units = "cm", dpi = 300)
         
         
         
@@ -563,6 +485,6 @@ for(Dim in DIM){
   }
   
 }
-
+rm(counter)
 
 
