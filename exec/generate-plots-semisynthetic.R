@@ -1,6 +1,6 @@
 #' Script to plot results of simulation results from synthetic data
 #' 
-#' loadd neccessary packages
+#' load necessary packages
 library(dplyr)
 library(tibble)
 library(ggplot2)
@@ -11,13 +11,16 @@ library(reshape2)
 
 ### Semi Synthetic data p=1000, n =100
 
+# load data
 out_sim_TCGA <-
   readRDS("./results/raw_results_SemiSyntheticSimulation_1000_100.RDS")
 
+# change name: Enet with alpha=1 is the Lasso
 out_sim_TCGA <-
   out_sim_TCGA %>%
   mutate(method = case_when(method == "Enet 1" ~ "Lasso",
                             TRUE ~ method ))
+
 
 out_sim_TCGA$method <-
   factor(out_sim_TCGA$method,
@@ -35,6 +38,8 @@ out_sim_TCGA$method <-
            "FSS",
            "BSS"))
 
+# find the best possible F1 score for each method in each run over each signal-
+# to-noise ratio
 F1max_out_sim_TCGA <-
   out_sim_TCGA %>%
   group_by(sim.n, snr, method) %>%
@@ -44,20 +49,22 @@ F1max_out_sim_TCGA <-
   group_by(method, snr, sim.n) %>%
   distinct(maxF1, .keep_all = T)
 
-
+# melt data to have precsion, accuracy and maxF1 as one variable "measure"
 melted_out_sim_TCGA <-
   tibble(melt(F1max_out_sim_TCGA,
               measure = c("maxF1", "Precision", "Accuracy")))
 
-melted_out_sim_TCGA$variable <-  as.character(melted_out_sim_TCGA$variable)
+ 
+melted_out_sim_TCGA$variable <- as.character(melted_out_sim_TCGA$variable)
 
-melted_out_sim_TCGA <-  melted_out_sim_TCGA %>%
+# rename performance measures
+melted_out_sim_TCGA <-melted_out_sim_TCGA %>%
   mutate(variable = case_when(variable == "maxF1" ~ "Best possible F1",
                               variable == "Precision" ~ "Corresponding Precision",
                               variable == "Accuracy" ~ "Corresponding Recall",
                               TRUE ~ variable ))
 
-
+# generate plot
 pic_out <- ggplot(melted_out_sim_TCGA %>% filter(snr %in% c(0.42, 1.22, 3.52)),
                   aes(x = as.factor(snr), y = value, fill = method)) +
   geom_boxplot(width=0.5)+
@@ -141,14 +148,14 @@ F1max_out_sim_TCGA <-
   group_by(method, snr, sim.n) %>%
   distinct(maxF1, .keep_all = T)
 
-#' melt data
+# melt data to have precsion, accuracy and maxF1 as one variable "measure"
 melted_out_sim_TCGA <-
   tibble(melt(F1max_out_sim_TCGA,
               measure = c("maxF1", "Precision", "Accuracy")))
 
 melted_out_sim_TCGA$variable <-  as.character(melted_out_sim_TCGA$variable)
 
-#' rename
+#' rename performance measures
 melted_out_sim_TCGA <-
   melted_out_sim_TCGA %>%
   mutate(variable = case_when(variable == "maxF1" ~ "Best possible F1",

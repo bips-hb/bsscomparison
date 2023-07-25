@@ -1,12 +1,14 @@
 # Generate Figure 8 (correlation and dimensionality) and Figure 10 (performance
 # based on subset size)
 
-## Effect of k
+### Effekt of different subset sizes k (Figure 10)
+# specific setting shown in the paper:
 Corr <- c("block")
 Beta <- c("first")
 Dim <- c("low")
 Rho <- 0.7
 
+# load data
 raw_results <- 
   readRDS(paste("./results/raw_results_",
                 Dim, "_",
@@ -24,23 +26,28 @@ names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n
 # get unique SNRs
 SNR <- unique(raw_results$snr)
 
+# loop the results over all unique signal to noise ratios
 out_snr <- lapply(SNR, function(Snr){
   
-  # find results for above parameter setting
+  # find indices for above parameter setting (results are saved as lists)
   indices <- which(raw_results$dimensionality == Dim & 
                      raw_results$rho == Rho & 
                      raw_results$snr == Snr & 
                      raw_results$corr_type == Corr & 
                      raw_results$beta_type == Beta)
   
+  # loop over the indices to find best possible performance 
   out <- lapply(indices, function(x){
+    
     data_tmp <- raw_results$result[[x]]
     
+    # make sure all TP, FP, etc. are numeric
     data_tmp$TP <- as.numeric(data_tmp$TP)
     data_tmp$TN <- as.numeric(data_tmp$TN)
     data_tmp$FP <- as.numeric(data_tmp$FP)
     data_tmp$FN <- as.numeric(data_tmp$FN)
     
+    # calculate the MCC
     data_tmp$MCC <- 
       (data_tmp$TP*data_tmp$TN - data_tmp$FP*data_tmp$FN)/
       sqrt(
@@ -49,18 +56,19 @@ out_snr <- lapply(SNR, function(Snr){
           (data_tmp$TN + data_tmp$FP) * 
           (data_tmp$TN + data_tmp$FN))
     
+    # claculate the F2
     data_tmp$F2 <- 
       ((1+2^2)*data_tmp$TP)/
       ((1+2^2)*data_tmp$TP +
          2^2*data_tmp$FN + 
          data_tmp$FP)
     
+    # we want to show subset sizes k=1, 2, ..., 50
     data_tmp <- data_tmp[data_tmp$k <= 50,]
     data_tmp
   })
   
   out <- do.call(rbind, out)
-  
   
   no_enets <- as_tibble(out[is.na(out$alpha) | out$alpha==1,]) %>% 
     mutate(method = replace(method, alpha == 1, "lasso"))
@@ -128,19 +136,20 @@ out_snr <- lapply(SNR, function(Snr){
   levels(one_setting$method)[levels(one_setting$method) == "bs"] <- 
     "BSS"
   
+  # variables for specific setting
   one_setting$snr <- Snr
   one_setting$rho <- Rho
   one_setting$dim <- Dim
   one_setting$beta_position <- Beta
   one_setting$corr_struc <- Corr
   
-  
+  # rename variables
   names(one_setting)[c(1,12,13)] <- c("Method", 
                                       "Recall", 
                                       "Precision"
   )
   
-  
+  # put different metrics in one variable
   one_setting <- one_setting %>% 
     pivot_longer(c("F1",
                    "F2",
@@ -152,13 +161,14 @@ out_snr <- lapply(SNR, function(Snr){
   
 })
 
+# make one dataset
 out_snr <- do.call(rbind, out_snr)
 
+# since FSS/BSS have onle k=1,2,...,15 set their metrics to zero for bigger 
+# subet sizes
 out_snr[is.na(out_snr$Value) & out_snr$k <=15, ]$Value  <- 0
 
-p <- unique(out_snr$p)
-s <- unique(out_snr$s)
-
+# get mean values for metrics with respekt to subset size k, etc.
 out_snr.summarised <- 
   out_snr%>% 
   group_by(snr, rho, dim, corr_struc, beta_position, Method, k, Metric) %>%
@@ -167,7 +177,7 @@ out_snr.summarised <-
 
 
 
-ggplot(out_snr.summarised %>% 
+pic <- ggplot(out_snr.summarised %>% 
          filter(Method %in% 
                   c("Enet 0.1", "Enet 0.5", "Enet 0.9", "Lasso", "FSS", "BSS") & 
                   Metric %in% 
@@ -194,28 +204,27 @@ ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(file="./plots/Figure_10.png",
+ggsave(pic, file="./plots/Figure_10.png",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
 
-# effect of Correlation and Dimension
+### Effect of Correlation and Dimension (Figure 8)
 
-# plot for different correlation
-
+# setting shown in the paper
 Corr <- c("block")
 Beta <- c("first")
 DIM <- c("low", "medium", "high")
+Snr <- 2.07
 
-Snr <-   2.07
 
-
+# loop over dimensionality
 out <- lapply(DIM, function(Dim){
   
   # load results
-  
   raw_results <- NULL
   
+  # use tryVatch for cases when meidum/high-dimensional data is not available
   tryCatch(raw_results <- 
     readRDS(paste("./results/raw_results_",
                   Dim, "_",

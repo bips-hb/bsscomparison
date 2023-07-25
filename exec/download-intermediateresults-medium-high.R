@@ -31,7 +31,8 @@ if (! file.exists("results/raw_results_high_spread_block.RDS")) {
   file.copy(from = paste("./results/BestSubsetResults/", files_to_move, sep=""), 
             to = paste("./results/", files_to_move, sep=""))
   
-  # delete unpacked original directory -- must add recursive = TRUE
+  cat(sprintf("Deleting not neccessary files"))
+  # delete unpacked original directory and zip-file -- must add recursive = TRUE
   unlink("./results/BestSubsetResults.zip", recursive = TRUE)
   unlink("./results/__MACOSX/", recursive = TRUE)
   unlink("./results/BestSubsetResults", recursive = TRUE)

@@ -92,7 +92,6 @@ g3 <- ggplot(time_data %>% filter(time %in% c(180,3600)),
   stat_summary(fun.data = give.n, geom = "text", fun = median,
                position = position_dodge(width = 0.75), size =1.5) +
   labs(fill='BSS results', tags = "C") +
-  #theme(legend.position="bottom") +
   xlab("Subset size k")+
   ylab("F1") +
   ylim(0,1)
@@ -126,7 +125,7 @@ for(i in 1:15){
 }
 
 
-# change the 
+# change the opostion of number of runs in the plot
 give.n <- function(x){
   return(c(y = 1, label = length(x)))
   # experiment with the multiplier to find the perfect position
@@ -295,8 +294,7 @@ for(i in 1:15){
                  xend=i +0.4, color="orange")
 }
 
-
-
+# change the opostion of number of runs in the plot
 give.n <- function(x){
   return(c(y = 1, label = length(x)))
   # experiment with y to find the perfect position
