@@ -1,9 +1,16 @@
 #' Script to plot results of simulation results from synthetic data
 #' 
+#' Inout:
 #' @param CORR vector of correlation structures
 #' @param BETA vector of non-zero positions
 #' @param DIM dimensionality of problem
 #' @param SNR vecotr of signal-to-noise values
+#' 
+#' Output:
+#' Figures 2,3,4 and 5 of the paper and figures 1-27 of the appendix
+#' (if only low dimensional data is available, only figures 3 & 4 of the
+#' paper and figures 19-27 of the appendix are generated)
+#' 
 #' 
 #' load neccessary packages
 library(dplyr)
@@ -15,7 +22,7 @@ library(reshape2)
 
 
 #### Plots for the Appendix ####
-
+# This script uses 
 
 
 # counter is needed for labaling the figures according to the appendix.
@@ -28,6 +35,10 @@ if(all(c("high", "medium") %in% DIM)){
   cat("There is no high/medium-dimensional setting data available.\nWill only plot results for low-dimensional settings.\n")
 }
 
+
+### Generate figures for the Appendix
+# loop over dimensionality, correlation structure, position of the non-zero betas
+# and correlation strength
 for(Dim in DIM){
   
   for(Corr in CORR){
@@ -47,7 +58,7 @@ for(Dim in DIM){
       
       raw_results <- NULL
       
-      # load the raws results
+      # load the raws results 
       raw_results <- 
         readRDS(paste("./results/raw_results_",
                       Dim, "_",
@@ -56,15 +67,11 @@ for(Dim in DIM){
                       sep="")
         )
       
-      
-      
+      # rename list elements of the raw-resuslt
       names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                               "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
                               "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
                               "alpha"      ,    "result" )
-      
-      
-      
       
       
       SNR <- unique(raw_results$snr)
@@ -74,10 +81,7 @@ for(Dim in DIM){
       
       for(Rho in RHO){
         
-        
-        
         out_snr <- lapply(SNR, function(Snr){
-          
           
           indices <- which(raw_results$dimensionality == Dim & 
                              raw_results$rho == Rho & 
@@ -107,7 +111,8 @@ for(Dim in DIM){
           enets <- as_tibble(out[out$alpha>0 & out$alpha<1 & out$method=="enet",])
           enets$alpha <- round(enets$alpha,2)
           enets <- enets %>% 
-            # uncomment if more Enet versions are desired
+            # uncomment if more Enet versions are desired (please uncomment
+            # also the the levels etc below)
             mutate(method = replace(method, alpha == 0.1, "enet_0.1")) %>% 
             # mutate(method = replace(method, alpha == 0.2, "enet_0.2")) %>%
             # mutate(method = replace(method, alpha == 0.3, "enet_0.3")) %>%
@@ -143,6 +148,8 @@ for(Dim in DIM){
                                          "lasso",
                                          "fs",
                                          "bs" ))
+          
+          
           levels(one_setting$method)[levels(one_setting$method) == "enet_0.1"] <- 
             "Enet 0.1"
           # levels(one_setting$method)[levels(one_setting$method) == "enet_0.2"] <- 
@@ -180,16 +187,13 @@ for(Dim in DIM){
                          names_to = 'Metric', 
                          values_to = 'Value')
           
-          p <- unique(one_setting$p)
-          s <- unique(one_setting$s)
           
           one_setting
         })
         out_snr <- do.call(bind_rows, out_snr)
         
-        p <- unique(out_snr$p)
-        s <- unique(out_snr$s)
-        
+        # please add more colors in "scale_fill_manual" if you have more than
+        # six methods 
         pic <- ggplot(out_snr , 
                       aes(x = as.factor(snr), y = Value, fill = Method))+
           geom_boxplot()+
@@ -205,14 +209,37 @@ for(Dim in DIM){
           )) + 
           xlab("Signal-to-noise ratrio τ")+
           theme(plot.title = element_text(size=9))
-  
+        
+        # raise counter for naming the pltos
         counter <- counter +1
-        ggsave(paste("./plots/Appendix_Figure_",
+        
+        # save plot
+        ggsave(pic, paste("./plots/Appendix_Figure_",
                      counter,
                      ".png", sep=""), 
                width = 18, 
                height = 18, units = "cm", dpi = 300)
         
+        
+        ### Additionaly, save figures if the setting corresponds to of the four 
+          # settings shown the paper (figures 2, 3, 4 and 5)
+        
+        if(Dim == "high" & Beta == "spread" & Corr == "block" & Rho == 0.35){
+          ggsave(pic, "./plots/Figure_02.png",width = 18, 
+                 height = 18, units = "cm", dpi = 300)
+        }
+        if(Dim == "high" & Beta == "adjacent" & Corr == "toeplitz" & Rho == 0.7){
+          ggsave(pic, "./plots/Figure_03.png",width = 18, 
+                 height = 18, units = "cm", dpi = 300)
+        }
+        if(Dim == "low" & Beta == "spread" & Corr == "block" & Rho == 0.7){
+          ggsave(pic, "./plots/Figure_04.png",width = 18, 
+                 height = 18, units = "cm", dpi = 300)
+        }
+        if(Dim == "low" & Beta == "adjacent" & Corr == "block" & Rho == 0.7){
+          ggsave(pic, "./plots/Figure_05.png",width = 18, 
+                 height = 18, units = "cm", dpi = 300)
+        }
         
         
         

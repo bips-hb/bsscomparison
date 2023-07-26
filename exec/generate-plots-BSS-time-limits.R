@@ -3,6 +3,15 @@
 #' with respect to different time limits and certified solutions
 #' and Firgures 30-56 in the Appendixy (number of certified runs)
 
+#' Input:
+#' raw_results of the time comparison simulation and the synthetic data
+#' 
+#' Output:
+#' Figure 11 of the paper
+#' Figure 30-57 of the appendix
+#' Note: if only low-dimensional data is available only figures 30-38 and figure
+#' 57 of the appendix are generated
+
 # Load necessary packages 
 library(dplyr)
 library(tibble)
@@ -10,7 +19,6 @@ library(ggplot2)
 library(tidyverse)
 library(ggpubr)
 library(reshape2)
-
 
 
 ################################################################################
@@ -354,12 +362,16 @@ ggsave("./plots/Appendix_Figure_57.png",
 
 
 
-#### Plots for the Appendix Figures 30-56 ####
+#### Plots for the Appendix Figures 30-56 ##### 
 
+#' Input:
 #' @param CORR vector of correlation structures
 #' @param BETA vector of non-zero positions
 #' @param DIM dimensionality of problem
 #' @param SNR vecotr of signal-to-noise values
+
+#' Output:
+#' The plots shown in appendix, figures 30-56
 
 #' counter is needed for labaling the figures according to the appendix.
 counter <- 29
@@ -370,13 +382,14 @@ if(!all(c("high", "medium", "low") %in% DIM)){
   cat("Please follow the instructions in the README and masterscript\n")
   cat("to generate/dowload high/medium-dimensional result\n")
 }else{
-  DIM <- c("low", "medium", "high") # order of dimensionality in the Appendix
+  DIM <- c("low", "medium", "high") # re-order of dimensionality in the Appendix
 }
 
 CORR <- c("block", "toeplitz", "independent")
 BETA <- c("spread", "first")
 
-
+# loop over dimensionality, correlation structure, position of the non-zero betas
+# and correlation strength
 for(Dim in DIM){
   
   for(Corr in CORR){
@@ -389,7 +402,7 @@ for(Dim in DIM){
       }
       
       # we only need one beta positioning if there is no correlation between
-      #. any predictor
+      # any predictor
       if(Corr == "independent" & Beta == "spread"){
         next
       }
@@ -403,28 +416,21 @@ for(Dim in DIM){
                       sep="")
         )
       
-      
-      
+      # rename list elements
       names(raw_results) <- c("job.id",         "problem"    ,    "algorithm"    ,  "n"           ,
                               "p"           ,   "s"           ,   "dimensionality", "corr_type" ,    
                               "rho"         ,   "beta_type"    ,  "snr"        ,    "k"      ,       
                               "alpha"      ,    "result" )
-      
-      
-      
-      
+ 
       
       SNR <- unique(raw_results$snr)
       
       RHO <- unique(raw_results$rho)
       
-      
+  
       for(Rho in RHO){
-        
-        
-        
+ 
         out_snr <- lapply(SNR, function(Snr){
-          
           
           indices <- which(raw_results$dimensionality == Dim & 
                              raw_results$rho == Rho & 

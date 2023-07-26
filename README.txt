@@ -27,7 +27,7 @@ OVERVIEW/INSTRUCTIONS:
     or to generate just the plots based on the raw results provided by us
     (see below for the links).
 
-    The master script contains 8+1 chapters:
+    The master script contains 7+1 chapters:
     
     0.: Set-Up
     A script which asks the user to install the necessary packages. 
@@ -53,68 +53,40 @@ OVERVIEW/INSTRUCTIONS:
 
     V.: Generate all plots for the results of Chapter III (time limits)
     (NOTE: you can run this script without running Chapter III based
-    on the raw results in ./results. No extra download needed)
+    on the raw results in ./results. However, you will need to download the
+    results of the medium- and high-dimensional settings to genrate all
+    certification plots of the appendix, i.e. figures 30-56)
 
     VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC
     This is omitted by default because of its long running time. You 
     have to change "runCriteriaSimu <- FALSE" to 
-    "runCriteriaSimu <- TRUE" in the master script to run these simulations. 
+    "runCriteriaSimu <- TRUE" in "masterscript.R" to run these simulations. 
     Please see also the default parameter values in the corresponding 
     chapter (they correspond to Figure 9 in the paper). 
 
     VII.: Plot the results of Stability Selection, BIC, mBIC2 and HQC 
     The default setting is a high-dimensional block structure with 
     correlation rho = 0.7 and consecutive ("adjacent") non-zero betas.
-    These values correspond to Figure 9 in the paper. 
-
-    VIII.: Rename plots
-    A short script to rename the previous generated plots according to 
-    the figures of the paper.
+    These values correspond to Figure 9 in the paper and will generate
+    a figure named "Figure_09". If you change the parameter values in 
+    chapter VI it will generate a different figures an name it  
 
 
 PLOTS/FIGURES: 
 
-    This repository generates all plots of our simulation study and saves
-    them under "./plots".
-    The following table gives the name of the plots with their corresponding
-    figure numbers according to their appearance in our paper. Further, the 
-    table contains the chapter number of the master script to generate the 
-    plots.
-
-    To compare these plots to the plots of the paper the master script
-    calls a script to rename them as "Figure_02", "Figure_03", etc. 
-    If you do not want to rename the plots please delete the 
-    "source(rename_plots.R)" line at the end of the master script (see 
-    Chapter VIII).
-
+    This repository generates all plots of our simulation study (shown in 
+    the paper and the appendix) and saves them into "./plots".
+    The plots are named "Figure_02", "Figure_03", etc. according to the names 
+    in the paper and "Appendix_Figure_01", "Appendix_Figure_02", etc.
+    accroding to the names of the appendix.
     Note: Figure 1 in the paper is just a schematic representation of the 
     different correlation structures and the positioning of the direct 
     predictors. Hence, we do not provide any code for generating this figure.
 
-    -------------------------------------------------------------------------|
-    |        Name of generated plot                |  Figure No. |  Chapter  |
-    =========================================================================|
-    |                                              |             |           |
-    |  Resultshigh_block_spread_35.png             |      2      |    IV     |
-    |                                              |             |           |
-    |  Resultshigh_toeplitz_first_70.png           |      3      |    IV     |
-    |                                              |             |           |
-    |  Resultslow_block_spread_70.png              |      4      |    IV     |
-    |                                              |             |           |
-    |  Resultslow_block_first_70.png               |      5      |    IV     |
-    |                                              |             |           |
-    |  Results_high_semisyn.png                    |      6      |    IV     |
-    |                                              |             |           |
-    |  Results_low_semisyn.png                     |      7      |    IV     |
-    |                                              |             |           |
-    |  Corr_and_Dim.png                            |      8      |    IV     |
-    |                                              |             |           |
-    |  BestCriterion_block_high_0.7.png            |      9      |    VII    |
-    |                                              |             |           |
-    |  Value_vs_k.png                              |     10      |    IV     |
-    |                                              |             |           |
-    |  Time_comparison_blocklowfirst70_snr042.png  |     11      |     V     |
-    --------------------------------------------------------------------------
+    To generate the plots you have two options: you can run all simulations
+    by yourself (please see above) or you can use the raw data of our simulation
+    runs. These are provided in this repository and via an additional file
+    repository (please the below).
 
 
 DATASETS & AVAILABILITY:
