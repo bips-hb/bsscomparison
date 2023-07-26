@@ -1,8 +1,6 @@
 #' Simulate a semi-synthetic data setting from TCGA ovarian cancer samples 
 #' and and apply BSS, FSS, Enet and Lasso to find the the true model
-#'  TCGA Dataset is available under
-#' https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
-#' and in folder ./data
+#' TCGA Dataset is available in folder ./data
 #' 
 #' Gurobi solver version >= 8.0 needed!
 #' Running simulation on a high performance cluster is strongly recommended!
@@ -22,6 +20,7 @@ if (run_in_parallel) {
   library(snow)
   library(Rmpi)
   
+  # this function terminates the MPI connection if the (open)MPI cluster crashes
   .Last <- function(){
     if (is.loaded("mpi_initialize")){
       if (mpi.comm.size(1) > 0){
@@ -64,8 +63,8 @@ Loop_Sim_n <- parLapply(cl, 1:Sim_n, function(sim_n){
               #' scale subdata
               TCGA_subdata <- scale(TCGA_subdata)
               #' generate correlation matrix of data; this will be needed to select the
-              #' two most correlated variables. The eight highly correlated variabkles 
-              #' with one of them are selected, too, to be true direct predictors 
+              #' two most correlated variables. The 8 most highly correlated variables 
+              #' with one of them are selected are considered to be true direct predictors 
               #' (non_zero_indices)
               Corr_tcga <- cor(TCGA_subdata)
               tmp_Corr_tcga <- Corr_tcga
@@ -274,6 +273,8 @@ saveRDS(Loop_Sim_n,
 #' stop cluster
 stopCluster(cl)
 mpi.quit()
+
+
 } else { 
   
   # START NO PARALLEL RUN
@@ -292,8 +293,8 @@ mpi.quit()
       #' scale subdata
       TCGA_subdata <- scale(TCGA_subdata)
       #' generate correlation matrix of data; this will be needed to select the
-      #' two most correlated variables. The eight highly correlated variabkles 
-      #' with one of them are selected, too, to be true direct predictors 
+      #' two most correlated variables. The 8 most highly correlated variables 
+      #' with one of them are selected are considered to be true direct predictors 
       #' (non_zero_indices)
       Corr_tcga <- cor(TCGA_subdata)
       tmp_Corr_tcga <- Corr_tcga

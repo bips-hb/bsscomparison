@@ -1,5 +1,11 @@
 #' Script to plot results of simulation results from synthetic data
 #' 
+#' Input: 
+#' raw results of the semi synthetic data simulation
+#' 
+#' Output:
+#' Generate figure 6 and 7 of the paper
+#' 
 #' load necessary packages
 library(dplyr)
 library(tibble)

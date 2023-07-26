@@ -204,7 +204,7 @@ pic <- ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(pic, file="./plots/Figure_10.png",
+ggsave(plot = pic, filename = file="./plots/Figure_10.png",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
@@ -437,6 +437,7 @@ levels(out$Method)[levels(out$Method) == "fs"] <-
 levels(out$Method)[levels(out$Method) == "bs"] <- 
   "BSS"
 
+# check if all results of all dimensions are present 
 if(!all(c("high", "medium", "low") %in% out$dim)){
   cat(paste("! ! ! NOTE: Could not produce Figure 08 ! ! !\n",
             "Raw results for high- and medium-dimensional settings are needed.\n",

@@ -443,29 +443,9 @@ if(runCriteriaSimu == TRUE){
 #' simulation results of the previous section or on the raw data from ./results
 #' Plots are saved in subfolder ./plots
 
-#' Settings to plot. The default is for the plot of Figure 9 of our paper
-
-methods <- c("Enet 0.1", "Enet 0.5", "Enet 0.9", "Lasso", "FSS", "BSS")
-corr_struc <- "block"
-Dim <- "high"
-beta_position <- "adjacent"
-rho <- 0.7
-
-
 source("exec/generate-plots-selectionCriteria.R")
 
 
-
-#' #############################################################################
-#' #############################################################################
-#'                            VIII.: Rename Plots 
-#' #############################################################################
-#' #############################################################################
-
-
-# rename the previous plots according to their appearance in the paper
-
-source("exec/rename_plots.R")
 
 
 

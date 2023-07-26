@@ -1,93 +1,134 @@
 # Script for generating the plots for the selection criteria
 
-library(tidyverse)
+# für paper plot
+methods <- c("Enet 0.1", "Enet 0.5", "Enet 0.9", "Lasso", "FSS", "BSS")
+corr_struc <- "block"
+Dim <- "high"
+beta_position <- "adjacent"
+rho <- 0.7
 
+BETA <- c("adjacent", "spread")
+DIM <- c("low", "high")
+CORR <- c("block", "toeplitz")
+
+# für Abgleich
 if(runCriteriaSimu == TRUE){
   path2data <- "./data/" 
 }else{
-  path2data <- "./results/" 
+  path2data <- "" 
 }
 
-sc_data <- 
-  readRDS(
-    paste(path2data, "Results_Selection_Criteria_",
-          corr_struc, "_",
-          Dim, "_",
-          beta_position,
-          ".RDS",
-          sep="")
-  )
 
-ss_data <-
-  readRDS(
-    paste(path2data, "Results_Stability_Selection_",
-          corr_struc, "_",
-          Dim, "_",
-          beta_position,
-          ".RDS",
-          sep="")
-  )
+counter <- 57
 
-results <- bind_rows(
-  sc_data,
-  ss_data)
+for(Corr in CORR){
+  for(Beta in BETA){
+    for(Dim in DIM){
+      
+      
+      # load results of BIC, mBIC2 and HQC
+      sc_data <- 
+        readRDS(
+          paste("./results/Results_Selection_Criteria_",
+                Corr, "_",
+                Dim, "_",
+                Beta,
+                ".RDS",
+                sep="")
+        )
+      
+      # load results of Stability Selection
+      ss_data <-
+        readRDS(
+          paste("./results/Results_Stability_Selection_",
+                Corr, "_",
+                Dim, "_",
+                Beta,
+                ".RDS",
+                sep="")
+        )
+      
+      # one dataset
+      results <- bind_rows(
+        sc_data,
+        ss_data)
+      
+      #rename
+      results$beta_position[results$beta_position == "spread"] <- "equally spaced"
+      results$beta_position[results$beta_position == "adjacent"] <- "consecutive"
+      
+      RHO <- unique(results$rho)
+      
+      for(Rho in RHO){
+        
+        print(Rho)
+        
+        # Generarte pltos for F1-score, Recall and Precision for BIC, mBIC2, HQC and
+        # Stability Selection and save in ./plots
+        
+        # F1
+        pic_f1 <- ggplot(results %>% filter(rho == Rho),
+               aes(x=as.factor(snr), y=F1, fill=method)) +
+          geom_boxplot(outlier.size = 0.5) +
+          facet_wrap(~ criterion, ncol=2) +
+          scale_fill_manual(values=c(
+            colorRampPalette(c("#FF99CC", "#B266FF"))(9),
+            "#FF3333",
+            "#0080FF",
+            "#00CC00"
+          )) +
+          xlab("Signal-to-noise ratio") +
+          ylab("F1-score") +
+          ylim(0,1)
+        
+        counter <- counter + 1
+        ggsave(plot = pic_f1, filename = paste("./plots/Appendix_Figure_", counter, ".png", sep=""),
+               dpi=600, width = 21, height = 18, units = "cm")
+        
+        # Accuracy/Recall
+        pic_accuracy <- ggplot(results %>% filter(rho == Rho),
+               aes(x=as.factor(snr), y=Accuracy, fill=method)) +
+          geom_boxplot(outlier.size = 0.5) +
+          facet_wrap(~ criterion, ncol=2) +
+          scale_fill_manual(values=c(
+            colorRampPalette(c("#FF99CC", "#B266FF"))(9),
+            "#FF3333",
+            "#0080FF",
+            "#00CC00"
+          )) +
+          xlab("Signal-to-noise ratio") +
+          ylab("Recall") +
+          ylim(0,1)
+        
+        counter <- counter + 1
+        ggsave(plot = pic_accuracy, filename = paste("./plots/Appendix_Figure_", counter, ".png", sep=""),
+               dpi=600, width = 21, height = 18, units = "cm")
+        
+        # Precision
+        pic_precision <- ggplot(results %>% filter(rho == Rho),
+               aes(x=as.factor(snr), y=Precision, fill=method)) +
+          geom_boxplot(outlier.size = 0.5) +
+          facet_wrap(~ criterion, ncol=2) +
+          scale_fill_manual(values=c(
+            colorRampPalette(c("#FF99CC", "#B266FF"))(9),
+            "#FF3333",
+            "#0080FF",
+            "#00CC00"
+          )) +
+          xlab("Signal-to-noise ratio") +
+          ylab("Precision") +
+          ylim(0,1)
+        
+        counter <- counter+1
+        ggsave(plot = pic_precision, filename = paste("./plots/Appendix_Figure_", counter, ".png", sep=""),
+               dpi=600, width = 21, height = 18, units = "cm")
+        
+        
+      }
+    }
+  }
+}
 
-results$beta_position[results$beta_position == "spread"] <- "equally spaced"
-results$beta_position[results$beta_position == "adjacent"] <- "consecutive"
-
-# Generarte pltos for F1-score, Recall and Precision for BIC, mBIC2, HQC and
-# Stability Selection and save in ./plots
-ggplot(results %>% filter(rho == rho),
-       aes(x=as.factor(snr), y=F1, fill=method)) +
-  geom_boxplot(outlier.size = 0.5) +
-  facet_wrap(~ criterion, ncol=2) +
-  scale_fill_manual(values=c(
-    colorRampPalette(c("#FF99CC", "#B266FF"))(9),
-    "#FF3333",
-    "#0080FF",
-    "#00CC00"
-  )) +
-  xlab("Signal-to-noise ratio") +
-  ylab("F1-score") +
-  ylim(0,1)
-
-ggsave(paste("./plots/F1_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
-       dpi=600, width = 21, height = 18, units = "cm")
-
-ggplot(results %>% filter(rho == rho),
-       aes(x=as.factor(snr), y=Accuracy, fill=method)) +
-  geom_boxplot(outlier.size = 0.5) +
-  facet_wrap(~ criterion, ncol=2) +
-  scale_fill_manual(values=c(
-    colorRampPalette(c("#FF99CC", "#B266FF"))(9),
-    "#FF3333",
-    "#0080FF",
-    "#00CC00"
-  )) +
-  xlab("Signal-to-noise ratio") +
-  ylab("Recall") +
-  ylim(0,1)
-
-ggsave(paste("./plots/Accuracy_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
-       dpi=600, width = 21, height = 18, units = "cm")
-
-
-ggplot(results %>% filter(rho == rho),
-       aes(x=as.factor(snr), y=Precision, fill=method)) +
-  geom_boxplot(outlier.size = 0.5) +
-  facet_wrap(~ criterion, ncol=2) +
-  scale_fill_manual(values=c(
-    colorRampPalette(c("#FF99CC", "#B266FF"))(9),
-    "#FF3333",
-    "#0080FF",
-    "#00CC00"
-  )) +
-  xlab("Signal-to-noise ratio") +
-  ylab("Precision") +
-  ylim(0,1)
-
-ggsave(paste("./plots/Precision_multipleCriteria_", corr_struc, "_", Dim, "_", rho, ".png", sep=""),
-       dpi=600, width = 21, height = 18, units = "cm")
 
 
 # generate plot for the results if for each method its best selection criteria is

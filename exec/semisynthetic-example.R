@@ -12,7 +12,7 @@ library(tidyverse)
 
 #' load the TCGA dataset
 load("./data/tcgaExpression.RData") 
-#' transpose the dataset for rowise observations
+#' transpose the dataset for rowwise observations
 tcgaExpression <- t(tcgaExpression)
 
 # set-up a progress bar
@@ -37,8 +37,8 @@ results_Example_SemiSynthetic <- lapply(1:Sim_n, function(sim_n){
     TCGA_subdata <- scale(TCGA_subdata)
     
     #' generate correlation matrix of data; this will be needed to select the
-    #' two most correlated variables. The eight highly correlated variabkles 
-    #' with one of them are selected, too, to be true direct predictors 
+    #' two most correlated variables. The 8 most highly correlated variables 
+    #' with one of them are selected are considered to be true direct predictors 
     #' (non_zero_indices)
     Corr_tcga <- cor(TCGA_subdata)
     tmp_Corr_tcga <- Corr_tcga

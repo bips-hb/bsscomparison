@@ -33,17 +33,27 @@ library(lars)
   }
 } 
 
-# function to generate a block correlation structure
-block_builder <- 
-  function(p, rho, size){
-    n.blocks <- p/size 
-    out <- matrix(rep(0, p^2), ncol = p) 
-    for(i in c(0:(n.blocks-1))){
-      out[c(i*size+1):c(i*size+size), c(i*size+1):c(i*size+size)] <- rho
-    }
-    diag(out) <- 1
-    return(out)
+
+
+block_builder <- function(p, rho, size){
+  #' function to generate a block correlation structure
+  #' 
+  #' Input
+  #' p: number of variables
+  #' rho: correlation strength within blocks
+  #' size: block size
+  #' 
+  #' Output:  
+  #' a block structured correlation matrix 
+  #'     n.blocks <- p/size 
+  out <- matrix(rep(0, p^2), ncol = p) 
+  for(i in c(0:(n.blocks-1))){
+    out[c(i*size+1):c(i*size+size), c(i*size+1):c(i*size+size)] <- rho
   }
+  diag(out) <- 1
+  return(out)
+}
+
 
 # set path for saving data
 pfs <- "./data/"
@@ -75,11 +85,15 @@ clusterEvalQ(cl, {
 })
 
 
-
+# Loop over positions of non-zeros (adjacent and spread)
 Loop_Beta_pos <- lapply(BETA_POSITION, function(beta_position){
+  # loop over correltion structures
   Loop_Corr_type <- lapply(CORR_TYPE, function(corr_type){
+    # loop over correlation strength
     Loop_Rho <- lapply(RHO, function(Rho){
+      # loop over signal to noise ratios
       Loop_Snr <- lapply(SNR, function(snr){
+        # loop over simulation numbers
         Loop_Sim_n <- parLapply(cl, 1:Sim_n, function(sim_n){
 
           # define dimension 

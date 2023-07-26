@@ -472,7 +472,7 @@ for(Dim in DIM){
           theme(plot.title = element_text(size=9)) 
         
         counter <- counter +1
-        ggsave(paste("./plots/Appendix_Figure_",
+        ggsave(plot = pic, filename = paste("./plots/Appendix_Figure_",
                      counter,
                      ".png", sep=""), 
                width = 18, 

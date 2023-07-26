@@ -214,7 +214,7 @@ for(Dim in DIM){
         counter <- counter +1
         
         # save plot
-        ggsave(pic, paste("./plots/Appendix_Figure_",
+        ggsave(plot = pic, filename = paste("./plots/Appendix_Figure_",
                      counter,
                      ".png", sep=""), 
                width = 18, 
@@ -225,19 +225,19 @@ for(Dim in DIM){
           # settings shown the paper (figures 2, 3, 4 and 5)
         
         if(Dim == "high" & Beta == "spread" & Corr == "block" & Rho == 0.35){
-          ggsave(pic, "./plots/Figure_02.png",width = 18, 
+          ggsave(plot = pic, filename =  "./plots/Figure_02.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         if(Dim == "high" & Beta == "adjacent" & Corr == "toeplitz" & Rho == 0.7){
-          ggsave(pic, "./plots/Figure_03.png",width = 18, 
+          ggsave(plot = pic, filename = "./plots/Figure_03.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         if(Dim == "low" & Beta == "spread" & Corr == "block" & Rho == 0.7){
-          ggsave(pic, "./plots/Figure_04.png",width = 18, 
+          ggsave(plot = pic, filename = "./plots/Figure_04.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         if(Dim == "low" & Beta == "adjacent" & Corr == "block" & Rho == 0.7){
-          ggsave(pic, "./plots/Figure_05.png",width = 18, 
+          ggsave(plot = pic, filename = "./plots/Figure_05.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         
