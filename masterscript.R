@@ -1,4 +1,4 @@
-#' Masterscript for the paper "Variable selection in linear regression models: 
+#' Master script for the paper "Variable selection in linear regression models: 
 #' choosing the best subset is not always the best choice" by Hanke, M., 
 #' Dijkstra, L., Foraita, R. and Didelez, V. (2023)
 #' 
@@ -18,6 +18,12 @@
 #' In order to still make it possible to run the code without a Gurobi license, 
 #' we stored the intermediate/raw results. We provide an example simulation script 
 #' for the semi-synthetic dataset, in which the BSS is left out.
+#' 
+#' We highly reccommend to run this master script by 
+#' > source("masterscript.R")
+#' becasue it is intended to guide the researcher through all our simualtion
+#' steps interactively. Nevertheless, you can run this master script as well as
+#' each of its sub-scripts line by line.
 #' 
 #' General structure of the directory
 #' ----------------------------------
@@ -177,7 +183,16 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
 #' #############################################################################
 
 #'             !!! Not recommended to run on a single machine !!!
-#'                  !!! Gurobi 8.0 or higher is needed !!!!
+#'                  !!! Gurobi 8.1 or higher is needed !!!!
+#'                  
+#' The following code simulates synthetic data with previous parameter
+#' settings for a low-dimensional scenario and applies Lasso, Forward Stepwise 
+#' Selection and Enet. The user is ask if BSS should be applied, too, which 
+#' needs Gurobi 8.1 or higher. Using alternative methods/packages is not 
+#' feasible even in our low-dimensional setting. 
+#' The simulation without BSS takes ~30 minutes on a MacBook Pro (Intel i5) and 
+#' replicates the reported results for all methods despite BSS. At the end of 
+#' this chapter we compare the results of this example with the original results.
 
 source("exec/ask-synthetic-study.R")
 

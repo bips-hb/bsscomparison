@@ -1,5 +1,6 @@
 Supplementary information / R code for the manuscript  
-"When choosing the best subset is not the best choice"
+"Variable selection in linear regression models: choosing the best 
+subset is not always the best choice"
 
 Authors: Hanke, M., Dijkstra, L., Foraita, R. and Didelez, V. (2023)
 Code was written bei Hanke, M. and Dijkstra, L.
@@ -28,7 +29,11 @@ OVERVIEW/INSTRUCTIONS:
     (see below for the links).
 
     The master script contains 7+1 chapters:
-    
+
+    NOTE: If you want only to generate the plots please scipt the first
+    for steps of the interacive prompts (i.e. selecting option 5, 5, 2, 2).
+    Please see also the explanation for Chapter IV. below.
+
     0.: Set-Up
     A script which asks the user to install the necessary packages. 
     If you run into trouble installing the packages via this script please 

@@ -440,8 +440,32 @@ for(Dim in DIM){
           
           out <- lapply(indices, function(x){
             data_tmp <- raw_results$result[[x]]
-            index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+            
+            if(all(is.na(data_tmp$F1))){
+              
+              #' NOTE:
+              #' F1 is formulated in terms of Precision (P) and Recall (R):
+              #' 2 * P * R / ( P + R ) 
+              #' 
+              #' If P=R=0 the F1 will become NaN. This might be the case for all (!)
+              #' subsetsizes for very small signal-to-noise ratios. Therefore, we
+              #' will ONLY suppress the warnings of max(data_tmp$F1, na.rm = T) 
+              #' if ALL F1 scores are NAN/NA.
+              
+              suppressWarnings(
+                index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+              )
+              
+            }else{
+              
+              index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+              
+            }
+            
+            
             if(length(index_maxF1)==0){
+              #' if all F1 are NaN/NA set to zero (this corresponds to no true
+              #' positives but at least on false positive and/or false negative)
               out <- raw_results$result[[x]][1,]
               out$F1 <- 0
               out$snr <- Snr

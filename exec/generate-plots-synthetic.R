@@ -92,16 +92,33 @@ for(Dim in DIM){
           out <- lapply(indices, function(x){
             data_tmp <- raw_results$result[[x]]
             
-            # calculate F1
-            data_tmp$F1 <- 
-              2*data_tmp$TP/(2*data_tmp$TP + data_tmp$FP + data_tmp$FN)
-            # Find max F1
-            index_maxF1 <- 
-              which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+            if(all(is.na(data_tmp$F1))){
+              
+              #' NOTE:
+              #' F1 is formulated in terms of Precision (P) and Recall (R):
+              #' 2 * P * R / ( P + R ) 
+              #' 
+              #' If P=R=0 the F1 will become NaN. This might be the case for all (!)
+              #' subsetsizes for very small signal-to-noise ratios. Therefore, we
+              #' will ONLY suppress the warnings of max(data_tmp$F1, na.rm = T) 
+              #' if ALL F1 scores are NAN/NA.
             
-            if(max(data_tmp$F1, na.rm = T)==0){
-              # if all F1 are zero we use the smallest subset (k=1)
-              out <- data_tmp[1,]
+              suppressWarnings(
+                index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+                )
+                
+            }else{
+              
+              index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+            
+            }
+            
+            
+            if(length(index_maxF1)==0){
+              #' if all F1 are NaN/NA set to zero (this corresponds to no true
+              #' positives but at least on false positive and/or false negative)
+              out <- raw_results$result[[x]][1,]
+              out$F1 <- 0
               out$snr <- Snr
             }else{
               out <- data_tmp[index_maxF1,]
@@ -238,6 +255,7 @@ for(Dim in DIM){
            (Dim == "low" & Beta == "spread" & Corr == "block" & Rho == 0.7) |
            (Dim == "low" & Beta == "first" & Corr == "block" & Rho == 0.7)){
           
+          # genrate plot for the paper with reduced number of SNRs
           pic_paper <- 
             ggplot(out_snr %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6) ), 
                    aes(x = as.factor(snr), y = Value, fill = Method))+

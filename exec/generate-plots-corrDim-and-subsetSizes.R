@@ -1,5 +1,12 @@
-# Generate Figure 8 (correlation and dimensionality) and Figure 10 (performance
-# based on subset size)
+#' Generate Figure 8 (correlation and dimensionality) and Figure 10 (performance
+#' based on subset size)
+#' 
+#' Input:
+#' raw results of the synthetic simulation
+#' 
+#' Output:
+#' Figure 8 and 10 of the paper
+
 
 ### Effekt of different subset sizes k (Figure 10)
 # specific setting shown in the paper:
@@ -224,7 +231,7 @@ out <- lapply(DIM, function(Dim){
   # load results
   raw_results <- NULL
   
-  # use tryVatch for cases when meidum/high-dimensional data is not available
+  # use tryCatch for cases when medium/high-dimensional data is not available
   tryCatch(raw_results <- 
     readRDS(paste("./results/raw_results_",
                   Dim, "_",
@@ -261,13 +268,38 @@ out <- lapply(DIM, function(Dim){
       
       out <- lapply(indices, function(x){
         data_tmp <- raw_results$result[[x]]
-        index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+        
+        if(all(is.na(data_tmp$F1))){
+          
+          #' NOTE:
+          #' F1 is formulated in terms of Precision (P) and Recall (R):
+          #' 2 * P * R / ( P + R ) 
+          #' 
+          #' If P=R=0 the F1 will become NaN. This might be the case for all (!)
+          #' subsetsizes for very small signal-to-noise ratios. Therefore, we
+          #' will ONLY suppress the warnings of max(data_tmp$F1, na.rm = T) 
+          #' if ALL F1 scores are NAN/NA.
+          
+          suppressWarnings(
+            index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+          )
+          
+        }else{
+          
+          index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+          
+        }
+        
+        
         if(length(index_maxF1)==0){
+          #' if all F1 are NaN/NA set to zero (this corresponds to no true
+          #' positives but at least on false positive and/or false negative)
           out <- raw_results$result[[x]][1,]
           out$F1 <- 0
+          out$snr <- Snr
         }else{
           out <- data_tmp[index_maxF1,]
-          
+          out$snr <- Snr
         }
         out
       })
