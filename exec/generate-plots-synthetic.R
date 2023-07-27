@@ -91,10 +91,17 @@ for(Dim in DIM){
           
           out <- lapply(indices, function(x){
             data_tmp <- raw_results$result[[x]]
-            index_maxF1 <- which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
-            if(length(index_maxF1)==0){
-              out <- raw_results$result[[x]][1,]
-              out$F1 <- 0
+            
+            # calculate F1
+            data_tmp$F1 <- 
+              2*data_tmp$TP/(2*data_tmp$TP + data_tmp$FP + data_tmp$FN)
+            # Find max F1
+            index_maxF1 <- 
+              which(data_tmp$F1 == max(data_tmp$F1, na.rm = T))
+            
+            if(max(data_tmp$F1, na.rm = T)==0){
+              # if all F1 are zero we use the smallest subset (k=1)
+              out <- data_tmp[1,]
               out$snr <- Snr
             }else{
               out <- data_tmp[index_maxF1,]
@@ -194,7 +201,8 @@ for(Dim in DIM){
         
         # please add more colors in "scale_fill_manual" if you have more than
         # six methods 
-        pic <- ggplot(out_snr , 
+        pic_appendix <- 
+          ggplot(out_snr , 
                       aes(x = as.factor(snr), y = Value, fill = Method))+
           geom_boxplot()+
           facet_wrap( ~ Metric, ncol = 1)+
@@ -214,7 +222,7 @@ for(Dim in DIM){
         counter <- counter +1
         
         # save plot
-        ggsave(plot = pic, filename = paste("./plots/Appendix_Figure_",
+        ggsave(plot = pic_appendix, filename = paste("./plots/Appendix_Figure_",
                      counter,
                      ".png", sep=""), 
                width = 18, 
@@ -224,20 +232,46 @@ for(Dim in DIM){
         ### Additionaly, save figures if the setting corresponds to of the four 
           # settings shown the paper (figures 2, 3, 4 and 5)
         
+        if(
+           (Dim == "high" & Beta == "spread" & Corr == "block" & Rho == 0.35) |
+           (Dim == "high" & Beta == "first" & Corr == "toeplitz" & Rho == 0.7) |
+           (Dim == "low" & Beta == "spread" & Corr == "block" & Rho == 0.7) |
+           (Dim == "low" & Beta == "first" & Corr == "block" & Rho == 0.7)){
+          
+          pic_paper <- 
+            ggplot(out_snr %>% filter(snr %in% c(0.05, 0.25, 0.42, 1.22, 2.07, 6) ), 
+                   aes(x = as.factor(snr), y = Value, fill = Method))+
+            geom_boxplot()+
+            facet_wrap( ~ Metric, ncol = 1)+
+            ylim(0,1)+
+            scale_fill_manual(values=c(
+              "#FF99CC",
+              "#FF66FF",
+              "#B266FF",
+              "#FF3333",
+              "#0080FF",
+              "#00CC00"
+            )) + 
+            xlab("Signal-to-noise ratrio τ")+
+            theme(plot.title = element_text(size=9))
+          
+        }
+        
+        # save figure based on setting of the paper
         if(Dim == "high" & Beta == "spread" & Corr == "block" & Rho == 0.35){
-          ggsave(plot = pic, filename =  "./plots/Figure_02.png",width = 18, 
+          ggsave(plot = pic_paper, filename =  "./plots/Figure_02.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
-        if(Dim == "high" & Beta == "adjacent" & Corr == "toeplitz" & Rho == 0.7){
-          ggsave(plot = pic, filename = "./plots/Figure_03.png",width = 18, 
+        if(Dim == "high" & Beta == "first" & Corr == "toeplitz" & Rho == 0.7){
+          ggsave(plot = pic_paper, filename = "./plots/Figure_03.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         if(Dim == "low" & Beta == "spread" & Corr == "block" & Rho == 0.7){
-          ggsave(plot = pic, filename = "./plots/Figure_04.png",width = 18, 
+          ggsave(plot = pic_paper, filename = "./plots/Figure_04.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
-        if(Dim == "low" & Beta == "adjacent" & Corr == "block" & Rho == 0.7){
-          ggsave(plot = pic, filename = "./plots/Figure_05.png",width = 18, 
+        if(Dim == "low" & Beta == "first" & Corr == "block" & Rho == 0.7){
+          ggsave(plot = pic_paper, filename = "./plots/Figure_05.png",width = 18, 
                  height = 18, units = "cm", dpi = 300)
         }
         
