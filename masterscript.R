@@ -294,6 +294,9 @@ cat(sprintf("Generating plots..."))
 #'                        1. Synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#' This section generates Figure 2-5, 8 & 10 of the paper and Figure 1-27 of the 
+#' appendix
+
 #' Select the coorelation structure ("block", "toeplitz" or "independent")
 CORR <- c("block","toeplitz", "independent")
 
@@ -312,7 +315,7 @@ BETA <- c("spread", "first")
 source("exec/ask-download.R")
 
 if (create_medium_high_dimensional_plots) { 
-  DIM <- c("low", "medium", "high")
+  DIM <- c("high", "medium", "low")
 } else { # default
   DIM <- c("low")
 }
@@ -335,6 +338,9 @@ source("exec/generate-plots-corrDim-and-subsetSizes.R")
 #'                        2. Semi-synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+#' This section generates Figure 6 & 7 of the paper and Figure 28 & 29 of the 
+#' appendix
+
 #' start script for plotting best possible F1-scores and BSS results based on 
 #' subset size k for semi-synthetic data
 source("exec/generate-plots-semisynthetic.R")
@@ -348,6 +354,9 @@ source("exec/generate-plots-semisynthetic.R")
 #' #############################################################################
 #' #############################################################################
 
+#' This section generates Figure 11 of the paper and Figure 30-57 of the 
+#' appendix
+
 #' start script to plot BSS performance for different time limits and different
 #' subset sizes
 source("exec/generate-plots-BSS-time-limits.R")
@@ -356,9 +365,11 @@ cat(sprintf("DONE generating plots..."))
 
 
 
-cat(sprintf("\n \n Star Section for Selection Criteria and Stability Selectio"))
+cat(
+  sprintf("\n \n Start section for Selection Criteria and Stability Selectio"))
 
-cat(sprintf("\nDefault is not to run the simulation but generate the Figure 9"))
+cat(
+  sprintf("\nDefault is not to run the simulation but generate the Figure 9\n"))
 cat(sprintf("i.e. a high-dimensional block setting with rho=0.7"))
 #' #############################################################################
 #' #############################################################################
@@ -439,14 +450,14 @@ if(runCriteriaSimu == TRUE){
 #' #############################################################################
 #' #############################################################################
 
+#' This section generates Figure 9 of the paper and #figure 1-27 of the 
+#' appendix
+
 #' Script for generating the plots of the selection criteria based on the 
 #' simulation results of the previous section or on the raw data from ./results
 #' Plots are saved in subfolder ./plots
 
 source("exec/generate-plots-selectionCriteria.R")
-
-
-
 
 
 

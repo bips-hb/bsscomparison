@@ -204,7 +204,7 @@ pic <- ggplot(out_snr.summarised %>%
   scale_x_continuous(breaks=c(0,5,10,15), minor_breaks = 1:15)
 
 
-ggsave(plot = pic, filename = file="./plots/Figure_10.png",
+ggsave(plot = pic, filename = "./plots/Figure_10.png",
        height = 1000, width = 3000, units = "px", dpi=300)
 
 
