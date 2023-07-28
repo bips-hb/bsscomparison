@@ -17,7 +17,10 @@
 #' 
 #' In order to still make it possible to run the code without a Gurobi license, 
 #' we stored the intermediate/raw results. We provide an example simulation script 
-#' for the semi-synthetic dataset, in which the BSS is left out.
+#' for the semi-synthetic dataset, in which the BSS is left out. We further allow
+#' the user to run an example for stability selection and different selection
+#' criteria. All results of the examples are compared to thr original simulation
+#' results provided by us.
 #' 
 #' We highly reccommend to run this master script by 
 #' > source("masterscript.R")
@@ -305,7 +308,7 @@ cat(sprintf("Generating plots..."))
 #'                        1. Synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#' This section generates Figure 2-5, 8 & 10 of the paper and Figure 1-27 of the 
+#' This section generates Figures 2-5, 8 & 10 of the paper and Figures 1-27 of the 
 #' appendix
 
 #' Setting the coorelation structure ("block", "toeplitz" or "independent")
@@ -350,7 +353,7 @@ source("exec/generate-plots-corrDim-and-subsetSizes.R")
 #'                        2. Semi-synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cat("Start to generate plots for semi-synthetic data\n")
-#' This section generates Figure 6 & 7 of the paper and Figure 28 & 29 of the 
+#' This section generates Figures 6 & 7 of the paper and Figures 28 & 29 of the 
 #' appendix
 
 #' start script for plotting best possible F1-scores and BSS results based on 
@@ -366,7 +369,7 @@ source("exec/generate-plots-semisynthetic.R")
 #' #############################################################################
 #' #############################################################################
 cat("Start to generate plots for differnt time limits\n")
-#' This section generates Figure 11 of the paper and Figure 30-57 of the 
+#' This section generates Figure 11 of the paper and Figures 30-57 of the 
 #' appendix
 
 #' start script to plot BSS performance for different time limits and different
@@ -382,7 +385,7 @@ source("exec/generate-plots-BSS-time-limits.R")
 
 cat("Start to generate plots for Stability Selection and different selection criteria\n")
 
-#' This section generates Figure 9 of the paper and Figure 58-81 of the 
+#' This section generates Figure 9 of the paper and Figures 58-81 of the 
 #' appendix
 
 #' Script for generating the plots of the selection criteria based on the 
@@ -397,7 +400,7 @@ s
 
 #' #############################################################################
 #' #############################################################################
-#'                      VII.: Simulation for Selection Criteria
+#'        VII.: Simulation for Selection Criteria & Stability Selection
 #' #############################################################################
 #' #############################################################################
 

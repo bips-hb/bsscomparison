@@ -48,6 +48,7 @@ OVERVIEW/INSTRUCTIONS:
     IV.: Generate all plots for the results of Chapter I and II (Semi-
     synthetic and synthetic settings, different subset sizes and 
     correlation vs dimensionality)
+    (Figures 2-8 & 10 of the paper and Figures 1-27 of the appendix)
     (NOTE: you can run this script without running Chapter I & II
     but in this case you will need to download the raw results and save 
     them under "./results". See below for the links.)
@@ -57,24 +58,21 @@ OVERVIEW/INSTRUCTIONS:
     options(timeout=1000)). 
 
     V.: Generate all plots for the results of Chapter III (time limits)
+    (Figure 11 of the paper and Figures 30-57 of the appendix)
     (NOTE: you can run this script without running Chapter III based
     on the raw results in ./results. However, you will need to download the
     results of the medium- and high-dimensional settings to genrate all
     certification plots of the appendix, i.e. figures 30-56)
 
-    VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC
-    This is omitted by default because of its long running time. You 
-    have to change "runCriteriaSimu <- FALSE" to 
-    "runCriteriaSimu <- TRUE" in "masterscript.R" to run these simulations. 
-    Please see also the default parameter values in the corresponding 
-    chapter (they correspond to Figure 9 in the paper). 
-
     VII.: Plot the results of Stability Selection, BIC, mBIC2 and HQC 
-    The default setting is a high-dimensional block structure with 
-    correlation rho = 0.7 and consecutive ("adjacent") non-zero betas.
-    These values correspond to Figure 9 in the paper and will generate
-    a figure named "Figure_09". If you change the parameter values in 
-    chapter VI it will generate a different figures an name it  
+    (Figure 9 of the paper and Figures 58-81 of the appendix) 
+
+    VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC with
+    option of perfoming only an example simualtion.xs
+    Please see also the default parameter values in the corresponding 
+    chapter. 
+
+    
 
 
 PLOTS/FIGURES: 
@@ -99,17 +97,17 @@ DATASETS & AVAILABILITY:
     A TCGA dataset is needed for the semi-synthetic data generation and 
     is stored in the subfolder ./data. 
 
-    If you do not want to re-run the Stability Selection and BIC/mBIC2/HQC 
-    simulation our raw results are stored in ./results to plot them.
-
-    If you do not want to re-run the time-limit simulation you find the 
-    raw results under ./results.
-
     If you do not want to re-run the simulation for the synthetic data you
     can download the result for the medium- and high-dimensional settings
     under https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
     or alternatively under 
     https://figshare.com/articles/dataset/Simualtion_Results/23578647
+
+    If you do not want to re-run the time-limit simulation you find the 
+    raw results under ./results.
+
+    If you do not want to re-run the Stability Selection and BIC/mBIC2/HQC 
+    simulation our raw results are stored in ./results to plot them.
 
 
 FURTHER INFORMATION:
