@@ -1,9 +1,9 @@
-# This script runs the simulation for various tuning parameter/subset size 
-# criteria: BIC, mBIC2 and HQC. 
-# For Best Subset Selection the Gurobi solver is necessary.
-# NOTE: This simulation is computational challenging even without BSS.
-# It is strongly recommended to run this simulation on a multicore computer or
-# high performance cluster
+#' This script runs the simulation for various tuning parameter/subset size 
+#' criteria: BIC, mBIC2 and HQC. 
+#' It omits the Best Subset Selection because the Gurobi solver is necessary.
+#' NOTE: This simulation is computational challenging even without BSS.
+#' It is strongly recommended to run this simulation on a multicore computer or
+#' high performance cluster
 
 # Load necessary packages for parallel computing
 library( parallel)
@@ -55,9 +55,7 @@ block_builder <- function(p, rho, size){
   return(out)
 }
 
-
 if(run_in_parallel){
-  ### run in parallel
   
   cl <- makeCluster(mc, type=clusterType)
   
@@ -140,65 +138,6 @@ if(run_in_parallel){
             Y <- X %*% beta + e 
             Y <- scale(Y, scale = FALSE)
             
-            
-            ### run BSS?
-            if(runBSS == TRUE){
-              
-              BSS <- bs(x=X, y=Y, intercept=FALSE,
-                        time.limit=gurobiTime,
-                        k=1:max.k, verbose=F)
-              
-              # loop over subsetsizes for results like true positives (TP), false
-              # positves (FP), F1 etc
-              BSS_results <-
-                lapply(1:max.k, function(x){
-                  RSS <- sum((Y - X %*% BSS$beta[,x])^2)
-                  
-                  TP <- sum(which(abs(BSS$beta[,x]) > 0.00001) %in% non_zero_indices)
-                  FP <- x-TP
-                  FN <- s-TP
-                  F1 <- TP/(TP + 0.5*(FP+FN))
-                  Precision <- TP/(TP + FP)
-                  Accuracy <- TP/s
-                  
-                  tibble(
-                    method="BSS",
-                    alpha=NA,
-                    k=x,
-                    RSS = RSS,
-                    RSS_selected_betas = RSS,
-                    TP,
-                    FP,
-                    FN,
-                    F1,
-                    Precision,
-                    Accuracy,
-                    n,
-                    p,
-                    s,
-                    snr,
-                    corr_type = corr_type,
-                    rho = Rho,
-                    beta_position = beta_position,
-                    beta_switch = NA,
-                    status = BSS$status[x],
-                    sim.n = sim_n,
-                    cutoff = NA,
-                    PFER = NA
-                  )
-                  
-                })
-              
-              BSS_results <-
-                do.call(rbind, BSS_results)
-              
-            }else{
-              BSS_results <- NULL
-            }
-            
-            # end BSS
-            
-            
             # begin FSS
             FSS <- fs(x=X, y=Y, maxsteps= max.k, intercept=FALSE, verbose=F)
             
@@ -355,8 +294,10 @@ if(run_in_parallel){
             Enet_results <- do.call(rbind, Enet_results)
             ### end Enet
             
+            
+            
+            
             bind_rows(
-              BSS_results,
               FSS_results,
               Enet_results
             )
@@ -388,7 +329,8 @@ if(run_in_parallel){
           # calculate BIC, mBIC2 and HQC
           results_BIC <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, alpha, sim.n) %>%
-            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
+            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + 
+                                         log( RSS_selected_betas/n)))) %>%
             mutate(BIC = -2 * ll + log(n) * (k+1)) %>%
             mutate(min_BIC = min(BIC)) %>%
             ungroup() %>%
@@ -400,7 +342,8 @@ if(run_in_parallel){
           
           results_HQC <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, alpha, sim.n) %>%
-            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
+            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + 
+                                         log( RSS_selected_betas/n)))) %>%
             mutate(HQC = -2 * ll + 2 * (k)*log(log(n))) %>%
             mutate(min_HQC = min(HQC)) %>%
             ungroup() %>%
@@ -412,8 +355,10 @@ if(run_in_parallel){
           
           results_mBIC2 <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, sim.n) %>%
-            mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + log(RSS_selected_betas/n)))) %>%
-            mutate(mBIC2 = -2 * ll + (k+1)*(log(n) + 2*log(p) - 2*log(4)) - 2*log(factorial(k+1))) %>%
+            mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + 
+                                        log(RSS_selected_betas/n)))) %>%
+            mutate(mBIC2 = -2 * ll + (k+1)*(log(n) + 2*log(p) - 2*log(4)) - 
+                     2*log(factorial(k+1))) %>%
             mutate(min_mBIC2 = min(mBIC2)) %>%
             ungroup() %>%
             filter(min_mBIC2 == mBIC2) %>%
@@ -480,7 +425,7 @@ if(run_in_parallel){
       # save results
       
       saveRDS(Loop_Rho,
-              paste("./results/Data_Results_Selection_Criteria_",
+              paste("./results/ExampleData_Results_No_BSS_Selection_Criteria_",
                     corr_type, "_",
                     Dim, "_",
                     beta_position,
@@ -498,9 +443,7 @@ if(run_in_parallel){
     mpi.quit()
   }
   
-  
 }else{
-  
   ### run not in parallel
   
   # Loop over positions of non-zeros (adjacent and spread)
@@ -557,65 +500,6 @@ if(run_in_parallel){
             Y <- X %*% beta + e 
             Y <- scale(Y, scale = FALSE)
             
-            
-            ### begin BSS
-            if(runBSS == TRUE){
-              
-              BSS <- bs(x=X, y=Y, intercept=FALSE,
-                        time.limit=gurobiTime,
-                        k=1:max.k, verbose=F)
-              
-              # loop over subsetsizes for results like true positives (TP), false
-              # positves (FP), F1 etc
-              BSS_results <-
-                lapply(1:max.k, function(x){
-                  RSS <- sum((Y - X %*% BSS$beta[,x])^2)
-                  
-                  TP <- sum(which(abs(BSS$beta[,x]) > 0.00001) %in% non_zero_indices)
-                  FP <- x-TP
-                  FN <- s-TP
-                  F1 <- TP/(TP + 0.5*(FP+FN))
-                  Precision <- TP/(TP + FP)
-                  Accuracy <- TP/s
-                  
-                  tibble(
-                    method="BSS",
-                    alpha=NA,
-                    k=x,
-                    RSS = RSS,
-                    RSS_selected_betas = RSS,
-                    TP,
-                    FP,
-                    FN,
-                    F1,
-                    Precision,
-                    Accuracy,
-                    n,
-                    p,
-                    s,
-                    snr,
-                    corr_type = corr_type,
-                    rho = Rho,
-                    beta_position = beta_position,
-                    beta_switch = NA,
-                    status = BSS$status[x],
-                    sim.n = sim_n,
-                    cutoff = NA,
-                    PFER = NA
-                  )
-                  
-                })
-              
-              BSS_results <-
-                do.call(rbind, BSS_results)
-              
-            }else{
-              BSS_results <- NULL
-            }
-            
-            # end BSS
-            
-            
             # begin FSS
             FSS <- fs(x=X, y=Y, maxsteps= max.k, intercept=FALSE, verbose=F)
             
@@ -772,8 +656,10 @@ if(run_in_parallel){
             Enet_results <- do.call(rbind, Enet_results)
             ### end Enet
             
+            
+            
+            
             bind_rows(
-              BSS_results,
               FSS_results,
               Enet_results
             )
@@ -805,7 +691,8 @@ if(run_in_parallel){
           # calculate BIC, mBIC2 and HQC
           results_BIC <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, alpha, sim.n) %>%
-            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
+            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + 
+                                         log( RSS_selected_betas/n)))) %>%
             mutate(BIC = -2 * ll + log(n) * (k+1)) %>%
             mutate(min_BIC = min(BIC)) %>%
             ungroup() %>%
@@ -817,7 +704,8 @@ if(run_in_parallel){
           
           results_HQC <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, alpha, sim.n) %>%
-            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + log( RSS_selected_betas/n)))) %>%
+            mutate(ll = 0.5 * ( - n * (log(2 * pi) + 1 - log(n) + 
+                                         log( RSS_selected_betas/n)))) %>%
             mutate(HQC = -2 * ll + 2 * (k)*log(log(n))) %>%
             mutate(min_HQC = min(HQC)) %>%
             ungroup() %>%
@@ -829,8 +717,10 @@ if(run_in_parallel){
           
           results_mBIC2 <- results %>% filter(k <= 50) %>%
             group_by(snr, rho, method, sim.n) %>%
-            mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + log(RSS_selected_betas/n)))) %>%
-            mutate(mBIC2 = -2 * ll + (k+1)*(log(n) + 2*log(p) - 2*log(4)) - 2*log(factorial(k+1))) %>%
+            mutate(ll = 0.5 * (- n * (log(2 * pi) + 1 - log(n) + 
+                                        log(RSS_selected_betas/n)))) %>%
+            mutate(mBIC2 = -2 * ll + (k+1)*(log(n) + 2*log(p) - 2*log(4)) - 
+                     2*log(factorial(k+1))) %>%
             mutate(min_mBIC2 = min(mBIC2)) %>%
             ungroup() %>%
             filter(min_mBIC2 == mBIC2) %>%
@@ -897,7 +787,7 @@ if(run_in_parallel){
       # save results
       
       saveRDS(Loop_Rho,
-              paste("./results/Data_Results_Selection_Criteria_",
+              paste("./results/ExampleData_Results_No_BSS_Selection_Criteria_",
                     corr_type, "_",
                     Dim, "_",
                     beta_position,
@@ -908,8 +798,8 @@ if(run_in_parallel){
   })
   
   
+  
 }
-
 
 
 

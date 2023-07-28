@@ -1,4 +1,12 @@
-# function to generate a block correlation structure
+#' function to generate a block correlation structure
+#' 
+#' Input
+#' p: number of variables
+#' rho: correlation strength within blocks
+#' size: block size
+#' 
+#' Output:  
+#' a block structured correlation matrix 
 block_builder <- 
   function(p, rho, size){
     n.blocks <- p/size 
