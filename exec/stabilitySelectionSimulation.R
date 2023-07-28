@@ -462,7 +462,7 @@ if(run_in_parallel){
     Loop_Corr_type <- lapply(CORR_TYPE, function(corr_type){
       Loop_Rho <- lapply(RHO, function(Rho){
         Loop_Snr <- lapply(SNR, function(snr){
-          Loop_Sim_n <- lapply(cl, 1:Sim_n, function(sim_n){
+          Loop_Sim_n <- lapply(1:Sim_n, function(sim_n){
             
             
             # define corr structure

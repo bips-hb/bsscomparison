@@ -47,6 +47,3 @@ results. It contains the following files:
 
 * generate-plots-selectionCriteria.R - generates plots for the 
   different selection criteria
-
-* rename_plots.R - renames th created plots according to the Figures
-  in the paper

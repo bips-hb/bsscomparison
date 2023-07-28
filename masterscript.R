@@ -396,7 +396,6 @@ source("exec/generate-plots-selectionCriteria.R")
 
 cat(sprintf("DONE generating plots..."))
 
-s
 
 #' #############################################################################
 #' #############################################################################
@@ -408,7 +407,7 @@ cat(
   sprintf("Start section for stability selection and selection criteria\n"))
 
 cat(
-  sprintf("You can run an example or the complete simulatio.\n"))
+  sprintf("You can run an example or the complete simulation.\n"))
 
 cat(
   sprintf("Please change the default values in the masterscript if another setting is desired.\n"))
@@ -459,7 +458,7 @@ Alpha <- seq(0.1,1,0.1)
 
 # Type of cluster ("PSOCK"/"SOCK" and "MPI" available); if you are NOT working
 # on a HPC with (open)MPI we suggest to use "SOCK"
-clusterType <- "MPI"
+clusterType <- "PSOCK"
 
 # number of workers for parallel computation (should not exceed the number of 
 # (physical) cores)
@@ -479,7 +478,6 @@ pfer <- 5
 source("./exec/ask-stabilitySelectionAndSelectionCriteria.R")
 
 if(run_selection_example){
-  Sim_n <- 100 # complete numbe rof simulation runs
   
   #' run stability selection
   source("exec/stabilitySelectionSimulation_Example.R")
@@ -492,7 +490,7 @@ if(run_selection_example){
 
 
 if(run_selection_complete){
-  Sim_n <- 100 # complete numbe rof simulation runs
+  Sim_n <- 100 # complete number of simulation runs
   
   #' run stability selection
   source("exec/stabilitySelectionSimulation.R")

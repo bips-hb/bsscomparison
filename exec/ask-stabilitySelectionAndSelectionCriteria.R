@@ -1,5 +1,3 @@
-#' ask-semisynthetic-study.R
-#' 
 #' Ask the user whether he/she wants to rerun the the stability 
 #' selection/selection criteria simulations or examples
 
@@ -15,7 +13,7 @@ while (!answered) {
                                     "Do not run an (example) simualtion",
                                     "exit"))
   
-  switch(as.character(semisynthetic), 
+  switch(as.character(selectionSimu), 
          
          "1" = {
            cat("--> Running example for stability selection & selection criteria without BSS\n")
@@ -29,15 +27,10 @@ while (!answered) {
              Sim_n <- 1
            }
            
-           yes_parallel <- 
-             askYesNo("Run in parallel?")
-           if (yes_parallel) { 
-             run_in_parallel <- TRUE 
-           } else { 
-             run_in_parallel <- FALSE 
-           }
-           
            runBSS <- FALSE
+           
+           run_selection_complete <- FALSE
+           
            answered <- TRUE
          }, 
          
@@ -56,6 +49,7 @@ while (!answered) {
                run_in_parallel <- FALSE 
              }
              
+             run_selection_example <- FALSE
              answered <- TRUE
            } else { 
              cat("\n")
@@ -77,6 +71,7 @@ while (!answered) {
                run_in_parallel <- FALSE 
              }
              
+             run_selection_example <- FALSE
              answered <- TRUE
            } else { 
              cat("\n")
