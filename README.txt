@@ -9,7 +9,7 @@ In case of questions or comments please contact hanke@leibniz-bips.de
 
 OVERVIEW/INSTRUCTIONS: 
 
-    In order to run the code, you need to set the working directory to 
+    In order to run the R-code, you need to set the working directory to 
     the folder of the local copy of this repository 
     
     > setwd("<file>/<path>/<to>/bsscomparison")

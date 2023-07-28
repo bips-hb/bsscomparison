@@ -58,15 +58,7 @@ block_builder <-
   }
 
 
-# number of subsamples for the stability approach
-B <- 100
 
-# stability threshold (called pi_thr in the original paper by Meinshausen &
-# Bühlmann; the authors suggest values between 0.6 and 0.9)
-cutoff <- 0.6
-
-# the per-family error rate
-pfer <- 5
 
 if(run_in_parallel){
   
