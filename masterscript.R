@@ -10,7 +10,7 @@
 #' IMPORTANT: Best Subset Selection (BSS) is a NP-hard problem and requires
 #' specialized software to solve, see Berstimas et al. (2016, DOI: 10.1214/15-AOS1388).
 #' In order to solve the optimization problem, commercial solver 
-#' software 'Gurobi 8.0' (or higher) is required. In addition, due to the 
+#' software 'Gurobi 8.1' (or higher) is required. In addition, due to the 
 #' high number of parameter settings, it is not recommended to run the simulations 
 #' on a single machine. It took a high-performance cluster with 25 nodes, 
 #' each with 12 core Intel Xeon processors, close to 50 days (!). 
@@ -28,16 +28,18 @@
 #' General structure of the directory
 #' ----------------------------------
 #' 
-#' - all scripts for generating the results are in the subfolder "exec/"
-#' - all plots are saved in the subfolder "plots/"
-#' - The TCGA dataset is saved in the subfolder "data"
-#' - Raw results of the low-dimensional settings are in the subfolder "results/"
-#' - Raw results for different time limits are in the subfolder "results/"  
+#' - all scripts for generating the results are in the subfolder "./exec"
+#' - all plots are saved in the subfolder "./plots"
+#' - The TCGA dataset is saved in the subfolder "./data"
+#' - Raw results of the low-dimensional settings are in the subfolder "./results"
+#' - Raw results for different time limits are in the subfolder "./results" 
+#' - Raw results for Stability Selection and different selection criteria are in 
+#'   the subfolder "./results"  
 #' - all other raw results can be downloaded by running 
 #'   source("download-intermediate-results-medium-high.R") or manually from
 #'   https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
 #'   (The raw results are .rds files and need to be put into "results/" before
-#'   analyzing/plotting)
+#'   analyzing/plotting when downloaded manually)
 #' 
 #' Table of contents of masterscript.R
 #' -----------------------------------
@@ -61,11 +63,10 @@
 #'     
 #' V. Generate plots for synthetic and a semi-synthetic data for different time
 #'     limits when applying the Gurobi solver
-#'     
-#' VI.: Simulation for Selection Criteria
 #' 
-#' VII.: Plots for Selection Criteria
-#' 
+#' VI.: Plots for Selection Criteria and Stability Selection
+#'  
+#' VII.: Simulation for Selection Criteria and Stability Selection
 #' 
 #'
 #' #############################################################################
@@ -185,14 +186,9 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
 #'             !!! Not recommended to run on a single machine !!!
 #'                  !!! Gurobi 8.1 or higher is needed !!!!
 #'                  
-#' The following code simulates synthetic data with previous parameter
-#' settings for a low-dimensional scenario and applies Lasso, Forward Stepwise 
-#' Selection and Enet. The user is ask if BSS should be applied, too, which 
-#' needs Gurobi 8.1 or higher. Using alternative methods/packages is not 
-#' feasible even in our low-dimensional setting. 
-#' The simulation without BSS takes ~30 minutes on a MacBook Pro (Intel i5) and 
-#' replicates the reported results for all methods despite BSS. At the end of 
-#' this chapter we compare the results of this example with the original results.
+#' The following code simulates synthetic data with previous parameter. It gives
+#' the user the option to run only a low-dimensional setting without BSS.
+#' However, this will still take a couple of hours to finish.
 
 source("exec/ask-synthetic-study.R")
 
@@ -218,7 +214,7 @@ if (run_synthetic_study) {
 #' #############################################################################
 
 #'             !!! Not recommended to run on a single machine !!!
-#'                  !!! Gurobi 8.0 or higher is needed !!!!
+#'                  !!! Gurobi 8.1 or higher is needed !!!!
 
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'                        1. Synthetic data setting
@@ -312,18 +308,15 @@ cat(sprintf("Generating plots..."))
 #' This section generates Figure 2-5, 8 & 10 of the paper and Figure 1-27 of the 
 #' appendix
 
-#' Select the coorelation structure ("block", "toeplitz" or "independent")
+#' Setting the coorelation structure ("block", "toeplitz" or "independent")
 CORR <- c("block","toeplitz", "independent")
 
-#' Select position of non-zero betas ("spread" = equally distributed; "first" =
+#' Setting position of non-zero betas ("spread" = equally distributed; "first" =
 #' adjacent) 
 BETA <- c("spread", "first")
 
-#' Select dimension of problem ("low" means p=100 & n=1000; "medium" means p=500
-#' & n=500; "high" means p=1000 & n=100). For this example we use only "low"
-#' data sets of the medium high dimenstional problems are rather big
-#' Next, you ill be asked if you want to download the raw results for medium and
-#' hig dimensional settings. Alternatively you can download the results manually
+#' Next, you will be asked if you want to download the raw results for medium and
+#' high dimensional settings. Alternatively you can download the results manually
 #' from
 #' https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
 
@@ -337,11 +330,15 @@ if (create_medium_high_dimensional_plots) {
 
 #' Different SNR values can be chosen for the Performance of BSS based on
 #' different subset sizes k:
+#' DEfault setting:
 SNR_BSS_k <- c(0.05, 0.09, 0.14, 0.25, 0.42, 0.71, 1.22, 2.07, 3.52, 6)
 
 cat(sprintf("Start to generate plots. This may take some time..."))
 #' start script for plotting best possible F1-scores and BSS results based on 
 #' subset size k for synthetic data
+
+cat("Start to generate plots for synthetic data\n")
+
 source("exec/generate-plots-synthetic.R")
 #' plots are saved in subfolder ./plots
 
@@ -352,7 +349,7 @@ source("exec/generate-plots-corrDim-and-subsetSizes.R")
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #'                        2. Semi-synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+cat("Start to generate plots for semi-synthetic data\n")
 #' This section generates Figure 6 & 7 of the paper and Figure 28 & 29 of the 
 #' appendix
 
@@ -368,7 +365,7 @@ source("exec/generate-plots-semisynthetic.R")
 #'          different time limits when applying the Gurobi solver
 #' #############################################################################
 #' #############################################################################
-
+cat("Start to generate plots for differnt time limits\n")
 #' This section generates Figure 11 of the paper and Figure 30-57 of the 
 #' appendix
 
@@ -376,41 +373,58 @@ source("exec/generate-plots-semisynthetic.R")
 #' subset sizes
 source("exec/generate-plots-BSS-time-limits.R")
 
+
+#' #############################################################################
+#' #############################################################################
+#'                     VI.: Plots for Selection Criteria
+#' #############################################################################
+#' #############################################################################
+
+cat("Start to generate plots for Stability Selection and different selection criteria\n")
+
+#' This section generates Figure 9 of the paper and Figure 58-81 of the 
+#' appendix
+
+#' Script for generating the plots of the selection criteria based on the 
+#' simulation results of the previous section or on the raw data from ./results
+#' Plots are saved in subfolder ./plots
+
+source("exec/generate-plots-selectionCriteria.R")
+
 cat(sprintf("DONE generating plots..."))
 
+s
 
+#' #############################################################################
+#' #############################################################################
+#'                      VII.: Simulation for Selection Criteria
+#' #############################################################################
+#' #############################################################################
 
 cat(
-  sprintf("\n \n Start section for Selection Criteria and Stability Selectio"))
+  sprintf("Start section for stability selection and selection criteria\n"))
 
 cat(
-  sprintf("\nDefault is not to run the simulation but generate the Figure 9\n"))
-cat(sprintf("i.e. a high-dimensional block setting with rho=0.7"))
-#' #############################################################################
-#' #############################################################################
-#'                      VI.: Simulation for Selection Criteria
-#' #############################################################################
-#' #############################################################################
+  sprintf("You can run an example or the complete simulatio.\n"))
+
+cat(
+  sprintf("Please change the default values in the masterscript if another setting is desired.\n"))
 
 #' This part will run the simulation for different selection criteria (BIC, 
 #' mBIC, HQC and stability selection). 
-#' It is important to have Gurobi installed to run BSS but you can can the 
-#' without BSS by setting runBSS <- FALSE. 
+#' It is important to have Gurobi >= 8.1 installed if you want to run BSS but 
+#' you can can the without BSS by setting. 
 #' NOTE: even without BSS this simulation runs rather long due to the many 
 #' different parameter combinations and subsampling process of Stability 
 #' Selection. We suggest to use a multicore processor or HPC to apply parallel
-#' computing or reduce the number of simualtion runs and/or parameter 
-#' combinations. Alternatively, by setting runCriteriaSimu <- FALSE you can omit 
-#' thesimulation and only generate the plots using our raw data under ./results
-#' by running the script of next section (VII)
+#' computing or reduce the number of simulation runs and/or parameter 
+#' combinations. 
+#' 
 
-#' Run simulation?
-runCriteriaSimu <- FALSE
 
-#' run BSS?
-runBSS <- FALSE
-
-#' ---- Settings for simulation ----
+### set parameters
+# Change these for different scenarios. Otherwise these default values will be used 
+# for the example as well as for the complete simulation 
 
 # set the number of observations (N), variables (P) and non-zero coefficients (s)
 N <- 100
@@ -433,9 +447,6 @@ RHO <- c(0.7)
 # set the position of the non-zeros ("adjacent" or "spread")
 BETA_POSITION <- "adjacent"
 
-# number of simulation runs
-Sim_n <- 100
-
 # number of maximum subset size for Best Subset Selection and Forward Stepwise
 # Selection
 max.k <- 15
@@ -451,29 +462,41 @@ clusterType <- "MPI"
 # (physical) cores)
 mc <- 100 
 
-if(runCriteriaSimu == TRUE){
+# number of subsamples for the stability approach
+B <- 100
+
+# stability threshold (called pi_thr in the original paper by Meinshausen &
+# Bühlmann; the authors suggest values between 0.6 and 0.9)
+cutoff <- 0.6
+
+# the per-family error rate
+pfer <- 5
+
+
+source("./exec/ask-stabilitySelectionAndSelectionCriteria.R")
+
+if(run_selection_example){
+  Sim_n <- 100 # complete numbe rof simulation runs
+  
+  #' run stability selection
+  source("exec/stabilitySelectionSimulation_Example.R")
+  #' run BIC, mBIC2 and HQC
+  source("exec/selectionCriteriaSimulation_Example.R")
+ 
+  # compare example results with original simualtion results
+  source("exec/compare_selection_criteria_results.R")
+}
+
+
+if(run_selection_complete){
+  Sim_n <- 100 # complete numbe rof simulation runs
+  
   #' run stability selection
   source("exec/stabilitySelectionSimulation.R")
   #' run BIC, mBIC2 and HQC
   source("exec/selectionCriteriaSimulation.R")
+  
 }
-
-
-#' #############################################################################
-#' #############################################################################
-#'                     VII.: Plots for Selection Criteria
-#' #############################################################################
-#' #############################################################################
-
-#' This section generates Figure 9 of the paper and #figure 1-27 of the 
-#' appendix
-
-#' Script for generating the plots of the selection criteria based on the 
-#' simulation results of the previous section or on the raw data from ./results
-#' Plots are saved in subfolder ./plots
-
-source("exec/generate-plots-selectionCriteria.R")
-
 
 
 cat(sprintf("\n \nEnd of masterscript.R"))
