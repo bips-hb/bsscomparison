@@ -493,7 +493,8 @@ for(Dim in DIM){
           geom_bar(position = position_dodge2(preserve = "single")) +
           xlab("Signal-to-noise ratrio τ")+
           ylab("Number of simulation runs") +
-          theme(plot.title = element_text(size=9)) 
+          theme(plot.title = element_text(size=9)) + 
+          guides(fill=guide_legend(title="Validated BSS solutions"))
         
         counter <- counter +1
         ggsave(plot = pic, filename = paste("./plots/Appendix_Figure_",
