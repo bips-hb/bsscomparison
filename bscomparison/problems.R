@@ -1,5 +1,21 @@
+#' A wrapper function for simulating the data
+#' 
+#' INPUT: 
+#' n: number of observations
+#' p: number 
+#' s: number of non-zeros
+#' dimensiontality: chr ("low", "medium" or "high")
+#' corr_type: correlation structure (""independent", "toeplitz" or "block"")
+#' beta_type: chr ("first" or "spread")
+#' snr: signal to noise ratio (numeric: >0)
+#' 
+#' OUTPUT:
+#' list of simualted data, i.e. X (covariates with multivariate normal 
+#' distribution) and y (response with normal distribution) 
+
+
 simulator_wrapper <-
-  function(data, job, n, p, s, dimensionality, corr_type, rho, beta_type, snr, ...) {
+  function(n, p, s, dimensionality, corr_type, rho, beta_type, snr, ...) {
 
     corrmat <- switch(
       corr_type,
