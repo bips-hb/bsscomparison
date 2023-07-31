@@ -1,5 +1,5 @@
-#' simple functions to extract the best F1 results of the simulation study and the
-#' certifications 
+#' simple functions to extract the best F1 results of the simulation study and 
+#' the certifications and write a summary file of these results
 
 library(dplyr)
 library(readr)

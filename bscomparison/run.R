@@ -1,3 +1,6 @@
+#' this script initials the run of the full simulation study
+#' It uses batchtools for distributing the simulation runs 
+
 library(batchtools)
 library(dplyr)
 library(readr)

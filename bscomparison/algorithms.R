@@ -1,4 +1,15 @@
-fs_wrapper <- function(data, job, instance, ...) { 
+#' This script contains wrapper functions for the application of FSS, BSS and
+#' Lasso/Enet
+#' 
+#' INPUT:
+#' Each wrapper function gets the job parameters and the instances (i.e. the 
+#' simulated data) to perform the specific variable selection method 
+#' ("fs" = forward stepwise selection, "bs" = best subset selection, "enet" = Enet)
+#'
+#' OUTPUT: the results for eahc method (based o the function process_results)
+
+
+fs_wrapper <- function(job, instance, ...) { 
   # extract the parameters from job 
   pp <- job$prob.pars 
   ap <- job$algo.pars  
@@ -13,7 +24,7 @@ fs_wrapper <- function(data, job, instance, ...) {
   res
 }
 
-bs_wrapper <- function(data, job, instance, ...) { 
+bs_wrapper <- function(job, instance, ...) { 
   # extract the parameters from job 
   pp <- job$prob.pars 
   ap <- job$algo.pars  
@@ -32,7 +43,7 @@ bs_wrapper <- function(data, job, instance, ...) {
   res
 }
 
-enet_wrapper <- function(data, job, instance, ...) { 
+enet_wrapper <- function(job, instance, ...) { 
   # extract the parameters from job 
   pp <- job$prob.pars 
   ap <- job$algo.pars  
