@@ -18,23 +18,22 @@ OVERVIEW/INSTRUCTIONS:
     
     > source("masterscript.R")
 
-    
-
     The master script calls two types of scripts: 
     1. interactive scripts asking which simulations to run
-    2. the actual scripts to run the selected simulations.
+    2. the actual scripts to run the selected simulations
+    
     You can also run each of the scripts manually via the master script. 
     Since our simulation study is computationally challenging we also 
     give the user the option either to run examples of the simulation 
     study (including an comparison of the results to the original ones) 
     or to generate just the plots based on the raw results provided by us
     (see below for the links).
-    If you run the interactive version (which we highly recommend) the 
-    R-Console will give information about the simulation status, errors 
+    If you run the interactive version of this code(which we highly recommend) 
+    the  R-Console will give information about the simulation status, errors 
     and options.
 
-    NOTE: If you want only to generate the plots please script the first
-    for steps of the interactive prompts (i.e. selecting option 5, 2, 2, 2).
+    NOTE: If you only want to generate the plots please skip the first
+    four steps of the interactive prompts (i.e. selecting option 5, 2, 2, 2).
     Please see also the explanation for Chapter IV. below.
 
     Alternatively, you can start the master script from chapter 'IV. Generate plots'
@@ -42,7 +41,7 @@ OVERVIEW/INSTRUCTIONS:
     The master script contains 7+1 chapters:
 
     0.: Set-Up
-    A script which asks the user to install the necessary packages. 
+    A script asking the user to install the necessary packages. 
     If you run into trouble installing the packages via this script please 
     install them manually. See our session info at the end of this README.
 
@@ -54,28 +53,28 @@ OVERVIEW/INSTRUCTIONS:
 
     IV.: Generate all plots for the results of Chapter I and II (Semi-
     synthetic and synthetic settings, different subset sizes and 
-    correlation vs dimensionality)
-    (Figures 2-8 & 10 of the paper and Figures 1-27 of the appendix)
-    (NOTE: you can run this script without running Chapter I & II
+    correlation vs dimensionality; corresponds to figures 2-8 & 10 of the 
+    paper and Figures 1-27 of the appendix)
+    NOTE: you can run this script without running Chapter I & II
     but in this case you will need to download the raw results and save 
-    them under "./results". See below for the links.)
-    IMPORTANT: If you use our build-in R-script 
+    them under "./results". See below for the links and download options.
+    ! ! ! IMPORTANT ! ! ! If you use our build-in R-script 
     "download-intermediate results-medium-high.R" and get an timeout error 
     please make sure to set an appropriate timeout limit (e.g. 
     options(timeout=1000)). 
 
-    V.: Generate all plots for the results of Chapter III (time limits)
-    (Figure 11 of the paper and Figures 30-57 of the appendix)
-    (NOTE: you can run this script without running Chapter III based
+    V.: Generate all plots for the results of Chapter III (time limits; 
+    corresponds to figure 11 of the paper and figures 30-57 of the appendix)
+    NOTE: you can run this script without running Chapter III based
     on the raw results in ./results. However, you will need to download the
-    results of the medium- and high-dimensional settings to genrate all
-    certification plots of the appendix, i.e. figures 30-56)
+    results of the medium- and high-dimensional settings to generate all
+    certification plots of the appendix, i.e. figures 30-57
 
     VII.: Plot the results of Stability Selection, BIC, mBIC2 and HQC 
-    (Figure 9 of the paper and Figures 58-81 of the appendix) 
+    (figure 9 of the paper and figures 58-81 of the appendix) 
 
-    VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC with
-    option of perfoming only an example simualtion.xs
+    VI.: Simulation for Stability Selection and BIC, mBIC2 and HQC (with
+    option of performing only an example simulation)
     Please see also the default parameter values in the corresponding 
     chapter. 
 
@@ -83,10 +82,10 @@ OVERVIEW/INSTRUCTIONS:
 PLOTS/FIGURES: 
 
     This repository generates all plots of our simulation study (shown in 
-    the paper and the appendix) and saves them into "./plots".
-    The plots are named "Figure_02", "Figure_03", etc. according to the names 
-    in the paper and "Appendix_Figure_01", "Appendix_Figure_02", etc.
-    accroding to the names of the appendix.
+    the paper and the appendix/supplement) and saves them into "./plots".
+    The plots are named "Figure_02", "Figure_03", etc. according to figure 
+    numbers in the paper and "Appendix_Figure_01", "Appendix_Figure_02", etc.
+    according to the numbers in the appendix.
     Note: Figure 1 in the paper is just a schematic representation of the 
     different correlation structures and the positioning of the direct 
     predictors. Hence, we do not provide any code for generating this figure.
@@ -94,7 +93,7 @@ PLOTS/FIGURES:
     To generate the plots you have two options: you can run all simulations
     by yourself (please see above) or you can use the raw data of our simulation
     runs. These are provided in this repository and via an additional file
-    repository (please the below).
+    repository (please see below).
 
 
 DATASETS & AVAILABILITY:
@@ -104,15 +103,19 @@ DATASETS & AVAILABILITY:
 
     If you do not want to re-run the simulation for the synthetic data you
     can download the result for the medium- and high-dimensional settings
-    under https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
+    under 
+    https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
     or alternatively under 
     https://figshare.com/articles/dataset/Simualtion_Results/23578647
+    You have to un-zip the files and save the RDS-files into ./results
+    This can also be down automatically by our interactive master script 
+    (just follow its instructions).
 
     If you do not want to re-run the time-limit simulation you find the 
     raw results under ./results.
 
     If you do not want to re-run the Stability Selection and BIC/mBIC2/HQC 
-    simulation our raw results are stored in ./results to plot them.
+    simulation our raw results are stored in ./results .
 
 
 FURTHER INFORMATION:
