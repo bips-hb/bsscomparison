@@ -43,6 +43,12 @@
 #'   https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
 #'   (The raw results are .rds files and need to be put into "results/" before
 #'   analyzing/plotting when downloaded manually)
+#'
+#' Please note: The subfolder "./bscompartison" (only one 's'!) contains the 
+#' set-ups for the synthetic simulation. It will need Gurobi AND a high 
+#' performance cluster (HPC) and we make use of batchtools 
+#' (see https://github.com/mllg/batchtools) for distributing the jobs. 
+#' 
 #' 
 #' Table of contents of masterscript.R
 #' -----------------------------------
@@ -431,7 +437,7 @@ cat(
 #' It is important to have Gurobi >= 8.1 installed if you want to run BSS but 
 #' you can can the without BSS by setting. 
 #' NOTE: even without BSS this simulation runs rather long due to the many 
-#' different parameter combinations and subsampling process of Stability 
+#' different parameter combinations and sub-sampling process of Stability 
 #' Selection. We suggest to use a multicore processor or HPC to apply parallel
 #' computing or reduce the number of simulation runs and/or parameter 
 #' combinations. 

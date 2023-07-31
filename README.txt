@@ -28,17 +28,13 @@ OVERVIEW/INSTRUCTIONS:
     or to generate just the plots based on the raw results provided by us
     (see below for the links).
 
-    NOTE: If you do not want to run the complete/parts of the 
-    simulation study, but want to plot all/some of the results we submitted  
-    please select the following order of options in the interactive session:
-    5 --> 2 --> 2 --> 2 
-    Alternatively, you can start this script from chapter 'IV. Generate plots'
+    NOTE: If you want only to generate the plots please scipt the first
+    for steps of the interactive prompts (i.e. selecting option 5, 2, 2, 2).
+    Please see also the explanation for Chapter IV. below.
+
+    Alternatively, you can start the master script from chapter 'IV. Generate plots'
 
     The master script contains 7+1 chapters:
-
-    NOTE: If you want only to generate the plots please scipt the first
-    for steps of the interacive prompts (i.e. selecting option 5, 5, 2, 2).
-    Please see also the explanation for Chapter IV. below.
 
     0.: Set-Up
     A script which asks the user to install the necessary packages. 
@@ -77,8 +73,6 @@ OVERVIEW/INSTRUCTIONS:
     option of perfoming only an example simualtion.xs
     Please see also the default parameter values in the corresponding 
     chapter. 
-
-    
 
 
 PLOTS/FIGURES: 
