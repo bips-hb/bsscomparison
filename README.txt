@@ -18,6 +18,8 @@ OVERVIEW/INSTRUCTIONS:
     
     > source("masterscript.R")
 
+    
+
     The master script calls two types of scripts: 
     1. interactive scripts asking which simulations to run
     2. the actual scripts to run the selected simulations.
@@ -27,6 +29,9 @@ OVERVIEW/INSTRUCTIONS:
     study (including an comparison of the results to the original ones) 
     or to generate just the plots based on the raw results provided by us
     (see below for the links).
+    If you run the interactive version (which we highly recommend) the 
+    R-Console will give information about the simulation status, errors 
+    and options.
 
     NOTE: If you want only to generate the plots please script the first
     for steps of the interactive prompts (i.e. selecting option 5, 2, 2, 2).
