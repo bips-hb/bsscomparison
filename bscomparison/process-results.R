@@ -1,3 +1,17 @@
+#' Function for processing the results, i.e. calculating recall, precision and
+#' F1 from raw results
+#' 
+#' INPUT: 
+#' res: results of the simulation
+#' p: number of variables
+#' method: method to evaluate
+#' alpha: alpha of Enet
+#' beta_type: position of non-zero betas (first or spread)
+#' s: number of non-zero betas
+#' 
+#' OUTPUT:
+#' a tibble with recall, precision and F1-scores 
+
 process_results <- function(res, p, method = 'fs', alpha = NULL, beta_type = 'first', s = 10) { 
   
   if (method == 'enet' & is.null(alpha)) { 
