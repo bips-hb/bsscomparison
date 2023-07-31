@@ -1,5 +1,5 @@
 cat("\n\nFor generating medium and high dimensional plots, one needs to download\n")
-cat("the intermediate results from the BIPS website. This will be done automatically\n\n")
+cat("the intermediate results. Please follow instructions and see README.\n\n")
 
 answered <- FALSE
 while (!answered) { 
