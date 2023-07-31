@@ -5,7 +5,7 @@ answered <- FALSE
 while (!answered) { 
   
   # ask whether to run the simulation with different time limits
-  time_study <- menu(title = "Do you want to download the intermediate results? Required for creating the related plots.\nYou can download the files manually under\nhttps://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1 \nand safe and unzip the file to ./results", 
+  time_study <- menu(title = "Do you want to download the intermediate results? Required for creating the related plots.\nYou can download the files manually under\nhttps://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1 \nand save and unzip the file to ./results", 
                      choices = c("yes", 
                                  "no",
                                  "downloaded manually",
