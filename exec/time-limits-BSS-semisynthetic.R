@@ -1,10 +1,9 @@
 #' Simulate a semi-synthetic data setting from TCGA ovarian cancer samples 
 #' and use Best subset selection (BSS) to find the best subset based on 
-#' different time limits and subset sizes. TCGA Dataset is available under
-#' https://bioinformatics.mdanderson.org/Supplements/ResidualDisease/
-#' and in folder ./data
+#' different time limits and subset sizes. TCGA Dataset is available in folder 
+#' ./data
 #' 
-#' Gurobi solver version >= 8.0 needed!
+#' Gurobi solver version >= 8.1 needed!
 #' Running simulation on a high performance cluster is strongly recommended!
 #' 
 #' @param N number of observations

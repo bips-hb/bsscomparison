@@ -1,7 +1,7 @@
 #' Simulate a low dimensional block setting and use Best subset selection (BSS)
 #' to find the best subset based on different time limits and subset sizes. 
 #' 
-#' Gurobi solver version >= 8.0 needed!
+#' Gurobi solver version >= 8.1 needed!
 #' 
 #' @param N number of observations
 #' @param P number of variables

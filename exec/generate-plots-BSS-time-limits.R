@@ -1,7 +1,7 @@
 #' Plotting results of Best Subset Selection based
 #' on MIO Formulation by Bertsimas et al. (2016) and the Gurbi Solver
 #' with respect to different time limits and certified solutions
-#' and Firgures 30-56 in the Appendixy (number of certified runs)
+#' and Firgures 30-57 in the Appendixy (number of certified runs)
 
 #' Input:
 #' raw_results of the time comparison simulation and the synthetic data

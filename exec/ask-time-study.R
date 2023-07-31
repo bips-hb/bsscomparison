@@ -1,4 +1,6 @@
-
+# Ask the user whether he/she wants to rerun the 
+#' simulations for the effect of time-limits.
+  
 answered <- FALSE
 while (!answered) { 
   
