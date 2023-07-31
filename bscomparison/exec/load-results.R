@@ -1,3 +1,5 @@
+# Script for writing the final results regarding the best F1 score 
+
 library(readr)
 library(dplyr)
 

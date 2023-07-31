@@ -92,13 +92,13 @@ for (variable in variables) {
   eval( sprintf("%s <- FALSE", variable)  )
 }
 
-cat(crayon::bgRed("NOTE\n"))
+cat(crayon::bgRed("\nNOTE\n"))
 cat(paste("If you ", crayon::red("do not want"), 
           " to run the complete/parts of the simulation study, but ", 
           crayon::blue("only\nwant to plot all/some of the results we submitted"), 
           " please select the following\norder of options in the interactive session:\n",
 "5 --> 2 --> 2 --> 2\n",sep=""))
-cat(crayon::blue("Alternatively, you can start this script from chapter 'IV. Generate plots'"))
+cat(crayon::blue("Alternatively, you can start this script from chapter 'IV. Generate plots'\n\n"))
 
 #' #############################################################################
 #'                 I. SEMI-SYNTHETIC SIMULATION STUDY 
