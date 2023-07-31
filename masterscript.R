@@ -200,6 +200,13 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
 #' The following code simulates synthetic data with previous parameter.
 #' The Gurboi-Solver and a high performance computer cluster is mandatory.
 
+cat(
+  sprintf(
+    paste(crayon::bgRed(
+"\nPlease make sure you have Gurobi installed and a high performance cluster
+       available if you want to run the synthetic simulations ! ! !      
+            Otherwise skip the following part by pressing '2'.           \n"))))
+
 source("exec/ask-synthetic-study.R")
 
 if (run_synthetic_study) { 
