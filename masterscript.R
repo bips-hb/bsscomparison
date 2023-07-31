@@ -250,6 +250,13 @@ if (run_synthetic_study) {
 #'                        1. Synthetic data setting
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+cat(
+  sprintf(
+    paste(crayon::bgYellow(crayon::black(
+      "\nPlease make sure you have Gurobi installed and a high performance cluster
+       available if you want to run the synthetic simulations ! ! !      
+            Otherwise skip the following part by pressing '2'.           \n")))))
+
 run_BSS <- TRUE
 
 synthetic_time <- TRUE
@@ -290,6 +297,13 @@ if (run_time_study) {
 #' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #' low dimensional semi-synthtic data setting with signal-to-noise ratio 1.22
+
+cat(
+  sprintf(
+    paste(crayon::bgYellow(crayon::black(
+      "\nPlease make sure you have Gurobi installed and a high performance cluster
+       available if you want to run the synthetic simulations ! ! !      
+            Otherwise skip the following part by pressing '2'.           \n")))))
 
 run_BSS <- TRUE
 synthetic_time <- FALSE
