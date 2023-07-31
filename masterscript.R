@@ -8,7 +8,8 @@
 #' The R packages needed can be easily installed by running 'source(set-up.R)'
 #' 
 #' IMPORTANT: Best Subset Selection (BSS) is a NP-hard problem and requires
-#' specialized software to solve, see Berstimas et al. (2016, DOI: 10.1214/15-AOS1388).
+#' specialized software to solve, see Berstimas et al. 
+#' (2016, DOI: 10.1214/15-AOS1388).
 #' In order to solve the optimization problem, commercial solver 
 #' software 'Gurobi 8.1' (or higher) is required. In addition, due to the 
 #' high number of parameter settings, it is not recommended to run the simulations 
@@ -19,7 +20,7 @@
 #' we stored the intermediate/raw results. We provide an example simulation script 
 #' for the semi-synthetic dataset, in which the BSS is left out. We further allow
 #' the user to run an example for stability selection and different selection
-#' criteria. All results of the examples are compared to thr original simulation
+#' criteria. All results of the examples are compared to the original simulation
 #' results provided by us.
 #' 
 #' We highly recommend to run this master script by 
@@ -48,9 +49,11 @@
 #' set-ups for the synthetic simulation. It will need Gurobi AND a high 
 #' performance cluster (HPC) and we make use of batchtools 
 #' (see https://github.com/mllg/batchtools) for distributing the jobs. 
+#' You might to have appropriate changes to this sub-folder because batchtools 
+#' and Gurobi have to be configured for your HPC. 
 #' 
 #' 
-#' Table of contents of masterscript.R
+#' Table of contents of this masterscript.R
 #' -----------------------------------
 #' 
 #' 0. Set-up 
@@ -94,10 +97,12 @@ variables <- c("run_semisynthetic_simulations",
                "run_in_parallel",
                "generate_medium_high_dimensional_plots")
 
+# set them to FALSE
 for (variable in variables) {
   eval( sprintf("%s <- FALSE", variable)  )
 }
 
+# imporatnt information oin how to only plot the figures
 cat(crayon::bgRed("\nNOTE\n"))
 cat(paste("If you ", crayon::red("do not want"), 
           " to run the complete/parts of the simulation study, but ", 
