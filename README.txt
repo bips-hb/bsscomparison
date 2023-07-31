@@ -28,6 +28,12 @@ OVERVIEW/INSTRUCTIONS:
     or to generate just the plots based on the raw results provided by us
     (see below for the links).
 
+    NOTE: If you do not want to run the complete/parts of the 
+    simulation study, but want to plot all/some of the results we submitted  
+    please select the following order of options in the interactive session:
+    5 --> 2 --> 2 --> 2 
+    Alternatively, you can start this script from chapter 'IV. Generate plots'
+
     The master script contains 7+1 chapters:
 
     NOTE: If you want only to generate the plots please scipt the first

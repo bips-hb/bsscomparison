@@ -14,11 +14,15 @@ source("exec/install.R")
 library(crayon)
 
 # Give warnings or notes 
+#' Input: a string
+#' Output: a magenta colored text
 note <- function(text) { 
   cat(crayon::magenta(sprintf(text))) 
 }
 
 # outputs the parameters 
+#' INPUT: title, a string
+#' OUTPUT: blue colored text of the parameters used
 output_parameter_settings <- function(title = "Parameter settings", ...) { 
   param <- list(...) 
   

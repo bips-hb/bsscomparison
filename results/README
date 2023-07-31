@@ -2,4 +2,6 @@ data/
   
 Contains the raw results of the low-dimensional synthetic settings, of the time comparison settings and the semi-synthetic settings (low and high).
 Raw results of the medium- and high-dimensional synthetic settings can be downloaded from:
-https://www.bips-institut.de/fileadmin/downloads/BestSubsetResults.zip
+https://zenodo.org/record/8139859/files/BestSubsetResults.zip?download=1
+    or alternatively under 
+    https://figshare.com/articles/dataset/Simualtion_Results/23578647
