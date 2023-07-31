@@ -1,8 +1,18 @@
+#' simple functions to extract the best F1 results of the simulation study and the
+#' certifications 
+
 library(dplyr)
 library(readr)
 
+# load raw results
 res <- readr::read_rds("results/raw-results.rds")
 
+#' get max F1 score
+#' INPUT:
+#' l: vector of numerics (e.g. F1 scores)
+#' OUTPUT:
+#' max value (numeric)
+ 
 get_max <- function(l) { 
   id = which(is.nan(l))
   
@@ -13,6 +23,12 @@ get_max <- function(l) {
   max(l, na.rm = T)
 }
 
+#' function for checking if time limit has been reached
+#' INPUT:
+#' status: vector of strings
+#' 
+#' OUTPUT: 
+#' TRUE/FALSE 
 did_finish <- function(status) { 
   if (is.na(status)) { 
     return(NA) 
@@ -25,6 +41,7 @@ did_finish <- function(status) {
   }
 }
 
+# loop for creating a summary of the results
 summary <- NULL
 for(i in 1:nrow(res)){
   
@@ -41,4 +58,5 @@ for(i in 1:nrow(res)){
                      finished = finished_i))
 }
 
+# write summary as tsv
 readr::write_tsv(summary, "results/best-f1-scores.tsv")

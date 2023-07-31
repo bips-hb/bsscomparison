@@ -22,9 +22,9 @@
 #' criteria. All results of the examples are compared to thr original simulation
 #' results provided by us.
 #' 
-#' We highly reccommend to run this master script by 
+#' We highly recommend to run this master script by 
 #' > source("masterscript.R")
-#' becasue it is intended to guide the researcher through all our simualtion
+#' because it is intended to guide the researcher through all our simulation
 #' steps interactively. Nevertheless, you can run this master script as well as
 #' each of its sub-scripts line by line.
 #' 
@@ -189,9 +189,8 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
 #'             !!! Not recommended to run on a single machine !!!
 #'                  !!! Gurobi 8.1 or higher is needed !!!!
 #'                  
-#' The following code simulates synthetic data with previous parameter. It gives
-#' the user the option to run only a low-dimensional setting without BSS.
-#' However, this will still take a couple of hours to finish.
+#' The following code simulates synthetic data with previous parameter.
+#' The Gurboi-Solver and a high performance computer cluster is mandatory.
 
 source("exec/ask-synthetic-study.R")
 

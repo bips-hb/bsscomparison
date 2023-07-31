@@ -6,6 +6,7 @@ library(bestsubset)
 library(glmnet)
 library(caret)
 
+# set options
 options(batchtools.verbose = TRUE)
 options(stringsAsFactors = FALSE)
 
@@ -14,11 +15,7 @@ packages = c("dplyr", "readr", "simsham", "bestsubset", "glmnet", "caret")
 source = c("problems.R", "process-results.R", "algorithms.R", "parameter-settings.R")
 
 ### number of replications for each parameter setting
-if (run_example) { 
-  repls <- 1 
-} else { 
-  repls <- 100
-}
+repls <- 100
 
 ### Setting up the repository 
 start_from_scratch <- TRUE # if true, removes all repository and creates a new one
@@ -40,9 +37,7 @@ addProblem(name = "sim_data", fun = simulator_wrapper, seed = 1)
 ### add algorithms 
 addAlgorithm(name = "fs", fun = fs_wrapper) 
 addAlgorithm(name = "enet", fun = enet_wrapper) 
-if (run_BSS) { 
-  addAlgorithm(name = "bs", fun = bs_wrapper) 
-}
+addAlgorithm(name = "bs", fun = bs_wrapper) 
 
 
 ### add the experiments
@@ -51,18 +46,13 @@ if (run_BSS) {
 prob_design <- list(sim_data = sim_param)
 
 # parameters for the methods
-if (run_BSS) { 
-  algo_design <- list(
-    bs = expand.grid(k = 15),
-    fs = expand.grid(k = 15), 
-    enet = expand.grid(alpha = seq(.1, 1, by = .1))
-  )
-} else { 
-  algo_design <- list(
-    fs = expand.grid(k = 15), 
-    enet = expand.grid(alpha = seq(.1, 1, by = .1))
-  ) 
-}
+
+algo_design <- list(
+  bs = expand.grid(k = 15),
+  fs = expand.grid(k = 15), 
+  enet = expand.grid(alpha = seq(.1, 1, by = .1))
+)
+
 
 addExperiments(prob_design, algo_design, repls = repls)
 
@@ -70,6 +60,7 @@ addExperiments(prob_design, algo_design, repls = repls)
 ids <- findNotStarted()
 
 if (grepl("node\\d{2}|bipscluster", system("hostname", intern = TRUE))) {
+  # Setting to run on our HPC - please make adequate changes to your system!!!
   ids <- findNotStarted()
   ids[, chunk := chunk(job.id, chunk.size = 50)]
   submitJobs(ids = ids, # walltime in seconds, 10 days max, memory in MB
@@ -94,5 +85,3 @@ readr::write_rds(tab, "results/raw-results.rds", compress = "gz")
 # post-process the results
 source("exec/get-best-f1-scores.R")
 
-# create the plots
-source("create-plots.R")
