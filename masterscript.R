@@ -188,8 +188,10 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
     #' all_equal() of the dplyr package is needed to compare two data frames
     res <- (dplyr::all_equal(semisynthetic_full, semisynthetic_example))
     if (is.logical(res) && res) { 
+      cat(crayon::bgGreen(crayon::black("\nComparison of original results an example finished!\n")))
       success("datasets are equal\n") 
     } else { 
+      cat(crayon::bgRed(crayon::white("\nComparison of original results an example finished!\n")))
       failed("datasets are not equal\n")
       cat(sprintf("Output dplyr::all_equal --> %s\n", res))
     }
@@ -213,10 +215,10 @@ if (run_semisynthetic_simulations_low_dimensional || run_semisynthetic_simulatio
 
 cat(
   sprintf(
-    paste(crayon::bgRed(
+    paste(crayon::bgYellow(crayon::black(
 "\nPlease make sure you have Gurobi installed and a high performance cluster
        available if you want to run the synthetic simulations ! ! !      
-            Otherwise skip the following part by pressing '2'.           \n"))))
+            Otherwise skip the following part by pressing '2'.           \n")))))
 
 source("exec/ask-synthetic-study.R")
 
