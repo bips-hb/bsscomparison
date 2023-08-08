@@ -10,7 +10,7 @@ while (!answered) {
                         choices = c("Run an example without BSS", 
                                     "Run complete simulation without BSS", 
                                     "Run complete simulation with BSS (Gurobi is needed!)", 
-                                    "Do not run an (example) simualtion",
+                                    "Do not run an (example) simulation",
                                     "exit"))
   
   switch(as.character(selectionSimu), 

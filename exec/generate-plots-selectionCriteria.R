@@ -134,8 +134,6 @@ for(Corr in CORR){
     
     for(Rho in RHO){
       
-      print(Rho)
-      
       # Generarte pltos for F1-score, Recall and Precision for BIC, mBIC2, HQC and
       # Stability Selection and save in ./plots
       

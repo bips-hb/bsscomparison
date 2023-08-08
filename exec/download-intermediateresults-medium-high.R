@@ -12,7 +12,7 @@ if (! file.exists("results/raw_results_high_spread_block.RDS")) {
   cat(sprintf("Start downloading results file for medium and high dimensional settings...\n"))
   cat(sprintf("NOTE: this can take a considerable amount of time (~ 1.5 Gb)\n\n"))
   cat(sprintf(" \n\n"))
-  cat(sprintf(crayon::bgRed("IMPORTAT: If the download fails because of an timeout error \n")))
+  cat(sprintf(crayon::bgRed("IMPORTANT: If the download fails because of an timeout error \n")))
   cat(sprintf(crayon::bgRed("please set a higher timout limit (e.g. options(timeout=1000) ) \n")))
   
   download.file(url, "results/BestSubsetResults.zip", method = "auto", quiet = FALSE, mode = "w",
