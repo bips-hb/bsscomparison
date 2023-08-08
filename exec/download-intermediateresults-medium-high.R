@@ -15,7 +15,7 @@ if (! file.exists("results/raw_results_high_spread_block.RDS")) {
   cat(sprintf(crayon::bgRed("IMPORTANT: If the download fails because of an timeout error \n")))
   cat(sprintf(crayon::bgRed("please set a higher timout limit (e.g. options(timeout=1000) ) \n")))
   
-  download.file(url, "results/BestSubsetResults.zip", method = "auto", quiet = FALSE, mode = "w",
+  download.file(url, "results/BestSubsetResults.zip", method = "auto", quiet = FALSE, mode = "wb",
                 cacheOK = TRUE,
                 extra = getOption("download.file.extra"),
                 headers = NULL)
